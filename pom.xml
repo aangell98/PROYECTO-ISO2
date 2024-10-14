@@ -9,11 +9,11 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>es.uclm</groupId>
-	<artifactId>library</artifactId>
+	<artifactId>delivery</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
-	<name>library</name>
-	<description>Demo project for a library application using Spring Boot</description>
+	<name>delivery</name>
+	<description>Demo project for a delivery application using Spring Boot</description>
 	<url/>
 	<licenses>
 		<license/>
