@@ -1,15 +1,13 @@
 package es.uclm.delivery.dominio.controladores;
 
+import org.springframework.stereotype.Service;
+
+@Service
 public class GestorLogin {
 
-	/**
-	 * 
-	 * @param id
-	 * @param pass
-	 */
-	public void login(String id, String pass) {
-		// TODO - implement GestorLogin.login
-		throw new UnsupportedOperationException();
-	}
-
+    public boolean autenticar(String id, String password) {
+        // Aquí iría la lógica de autenticación real, por ejemplo, consultando una base de datos
+        // Por ahora, usaremos una autenticación simple
+        return "admin".equals(id) && "admin".equals(password);
+    }
 }
