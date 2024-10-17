@@ -1,9 +1,29 @@
 package es.uclm.delivery.dominio.entidades;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+
+@Entity
 public class Usuario {
 
-	private String idUsuario;
-	private String pass;
-	private int attribute;
+    @Id
+    private String username;
+    private String password;
 
+    // Getters and setters
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 }

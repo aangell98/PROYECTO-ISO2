@@ -1,0 +1,72 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 300px;
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Alinea los elementos a la izquierda */
+    width: 100%; /* Asegura que el formulario ocupe todo el ancho del contenedor */
+}
+
+label {
+    margin-bottom: 5px;
+    color: #555;
+    width: 100%; /* Asegura que las etiquetas ocupen todo el ancho del contenedor */
+}
+
+input {
+    margin-bottom: 15px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 100%; /* Asegura que los inputs ocupen todo el ancho del contenedor */
+    box-sizing: border-box; /* Incluye el padding y el borde en el ancho total */
+}
+
+button {
+    padding: 10px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%; /* Asegura que el botón ocupe todo el ancho del contenedor */
+    box-sizing: border-box; /* Incluye el padding y el borde en el ancho total */
+    text-align: center; /* Centra el texto dentro del botón */
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+.error {
+    color: red;
+    text-align: center;
+    margin-top: 10px;
+}
+
+.message {
+    text-align: center;
+    color: #333;
+}

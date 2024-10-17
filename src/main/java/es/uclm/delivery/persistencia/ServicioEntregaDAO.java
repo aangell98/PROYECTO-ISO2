@@ -1,4 +1,10 @@
 package es.uclm.delivery.persistencia;
 
-public class ServicioEntregaDAO extends EntityDAO {
+import es.uclm.delivery.dominio.entidades.ServicioEntrega;
+
+public class ServicioEntregaDAO extends EntidadDAO<ServicioEntrega> {
+
+	public ServicioEntregaDAO() {
+		super(ServicioEntrega.class);
+	}
 }
