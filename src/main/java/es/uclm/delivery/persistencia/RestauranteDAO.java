@@ -1,26 +1,12 @@
 package es.uclm.delivery.persistencia;
 
-import es.uclm.delivery.dominio.entidades.*;
+import org.springframework.stereotype.Repository;
+import es.uclm.delivery.dominio.entidades.Restaurante;
 
-public class RestauranteDAO extends EntityDAO {
+@Repository
+public class RestauranteDAO extends EntidadDAO<Restaurante> {
 
-	/**
-	 * 
-	 * @param codigoPostal
-	 */
-	public void selectPorCodigoPostal(CodigoPostal codigoPostal) {
-		// TODO - implement RestauranteDAO.selectPorCodigoPostal
-		throw new UnsupportedOperationException();
-	}
-
-	/**
-	 * 
-	 * @param codigoPostal
-	 * @param texto
-	 */
-	public void selectPorCodigoPostalYTextoLibre(CodigoPostal codigoPostal, String texto) {
-		// TODO - implement RestauranteDAO.selectPorCodigoPostalYTextoLibre
-		throw new UnsupportedOperationException();
-	}
-
+    public RestauranteDAO() {
+        super(Restaurante.class);
+    }
 }
