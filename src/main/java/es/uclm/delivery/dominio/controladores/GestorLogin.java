@@ -4,12 +4,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import es.uclm.delivery.dominio.entidades.Usuario;
 import es.uclm.delivery.persistencia.UsuarioDAO;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+
 @Service
 public class GestorLogin {
 
@@ -36,24 +36,31 @@ public class GestorLogin {
 
     public boolean autenticar(String username, String password) {
         Usuario usuario = usuarioDAO.select(username).orElse(null);
-        if (usuario != null && usuario.getPassword().equals(cifrarPassword(password))) {
-            log.info("Usuario autenticado: " + username);
-            return true;
+        if (usuario != null) {
+            log.debug("Usuario encontrado: " + usuario.getUsername());
+            if (cifrarPassword(password).equals(usuario.getPassword())) {
+                log.info("Usuario autenticado: " + username);
+                return true;
+            } else {
+                log.warn("Contraseña incorrecta para el usuario: " + username);
+            }
+        } else {
+            log.warn("Usuario no encontrado: " + username);
         }
-        log.warn("Fallo de autenticación para el usuario: " + username);
         return false;
     }
 
-    public boolean registrar(String username, String password) {
+    public boolean registrar(String username, String password, String role) {
         if (usuarioDAO.select(username).isPresent()) {
             log.warn("Intento de registro fallido. El usuario ya existe: " + username);
-            return false;
+            return false; // El usuario ya existe
         }
-        Usuario nuevoUsuario = new Usuario();
-        nuevoUsuario.setUsername(username);
-        nuevoUsuario.setPassword(cifrarPassword(password));
-        usuarioDAO.insert(nuevoUsuario);
-        log.info("Usuario registrado exitosamente: " + username);
+        Usuario usuario = new Usuario();
+        usuario.setUsername(username);
+        usuario.setPassword(cifrarPassword(password)); // La contraseña se encripta aquí
+        usuario.setRole(role); // Asignar el rol adecuado
+        usuarioDAO.insert(usuario);
+        log.info("Usuario registrado: " + username + " con rol: " + role);
         return true;
     }
 }

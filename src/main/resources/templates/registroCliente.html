@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Iniciar Sesión</title>
+    <title>Registro Cliente</title>
     <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}">
 </head>
 <body>
     <div class="container">
-        <h1>Iniciar Sesión</h1>
-        <form th:action="@{/login}" method="post">
+        <h1>Registro Cliente</h1>
+        <form action="#" th:action="@{/registroCliente}" method="post">
             <div>
                 <label for="username">Usuario:</label>
                 <input type="text" id="username" name="username" required>
@@ -17,17 +17,12 @@
                 <input type="password" id="password" name="password" required>
             </div>
             <div>
-                <button type="submit">Login</button>
+                <button type="submit">Registrar</button>
             </div>
-            <div th:if="${param.error}">
-                <p style="color: red;">Usuario o contraseña incorrectos</p>
+            <div th:if="${error}">
+                <p style="color: red;">El usuario ya existe</p>
             </div>
         </form>
-        <p>¿No tienes una cuenta? <a th:href="@{/registroCliente}">Regístrate aquí</a></p>
-        <p>¿Te gustaría trabajar con nosotros? 
-            <a th:href="@{/registroRepartidor}">Repartidor</a> o 
-            <a th:href="@{/registroRestaurante}">Restaurante</a>
-        </p>
     </div>
 </body>
 </html>
