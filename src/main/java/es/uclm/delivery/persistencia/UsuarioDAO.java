@@ -21,4 +21,10 @@ public class UsuarioDAO extends EntidadDAO<Usuario> {
             return Optional.empty();
         }
     }
+
+    public String getRole(String username) {
+        return entityManager.createQuery("SELECT u.role FROM Usuario u WHERE u.username = :username", String.class)
+                .setParameter("username", username)
+                .getSingleResult();
+    }
 }

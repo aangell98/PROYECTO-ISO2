@@ -1,13 +1,22 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="es">
 <head>
-    <title>Home (WIP)</title>
-    <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página Principal</title>
+    <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
-    <div class="container">
-        <h1>Bienvenido a Casa</h1>
-        <p class="message">Has iniciado sesión exitosamente.</p>
+    <div class="home-container">
+        <header>
+            <h1>Bienvenido a Delivery WIP</h1>
+        </header>
+        <main>
+            <button onclick="location.href='/login'">Iniciar Sesión</button>
+        </main>
+        <footer>
+            <p>&copy; 2024 Delivery. Todos los derechos reservados. Work In Progress</p>
+        </footer>
     </div>
 </body>
 </html>

@@ -17,6 +17,34 @@ body {
     width: 300px;
 }
 
+/* Estilo para la página de inicio (home) */
+.home-container {
+    text-align: center;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    width: 100%;
+    margin: 20px;
+}
+
+/* Botón en la página de inicio (home) ajustado al tamaño del texto */
+.home-container button {
+    width: auto; /* Ajusta el ancho al contenido del texto */
+    padding: 10px 20px; /* Agrega un poco de padding horizontal extra */
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.home-container button:hover {
+    background-color: #0056b3;
+}
+
 h1 {
     text-align: center;
     color: #333;
@@ -69,4 +97,20 @@ button:hover {
 .message {
     text-align: center;
     color: #333;
+}
+
+/* Estilo para el botón de cierre de sesión */
+.btn-logout {
+    background-color: #dc3545;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.btn-logout:hover {
+    background-color: #c82333;
 }

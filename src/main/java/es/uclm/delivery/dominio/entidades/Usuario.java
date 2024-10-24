@@ -43,6 +43,11 @@ public class Usuario {
     }
 
     public void setRole(String role) {
-        this.role = role;
+        if (!role.startsWith("ROLE_")) {
+            this.role = "ROLE_" + role;
+        } else {
+            this.role = role;
+        }
     }
+    
 }

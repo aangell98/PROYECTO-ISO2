@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import es.uclm.delivery.dominio.entidades.Usuario;
+import es.uclm.delivery.persistencia.UsuarioDAO;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import es.uclm.delivery.dominio.controladores.GestorLogin;
 
 @Controller
@@ -19,6 +22,10 @@ public class IULogin {
     @Autowired
     private GestorLogin gestorLogin;
 
+    @Autowired
+    private UsuarioDAO usuarioDAO;
+
+
     @GetMapping("/login")
     public String showLoginForm(Model model) {
         model.addAttribute("usuario", new Usuario());
@@ -26,10 +33,37 @@ public class IULogin {
     }
 
     @PostMapping("/login")
-    public String login(@ModelAttribute Usuario usuario, Model model) {
+    public String login(@ModelAttribute Usuario usuario, Model model, HttpServletRequest request) {
         if (gestorLogin.autenticar(usuario.getUsername(), usuario.getPassword())) {
             log.info("Usuario autenticado: " + usuario.getUsername());
-            return "redirect:/home";
+            String role = usuarioDAO.getRole(usuario.getUsername());
+            log.info("rol del usuario " + role);
+
+            // Asegúrate que el rol tiene el prefijo "ROLE_"
+            if (!role.startsWith("ROLE_")) {
+                role = "ROLE_" + role;
+            }
+            
+            // Manejar la sesión
+            HttpSession session = request.getSession();
+            session.setAttribute("username", usuario.getUsername());
+            session.setAttribute("role", role);
+            session.setMaxInactiveInterval(30 * 60); // La sesión expira en 30 minutos de inactividad
+
+            log.info("Sesión creada: " + session.getId());
+            log.info("Atributos de la sesión: username=" + session.getAttribute("username") + ", role=" + session.getAttribute("role"));
+            
+            
+            if (role.equals("CLIENTE")) {
+                return "redirect:/homeCliente";
+            } else if (role.equals("REPARTIDOR")) {
+                return "redirect:/homeRepartidor";
+            } else if (role.equals("RESTAURANTE")) {
+                return "redirect:/homeRestaurante";
+            } else {
+                model.addAttribute("error", "Rol desconocido");
+                return "login";
+            }
         } else {
             model.addAttribute("error", "Usuario o contraseña incorrectos");
             return "login";
@@ -90,5 +124,20 @@ public class IULogin {
     @GetMapping("/home")
     public String showHomePage() {
         return "home";
+    }
+
+    @GetMapping("/homeCliente")
+    public String homeCliente() {
+        return "homeCliente"; 
+    }
+
+    @GetMapping("/homeRepartidor")
+    public String homeRepartidor() {
+        return "homeRepartidor"; 
+    }
+
+    @GetMapping("/homeRestaurante")
+    public String homeRestaurante() {
+        return "homeRestaurante"; 
     }
 }
