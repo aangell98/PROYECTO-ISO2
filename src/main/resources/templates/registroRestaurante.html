@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Registro Restaurante</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}">
+</head>
+<body>
+    <div class="container">
+        <h1>Registro Restaurante</h1>
+        <form action="#" th:action="@{/registroRestaurante}" method="post">
+            <div>
+                <label for="username">Usuario:</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div>
+                <label for="password">Contraseña:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <div>
+                <button type="submit">Registrar</button>
+            </div>
+            <div th:if="${error}">
+                <p style="color: red;">El usuario ya existe</p>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

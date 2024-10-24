@@ -1,55 +1,66 @@
 package es.uclm.delivery.persistencia;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.sql.Statement;
+import java.sql.SQLException;
 
 public class GestorBaseDatos {
 
-	GestorBaseDatos gestorBD;
+    private Connection connection;
 
-	private boolean conectar() {
-		// TODO - implement GestorBaseDatos.conectar
-		throw new UnsupportedOperationException();
-	}
+    public boolean conectar() {
+        try {
+            // Configura la conexión a la base de datos
+            String url = "jdbc:mysql://localhost:8080/";
+            String username = "derbyuser";
+            String password = "password";
+            connection = DriverManager.getConnection(url, username, password);
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 
-	private boolean desconectar() {
-		// TODO - implement GestorBaseDatos.desconectar
-		throw new UnsupportedOperationException();
-	}
+    public ResultSet ejecutarConsulta(String consulta) {
+        try {
+            Statement statement = connection.createStatement();
+            return statement.executeQuery(consulta);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
-	/**
-	 * 
-	 * @param sql
-	 */
-	private int inser(String sql) {
-		// TODO - implement GestorBaseDatos.inser
-		throw new UnsupportedOperationException();
-	}
+    private int inser(String sql) {
+        try {
+            Statement statement = connection.createStatement();
+            return statement.executeUpdate(sql);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return -1;
+        }
+    }
 
-	/**
-	 * 
-	 * @param sql
-	 */
-	public int update(String sql) {
-		// TODO - implement GestorBaseDatos.update
-		throw new UnsupportedOperationException();
-	}
+    public int update(String sql) {
+        try {
+            Statement statement = connection.createStatement();
+            return statement.executeUpdate(sql);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return -1;
+        }
+    }
 
-	/**
-	 * 
-	 * @param sql
-	 */
-	public int delete(String sql) {
-		// TODO - implement GestorBaseDatos.delete
-		throw new UnsupportedOperationException();
-	}
-
-	/**
-	 * 
-	 * @param sql
-	 */
-	public ResultSet select(String sql) {
-		// TODO - implement GestorBaseDatos.select
-		throw new UnsupportedOperationException();
-	}
-
+    public void desconectar() {
+        try {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }
