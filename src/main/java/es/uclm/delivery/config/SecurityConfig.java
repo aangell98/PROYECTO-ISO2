@@ -34,7 +34,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/home", "/css/**", "/js/**", "/images/**").permitAll() // Permitir acceso
+                        .requestMatchers("/home", "/registroCliente", "/registroRepartidor", "/registroRestaurante", "/css/**", "/js/**", "/images/**").permitAll() // Permitir acceso
                                                                                                  // público a /home
                         .requestMatchers("/homeCliente/**").hasRole("CLIENTE")
                         .requestMatchers("/homeRepartidor/**").hasRole("REPARTIDOR")
@@ -58,8 +58,8 @@ public class SecurityConfig {
                             session.setAttribute("role", role);
                             session.setMaxInactiveInterval(30 * 60); // La sesión expira en 30 minutos de inactividad
 
-                            log.info("Sesión creada: " + session.getId());
-                            log.info("Atributos de la sesión: username=" + session.getAttribute("username") + ", role="
+                            log.info("Sesion creada: " + session.getId());
+                            log.info("Atributos de la sesion: username=" + session.getAttribute("username") + ", role="
                                     + session.getAttribute("role"));
 
                             // Redireccionar según el rol
@@ -114,9 +114,9 @@ public class SecurityConfig {
                     Authentication authentication) throws IOException {
                 if (authentication != null) {
                     String username = authentication.getName();
-                    log.info("Usuario '{}' ha cerrado sesión exitosamente.", username);
+                    log.info("Usuario '{}' ha cerrado sesion exitosamente.", username);
                 } else {
-                    log.info("Cierre de sesión sin usuario autenticado.");
+                    log.info("Cierre de sesion sin usuario autenticado.");
                 }
 
                 // Redirigir al usuario a la página de login con el parámetro de logout=true
