@@ -32,7 +32,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         if (gestorLogin.autenticar(username, password)) {
             String role = usuarioDAO.getRole(username);
             UserDetails userDetails = new User(username, password, 
-                Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + role)));
+                Collections.singletonList(new SimpleGrantedAuthority(role)));
 
             return new UsernamePasswordAuthenticationToken(userDetails, password, userDetails.getAuthorities());
         } else {
