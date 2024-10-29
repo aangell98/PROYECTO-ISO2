@@ -1,58 +1,47 @@
 package es.uclm.delivery.dominio.entidades;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.Column;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import java.util.Collection;
 
 @Entity
 @Table(name = "cliente")
-public class Cliente extends Usuario {
+public class Cliente {
 
-    @ManyToMany
-    private Collection<Restaurante> favoritos;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
 
-    @OneToMany(mappedBy = "cliente")
-    private Collection<Pedido> pedidos;
-
-    @OneToMany
-    private Collection<Direccion> direcciones;
-
-    @Column(name = "nombre")
+    @Column(name = "nombre", nullable = false)
     private String nombre;
 
-    @Column(name = "apellidos")
+    @Column(name = "apellidos", nullable = false)
     private String apellidos;
 
-    @Column(name = "dni")
+    @Column(name = "dni", nullable = false, unique = true)
     private String dni;
 
+    @OneToOne
+    @JoinColumn(name = "username", referencedColumnName = "username")
+    private Usuario usuario;
+
+    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Collection<ClienteFavoritos> favoritos;
+
+    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Collection<Pedido> pedidos;
+
+    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Collection<Direccion> direcciones;
+
     // Getters y setters
-    public Collection<Restaurante> getFavoritos() {
-        return favoritos;
+
+    public Long getId() {
+        return id;
     }
 
-    public void setFavoritos(Collection<Restaurante> favoritos) {
-        this.favoritos = favoritos;
-    }
-
-    public Collection<Pedido> getPedidos() {
-        return pedidos;
-    }
-
-    public void setPedidos(Collection<Pedido> pedidos) {
-        this.pedidos = pedidos;
-    }
-
-    public Collection<Direccion> getDirecciones() {
-        return direcciones;
-    }
-
-    public void setDirecciones(Collection<Direccion> direcciones) {
-        this.direcciones = direcciones;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getNombre() {
@@ -77,5 +66,37 @@ public class Cliente extends Usuario {
 
     public void setDni(String dni) {
         this.dni = dni;
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
+
+    public Collection<ClienteFavoritos> getFavoritos() {
+        return favoritos;
+    }
+
+    public void setFavoritos(Collection<ClienteFavoritos> favoritos) {
+        this.favoritos = favoritos;
+    }
+
+    public Collection<Pedido> getPedidos() {
+        return pedidos;
+    }
+
+    public void setPedidos(Collection<Pedido> pedidos) {
+        this.pedidos = pedidos;
+    }
+
+    public Collection<Direccion> getDirecciones() {
+        return direcciones;
+    }
+
+    public void setDirecciones(Collection<Direccion> direcciones) {
+        this.direcciones = direcciones;
     }
 }

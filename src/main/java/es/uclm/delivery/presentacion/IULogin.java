@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import es.uclm.delivery.dominio.entidades.Cliente;
 import es.uclm.delivery.dominio.entidades.Usuario;
 import es.uclm.delivery.persistencia.UsuarioDAO;
 import jakarta.servlet.http.HttpServletRequest;
@@ -77,8 +79,8 @@ public class IULogin {
     }
 
     @PostMapping("/registroCliente")
-    public String registrarCliente(@ModelAttribute Usuario usuario, Model model) {
-        if (gestorLogin.registrar(usuario.getUsername(), usuario.getPassword(), "CLIENTE")) {
+    public String registrarCliente(@ModelAttribute Usuario usuario, @ModelAttribute Cliente cliente, Model model) {
+        if (gestorLogin.registrarCliente(usuario.getUsername(), usuario.getPassword(), "CLIENTE", cliente.getNombre(),cliente.getApellidos(),cliente.getDni())) {
             log.info("Cliente registrado: " + usuario.getUsername());
             return "redirect:/login";
         } else {

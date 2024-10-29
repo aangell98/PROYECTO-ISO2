@@ -1,12 +1,6 @@
 package es.uclm.delivery.dominio.entidades;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import jakarta.persistence.Id;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Column;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "direccion")
@@ -14,38 +8,30 @@ public class Direccion {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
-    @ManyToOne
-    private CodigoPostal codigoPostal;
-
-    @Column(name = "calle")
+    @Column(name = "calle", nullable = false)
     private String calle;
 
-    @Column(name = "numero")
-    private String numero;
+    @Column(name = "ciudad", nullable = false)
+    private String ciudad;
 
-    @Column(name = "complemento")
-    private String complemento;
+    @Column(name = "codigo_postal", nullable = false)
+    private String codigoPostal;
 
-    @Column(name = "municipio")
-    private String municipio;
+    @ManyToOne
+    @JoinColumn(name = "cliente_id")
+    private Cliente cliente;
 
     // Getters y setters
+
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public CodigoPostal getCodigoPostal() {
-        return codigoPostal;
-    }
-
-    public void setCodigoPostal(CodigoPostal codigoPostal) {
-        this.codigoPostal = codigoPostal;
     }
 
     public String getCalle() {
@@ -56,27 +42,27 @@ public class Direccion {
         this.calle = calle;
     }
 
-    public String getNumero() {
-        return numero;
+    public String getCiudad() {
+        return ciudad;
     }
 
-    public void setNumero(String numero) {
-        this.numero = numero;
+    public void setCiudad(String ciudad) {
+        this.ciudad = ciudad;
     }
 
-    public String getComplemento() {
-        return complemento;
+    public String getCodigoPostal() {
+        return codigoPostal;
     }
 
-    public void setComplemento(String complemento) {
-        this.complemento = complemento;
+    public void setCodigoPostal(String codigoPostal) {
+        this.codigoPostal = codigoPostal;
     }
 
-    public String getMunicipio() {
-        return municipio;
+    public Cliente getCliente() {
+        return cliente;
     }
 
-    public void setMunicipio(String municipio) {
-        this.municipio = municipio;
+    public void setCliente(Cliente cliente) {
+        this.cliente = cliente;
     }
 }

@@ -10,6 +10,7 @@ C:\Users\angel\Documents\GitHub\PROYECTO-ISO2\src\main\java\es\uclm\delivery\dom
 C:\Users\angel\Documents\GitHub\PROYECTO-ISO2\src\main\java\es\uclm\delivery\dominio\controladores\GestorRestaurantes.java
 C:\Users\angel\Documents\GitHub\PROYECTO-ISO2\src\main\java\es\uclm\delivery\dominio\entidades\CartaMenu.java
 C:\Users\angel\Documents\GitHub\PROYECTO-ISO2\src\main\java\es\uclm\delivery\dominio\entidades\Cliente.java
+C:\Users\angel\Documents\GitHub\PROYECTO-ISO2\src\main\java\es\uclm\delivery\dominio\entidades\ClienteFavoritos.java
 C:\Users\angel\Documents\GitHub\PROYECTO-ISO2\src\main\java\es\uclm\delivery\dominio\entidades\CodigoPostal.java
 C:\Users\angel\Documents\GitHub\PROYECTO-ISO2\src\main\java\es\uclm\delivery\dominio\entidades\Direccion.java
 C:\Users\angel\Documents\GitHub\PROYECTO-ISO2\src\main\java\es\uclm\delivery\dominio\entidades\EstadoPedido.java
@@ -22,6 +23,7 @@ C:\Users\angel\Documents\GitHub\PROYECTO-ISO2\src\main\java\es\uclm\delivery\dom
 C:\Users\angel\Documents\GitHub\PROYECTO-ISO2\src\main\java\es\uclm\delivery\dominio\entidades\ServicioEntrega.java
 C:\Users\angel\Documents\GitHub\PROYECTO-ISO2\src\main\java\es\uclm\delivery\dominio\entidades\TipoItemMenu.java
 C:\Users\angel\Documents\GitHub\PROYECTO-ISO2\src\main\java\es\uclm\delivery\dominio\entidades\Usuario.java
+C:\Users\angel\Documents\GitHub\PROYECTO-ISO2\src\main\java\es\uclm\delivery\persistencia\ClienteDAO.java
 C:\Users\angel\Documents\GitHub\PROYECTO-ISO2\src\main\java\es\uclm\delivery\persistencia\EntidadDAO.java
 C:\Users\angel\Documents\GitHub\PROYECTO-ISO2\src\main\java\es\uclm\delivery\persistencia\GestorBaseDatos.java
 C:\Users\angel\Documents\GitHub\PROYECTO-ISO2\src\main\java\es\uclm\delivery\persistencia\ItemMenuDAO.java
