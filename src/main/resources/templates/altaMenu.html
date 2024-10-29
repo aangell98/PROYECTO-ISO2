@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Añadir Menú</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Añadir Menú</h1>
+            <nav>
+                <form method="post" action="/perform_logout" style="display: inline;">
+                    <button type="submit" class="btn-logout">Cerrar Sesión</button>
+                </form>
+            </nav>
+        </header>
+
+        <main>
+            <form method="post" action="/submitMenu">
+            <label for="nombreMenu">Nombre del Menú:</label>
+            <input type="text" id="nombreMenu" name="nombreMenu" required>
+            
+            <label for="primerPlato">Primer Plato:</label>
+            <input type="text" id="primerPlato" name="primerPlato" required>
+            
+            <label for="segundoPlato">Segundo Plato:</label>
+            <input type="text" id="segundoPlato" name="segundoPlato" required>
+            
+            <label for="postre">Postre:</label>
+            <input type="text" id="postre" name="postre" required>
+            
+            <label for="bebida">Bebida:</label>
+            <input type="text" id="bebida" name="bebida" required>
+            
+            <button type="submit">Añadir Menú</button>
+            </form>
+        </main>
+
+        <footer>
+            <p>&copy; 2024 Restaurante WIP. Todos los derechos reservados.</p>
+        </footer>
+    </div>
+</body>
+</html>
