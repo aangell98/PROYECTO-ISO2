@@ -12,6 +12,7 @@ es\uclm\delivery\persistencia\UsuarioDAO.class
 es\uclm\delivery\dominio\entidades\ItemMenu.class
 es\uclm\delivery\dominio\entidades\EstadoPedido.class
 es\uclm\delivery\persistencia\ItemMenuDAO.class
+es\uclm\delivery\persistencia\RepartidorDAO.class
 es\uclm\delivery\dominio\entidades\ClienteFavoritos.class
 es\uclm\App.class
 es\uclm\delivery\config\SecurityConfig.class

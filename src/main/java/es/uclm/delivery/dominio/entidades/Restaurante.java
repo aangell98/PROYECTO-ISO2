@@ -24,6 +24,11 @@ public class Restaurante {
     @OneToMany(mappedBy = "restaurante", cascade = CascadeType.ALL, orphanRemoval = true)
     private Collection<ClienteFavoritos> favoritos;
 
+    
+    @OneToOne
+    @JoinColumn(name = "username", referencedColumnName = "username")
+    private Usuario usuario;
+
     // Getters y setters
 
     public Long getId() {
@@ -65,4 +70,13 @@ public class Restaurante {
     public void setFavoritos(Collection<ClienteFavoritos> favoritos) {
         this.favoritos = favoritos;
     }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
+
 }

@@ -1,15 +1,16 @@
 package es.uclm.delivery.dominio.entidades;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.Column;
+import jakarta.persistence.*;
 import java.util.Collection;
 
 @Entity
 @Table(name = "repartidor")
-public class Repartidor extends Usuario {
+public class Repartidor {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
 
     @OneToMany(mappedBy = "repartidor")
     private Collection<ServicioEntrega> servicios;
@@ -17,13 +18,17 @@ public class Repartidor extends Usuario {
     @ManyToMany
     private Collection<CodigoPostal> zonas;
 
-    @Column(name = "nombre")
+    @OneToOne
+    @JoinColumn(name = "username", referencedColumnName = "username")
+    private Usuario usuario;
+
+    @Column(name = "nombre", nullable = false)
     private String nombre;
 
-    @Column(name = "apellidos")
+    @Column(name = "apellidos", nullable = false)
     private String apellidos;
 
-    @Column(name = "dni")
+    @Column(name = "dni", nullable = false, unique = true)
     private String dni;
 
     @Column(name = "eficiencia")
@@ -76,5 +81,21 @@ public class Repartidor extends Usuario {
 
     public void setEficiencia(double eficiencia) {
         this.eficiencia = eficiencia;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
     }
 }
