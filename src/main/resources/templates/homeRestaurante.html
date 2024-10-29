@@ -3,43 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home Restaurante</title>
+    <title>Administración del Restaurante</title>
     <link rel="stylesheet" href="/css/styles.css">
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            fetch('/obtenerMenus')
+                .then(response => response.json())
+                .then(menus => {
+                    const ul = document.querySelector('#menus ul');
+                    menus.forEach(menu => {
+                        const li = document.createElement('li');
+                        li.textContent = ${menu.nombre}: ${menu.descripcion};
+                        ul.appendChild(li);
+                    });
+                })
+                .catch(error => console.error('Error fetching menus:', error));
+        });
+    </script>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>Bienvenidos a Restaurante WIP</h1>
+            <h1>Administración del Restaurante</h1>
             <nav>
-                <ul>
-                    <li><a href="#inicio">Inicio</a></li>
-                    <li><a href="#menu">Menú</a></li>
-                    <li><a href="#reservas">Reservas</a></li>
-                    <li><a href="#contacto">Contacto</a></li>
-                    <li>
-                        <form method="post" action="/perform_logout" style="display: inline;">
-                            <button type="submit" class="btn-logout">Cerrar Sesión</button>
-                        </form>
-                    </li>
-                </ul>
+                <form method="post" action="/perform_logout" style="display: inline;">
+                    <button type="submit" class="btn-logout">Cerrar Sesión</button>
+                </form>
             </nav>
         </header>
         <main>
-            <section id="inicio">
-                <h2>Inicio</h2>
-                <p>Disfruta de la mejor comida en Restaurante WIP.</p>
-            </section>
-            <section id="menu">
-                <h2>Menú</h2>
-                <p>Explora nuestro delicioso menú.</p>
-            </section>
-            <section id="reservas">
-                <h2>Reservas</h2>
-                <p>Haz tu reserva en línea.</p>
-            </section>
-            <section id="contacto">
-                <h2>Contacto</h2>
-                <p>Información de contacto y formulario.</p>
+            <section id="menus">
+                <h2>Menús</h2>
+                <ul>
+                </ul>
+                <button onclick="location.href='altaMenu.html'">Añadir Menú</button>
             </section>
         </main>
         <footer>

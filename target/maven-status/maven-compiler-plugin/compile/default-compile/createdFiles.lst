@@ -4,7 +4,6 @@ es\uclm\delivery\config\CustomAuthenticationProvider.class
 es\uclm\delivery\persistencia\ClienteDAO.class
 es\uclm\delivery\dominio\entidades\Pedido.class
 es\uclm\delivery\dominio\entidades\Repartidor.class
-es\uclm\delivery\presentacion\IUEdicionMenu.class
 es\uclm\delivery\dominio\controladores\GestorRepartos.class
 es\uclm\delivery\presentacion\IUBusqueda.class
 es\uclm\delivery\dominio\entidades\TipoItemMenu.class
