@@ -10,7 +10,7 @@ body {
 }
 
 .container {
-    background-color: #fff;
+    background-color: #fa9302;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -47,7 +47,7 @@ body {
 
 h1 {
     text-align: center;
-    color: #333;
+    color: #000000;
 }
 
 form {
@@ -59,7 +59,7 @@ form {
 
 label {
     margin-bottom: 5px;
-    color: #555;
+    color: #000000;
     width: 100%; /* Asegura que las etiquetas ocupen todo el ancho del contenedor */
 }
 
@@ -89,7 +89,7 @@ button:hover {
 }
 
 .error {
-    color: red;
+    color: rgb(113, 2, 2);
     text-align: center;
     margin-top: 10px;
 }
@@ -113,4 +113,46 @@ button:hover {
 
 .btn-logout:hover {
     background-color: #c82333;
+}
+
+/* Estilo para el botón de cierre de sesión */
+.btn-logout {
+    background-color: #dc3545;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.btn-logout:hover {
+    background-color: #c82333;
+}
+
+body {
+    background-color: #fab802; /* Fondo amarillo */
+}
+
+button, .btn-logout {
+    background-color: black; /* Fondo de los botones en negro */
+    color: white; /* Texto de los botones en blanco */
+}
+
+button:hover, .btn-logout:hover {
+    background-color: #333; /* Fondo de los botones en gris oscuro al pasar el ratón */
+}
+
+a {
+    color: #036b20; /* Color de los enlaces en negro */
+    text-decoration: underline; /* Subrayado de los enlaces */
+}
+
+a:hover {
+    color: #06bb3c; /* Color de los enlaces en gris oscuro al pasar el ratón */
+}
+input[type="text"],
+input[type="password"]{
+    width: 295px;
 }
