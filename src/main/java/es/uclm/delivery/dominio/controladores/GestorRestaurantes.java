@@ -1,25 +1,24 @@
 package es.uclm.delivery.dominio.controladores;
 
+import es.uclm.delivery.dominio.entidades.*;
+import es.uclm.delivery.persistencia.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestParam;
-
 import org.springframework.ui.Model;
-import es.uclm.delivery.dominio.entidades.CartaMenu;
-import es.uclm.delivery.dominio.entidades.Direccion;
-import es.uclm.delivery.dominio.entidades.ItemMenu;
-import es.uclm.delivery.dominio.entidades.Restaurante;
-import es.uclm.delivery.dominio.entidades.TipoItemMenu;
-import es.uclm.delivery.persistencia.CartaMenuDAO;
-import es.uclm.delivery.persistencia.ItemMenuDAO;
+import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class GestorRestaurantes {
+
+    @Autowired
+    private UsuarioDAO usuarioDAO;
+
+    @Autowired
+    private RestauranteDAO restauranteDAO;
 
     @Autowired
     private CartaMenuDAO cartaMenuDAO;
@@ -28,20 +27,35 @@ public class GestorRestaurantes {
     private ItemMenuDAO itemMenuDAO;
 
     @GetMapping("/homeRestaurante")
-    public String showHomeRestaurante(Model model) {
-        List<ItemMenu> items = itemMenuDAO.findAll();
-        model.addAttribute("items", items);
-        model.addAttribute("cartaMenu", new CartaMenu());
-		model.addAttribute("itemMenu", new ItemMenu());
+    public String showHomeRestaurante(Model model, Principal principal) {
+        Optional<Usuario> usuarioOpt = usuarioDAO.encontrarUser(principal.getName());
+        if (usuarioOpt.isPresent()) {
+            Usuario usuario = usuarioOpt.get();
+            Optional<Restaurante> restauranteOpt = restauranteDAO.findByUsuario(usuario);
+            
+            if (restauranteOpt.isEmpty()) {
+                model.addAttribute("restaurante", new Restaurante());
+                model.addAttribute("isRestauranteRegistrado", false);
+            } else {
+                model.addAttribute("restaurante", restauranteOpt.get());
+                model.addAttribute("isRestauranteRegistrado", true);
+                model.addAttribute("items", itemMenuDAO.findAll());
+                model.addAttribute("cartaMenu", new CartaMenu());
+                model.addAttribute("itemMenu", new ItemMenu());
+            }
+        }
         return "homeRestaurante";
     }
 
-    @GetMapping("/altaMenu")
-    public String showAltaMenu(Model model) {
-        List<ItemMenu> items = itemMenuDAO.findAll();
-        model.addAttribute("items", items);
-        model.addAttribute("cartaMenu", new CartaMenu());
-        return "altaMenu";
+    @PostMapping("/crearRestaurante")
+    public String crearRestaurante(@ModelAttribute Restaurante restaurante, Principal principal) {
+        Optional<Usuario> usuarioOpt = usuarioDAO.encontrarUser(principal.getName());
+        if (usuarioOpt.isPresent()) {
+            Usuario usuario = usuarioOpt.get();
+            restaurante.setUsuario(usuario);
+            restauranteDAO.insert(restaurante);
+        }
+        return "redirect:/homeRestaurante";
     }
 
     @PostMapping("/crearItemMenu")
@@ -51,42 +65,18 @@ public class GestorRestaurantes {
     }
 
     @PostMapping("/crearCartaMenu")
-    public String crearCartaMenu(@ModelAttribute CartaMenu cartaMenu, @RequestParam List<Long> itemsIds) {
-        List<ItemMenu> items = itemMenuDAO.findAllById(itemsIds);
-        cartaMenu.setItems(items);
-        cartaMenuDAO.insert(cartaMenu);
+    public String crearCartaMenu(@ModelAttribute CartaMenu cartaMenu, @RequestParam List<Long> itemsIds, Principal principal) {
+        Optional<Usuario> usuarioOpt = usuarioDAO.encontrarUser(principal.getName());
+        if (usuarioOpt.isPresent()) {
+            Usuario usuario = usuarioOpt.get();
+            Optional<Restaurante> restauranteOpt = restauranteDAO.findByUsuario(usuario);
+            if (restauranteOpt.isPresent()) {
+                cartaMenu.setRestaurante(restauranteOpt.get());
+                List<ItemMenu> items = itemMenuDAO.findAllById(itemsIds);
+                cartaMenu.setItems(items);
+                cartaMenuDAO.insert(cartaMenu);
+            }
+        }
         return "redirect:/homeRestaurante";
     }
-	/**
-	 * 
-	 * @param nombre
-	 * @param cif
-	 * @param d
-	 */
-	public Restaurante registrarRestaurante(String nombre, String cif, Direccion d) {
-		// TODO - implement GestorRestaurantes.registrarRestaurante
-		throw new UnsupportedOperationException();
-	}
-
-	/**
-	 * 
-	 * @param nombre
-	 * @param items
-	 */
-	public void editarCarta(String nombre, List<ItemMenu> items) {
-		// TODO - implement GestorRestaurantes.editarCarta
-		throw new UnsupportedOperationException();
-	}
-
-	/**
-	 * 
-	 * @param nombre
-	 * @param precio
-	 * @param tipo
-	 */
-	private ItemMenu crearItem(String nombre, double precio, TipoItemMenu tipo) {
-		// TODO - implement GestorRestaurantes.crearItem
-		throw new UnsupportedOperationException();
-	}
-
 }

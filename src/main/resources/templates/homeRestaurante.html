@@ -40,13 +40,28 @@
             </nav>
         </header>
         <main>
-            <section id="menus">
-                <h2>Menús</h2>
-                <ul>
-                </ul>
-                <button onclick="openModal('modalMenu')">Añadir Menú</button>
-                <button onclick="openModal('modalPlato')">Añadir Plato</button>
-            </section>
+            <div th:if="${!isRestauranteRegistrado}">
+                <h2>Registrar Restaurante</h2>
+                <form method="post" action="/crearRestaurante">
+                    <label for="nombre">Nombre del Restaurante:</label>
+                    <input type="text" id="nombre" name="nombre" required>
+
+                    <label for="direccion">Dirección:</label>
+                    <input type="text" id="direccion" name="direccion" required>
+
+                    <button type="submit">Registrar Restaurante</button>
+                </form>
+            </div>
+
+            <div th:if="${isRestauranteRegistrado}">
+                <section id="menus">
+                    <h2>Menús</h2>
+                    <ul>
+                    </ul>
+                    <button onclick="openModal('modalMenu')">Añadir Menú</button>
+                    <button onclick="openModal('modalPlato')">Añadir Plato</button>
+                </section>
+            </div>
         </main>
         <footer>
             <p>&copy; 2024 Restaurante WIP. Todos los derechos reservados.</p>
@@ -61,10 +76,10 @@
             <form method="post" action="/crearCartaMenu">
                 <label for="nombreMenu">Nombre del Menú:</label>
                 <input type="text" id="nombreMenu" name="nombre" required>
-                
+
                 <label for="descripcionMenu">Descripción:</label>
                 <input type="text" id="descripcionMenu" name="descripcion" required>
-                
+
                 <h3>Platos disponibles</h3>
                 <ul>
                     <th:block th:each="item : ${items}">
@@ -87,10 +102,13 @@
             <form method="post" action="/crearItemMenu">
                 <label for="nombrePlato">Nombre:</label>
                 <input type="text" id="nombrePlato" name="nombre" required>
+                
                 <label for="descripcionPlato">Descripción:</label>
                 <input type="text" id="descripcionPlato" name="descripcion" required>
+                
                 <label for="precioPlato">Precio:</label>
                 <input type="number" id="precioPlato" name="precio" step="0.01" required>
+                
                 <button type="submit">Crear Plato</button>
             </form>
         </div>
