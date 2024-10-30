@@ -1,0 +1,128 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #fab802; /* Color amarillo mostaza */
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100vh;
+}
+
+.container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 300px;
+}
+
+.home-container {
+    text-align: center;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    width: 100%;
+    margin: 20px;
+}
+
+button {
+    cursor: pointer;
+    background-color: #000; /* Botones negros */
+    color: #fff; /* Texto blanco */
+    border: none;
+    border-radius: 8px; /* Botones redondeados */
+    padding: 10px 20px;
+}
+
+button[onclick="location.href='/login'"] {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
+
+.search-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 60px;
+}
+
+.search-container input {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 20px 0 0 20px; /* Redondeado */
+    outline: none;
+    width: 300px; /* Más largo */
+}
+
+.search-container button {
+    padding: 10px;
+    font-size: 16px;
+    border: none;
+    border-radius: 0 20px 20px 0; /* Redondeado */
+    background-color: #000; /* Botones negros */
+    color: white; /* Texto blanco */
+    cursor: pointer;
+}
+
+.header-section {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.header-section img {
+    display: block;
+    margin: 0 auto;
+    max-width: 30%; /* Ajusta el tamaño de la imagen */
+    height: auto; /* Mantiene la proporción de la imagen */
+}
+
+.header-section h1 {
+    font-size: 2.5em; /* Tamaño de letra más grande */
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 40px; /* Más espacio entre el título y el texto de restaurantes destacados */
+}
+
+.featured-restaurants {
+    margin-top: 20px;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.featured-restaurants h2 {
+    width: 100%;
+    text-align: center;
+}
+
+.restaurant {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin: 10px;
+    width: calc(25% - 40px);
+    box-sizing: border-box;
+    text-align: center;
+}
+
+.btn-logout {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background-color: #000; /* Botones negros */
+    color: #fff; /* Texto blanco */
+    border: none; /* Sin borde */
+    padding: 10px 20px; /* Espaciado interno del botón */
+    border-radius: 8px; /* Bordes redondeados */
+    cursor: pointer; /* Cambia el cursor al pasar sobre el botón */
+}
+
+.btn-logout:hover {
+    background-color: #d32f2f; /* Color de fondo del botón al pasar el ratón */
+}
