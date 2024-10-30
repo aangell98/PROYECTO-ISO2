@@ -9,4 +9,8 @@ public class ItemMenuDAO extends EntidadDAO<ItemMenu> {
     public ItemMenuDAO() {
         super(ItemMenu.class);
     }
+
+    public ItemMenu findById(int id) {
+        return entityManager.find(ItemMenu.class, id);
+    }
 }
