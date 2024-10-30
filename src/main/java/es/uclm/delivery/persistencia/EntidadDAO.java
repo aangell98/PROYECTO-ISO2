@@ -1,5 +1,6 @@
 package es.uclm.delivery.persistencia;
 
+import java.util.List;
 import java.util.Optional;
 
 import jakarta.persistence.EntityManager;
@@ -56,4 +57,19 @@ public abstract class EntidadDAO<E> {
             return Optional.empty(); // Failure
         }
     }
+
+    public Optional<E> findById(Long id) {
+        return Optional.ofNullable(entityManager.find(entityClass, id));
+    }
+
+    public List<E> findAll() {
+        return entityManager.createQuery("from " + entityClass.getName(), entityClass).getResultList();
+    }
+
+    public List<E> findAllById(List<Long> ids) {
+        return entityManager.createQuery("from " + entityClass.getName() + " where id in :ids", entityClass)
+                .setParameter("ids", ids)
+                .getResultList();
+    }
+    
 }

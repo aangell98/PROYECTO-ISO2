@@ -21,7 +21,6 @@ import es.uclm.delivery.persistencia.UsuarioDAO;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import es.uclm.delivery.dominio.controladores.GestorLogin;
-import es.uclm.delivery.dominio.controladores.GestorRestaurantes;
 
 public class IUEdicionMenu {
 
@@ -32,9 +31,6 @@ private static final Logger log = LoggerFactory.getLogger(IULogin.class);
 
     @Autowired
     private UsuarioDAO usuarioDAO;
-
-    @Autowired
-    private GestorRestaurantes gestorRestaurantes;
 
     @GetMapping("/altaMenu")
     public String mostrarFormularioAltaMenu(Model model) {

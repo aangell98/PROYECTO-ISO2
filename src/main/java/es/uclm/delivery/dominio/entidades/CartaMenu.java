@@ -1,6 +1,7 @@
 package es.uclm.delivery.dominio.entidades;
 
 import jakarta.persistence.*;
+import java.util.Collection;
 
 @Entity
 @Table(name = "carta_menu")
@@ -20,6 +21,14 @@ public class CartaMenu {
     @ManyToOne
     @JoinColumn(name = "restaurante_id")
     private Restaurante restaurante;
+
+    @ManyToMany
+    @JoinTable(
+        name = "carta_menu_item",
+        joinColumns = @JoinColumn(name = "carta_menu_id"),
+        inverseJoinColumns = @JoinColumn(name = "item_menu_id")
+    )
+    private Collection<ItemMenu> items;
 
     // Getters y setters
 
@@ -53,5 +62,13 @@ public class CartaMenu {
 
     public void setRestaurante(Restaurante restaurante) {
         this.restaurante = restaurante;
+    }
+
+    public Collection<ItemMenu> getItems() {
+        return items;
+    }
+
+    public void setItems(Collection<ItemMenu> items) {
+        this.items = items;
     }
 }

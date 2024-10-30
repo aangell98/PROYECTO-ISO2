@@ -139,8 +139,4 @@ public class IULogin {
         return "homeRepartidor"; 
     }
 
-    @GetMapping("/homeRestaurante")
-    public String homeRestaurante() {
-        return "homeRestaurante"; 
-    }
 }

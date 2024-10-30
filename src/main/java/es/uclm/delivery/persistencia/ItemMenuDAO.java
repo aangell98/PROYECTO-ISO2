@@ -1,7 +1,7 @@
 package es.uclm.delivery.persistencia;
 
-import org.springframework.stereotype.Repository;
 import es.uclm.delivery.dominio.entidades.ItemMenu;
+import org.springframework.stereotype.Repository;
 
 @Repository
 public class ItemMenuDAO extends EntidadDAO<ItemMenu> {
