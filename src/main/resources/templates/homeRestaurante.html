@@ -1,25 +1,26 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Administración del Restaurante</title>
-    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/homeRestaurante.css">
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            fetch('/obtenerMenus')
+        document.addEventListener("DOMContentLoaded", function () {
+            fetch('/homeRestaurante')
                 .then(response => response.json())
                 .then(menus => {
                     const ul = document.querySelector('#menus ul');
+                    ul.innerHTML = ''; // Clear previous items
                     menus.forEach(menu => {
                         const li = document.createElement('li');
-                        li.textContent = `${menu.nombre}: ${menu.descripcion}`;
+                        li.textContent = '${menu.nombre}: ${menu.descripcion}';
                         ul.appendChild(li);
                     });
                 })
                 .catch(error => console.error('Error fetching menus:', error));
         });
-
         function openModal(id) {
             document.getElementById(id).style.display = 'block';
         }
@@ -29,6 +30,7 @@
         }
     </script>
 </head>
+
 <body>
     <div class="container">
         <header>
@@ -46,6 +48,9 @@
                 </ul>
                 <button onclick="openModal('modalMenu')">Añadir Menú</button>
                 <button onclick="openModal('modalPlato')">Añadir Plato</button>
+                <button onclick="openModal('modalEditarMenu')">Editar Menú</button>
+                <button onclick="openModal('modalEditarPlato')">Editar Plato</button>
+                <button onclick="openModal('modalEditarRestaurante')">Editar Restaurante</button>
             </section>
         </main>
         <footer>
@@ -61,10 +66,10 @@
             <form method="post" action="/crearCartaMenu">
                 <label for="nombreMenu">Nombre del Menú:</label>
                 <input type="text" id="nombreMenu" name="nombre" required>
-                
+
                 <label for="descripcionMenu">Descripción:</label>
                 <input type="text" id="descripcionMenu" name="descripcion" required>
-                
+
                 <h3>Platos disponibles</h3>
                 <ul>
                     <th:block th:each="item : ${items}">
@@ -95,5 +100,78 @@
             </form>
         </div>
     </div>
+
+    <!-- Modal para editar menú -->
+    <div id="modalEditarMenu" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('modalEditarMenu')">&times;</span>
+            <h2>Editar Menú</h2>
+            <form method="post" action="/editarCartaMenu">
+                <label for="menuSelect">Seleccionar Menú:</label>
+                <select id="menuSelect" name="id" required>
+                    <option value="" disabled selected>Selecciona un menú</option>
+                    <th:block th:each="menu : ${menus}">
+                        <option th:value="${menu.id}" th:text="${menu.nombre}"></option>
+                    </th:block>
+                </select>
+                <label for="nombreMenuEdit">Nuevo Nombre del Menú:</label>
+                <input type="text" id="nombreMenuEdit" name="nombre" required>
+                <label for="descripcionMenuEdit">Nueva Descripción:</label>
+                <input type="text" id="descripcionMenuEdit" name="descripcion" required>
+
+                <h3>Platos disponibles</h3>
+                <ul>
+                    <th:block th:each="item : ${items}">
+                        <li>
+                            <input type="checkbox" th:value="${item.id}" name="itemsIds">
+                            <span th:text="${item.nombre} + ': ' + ${item.descripcion}"></span>
+                        </li>
+                    </th:block>
+                </ul>
+                <button type="submit">Actualizar Menú</button>
+            </form>
+        </div>
+    </div>
+    <!-- Modal para editar plato -->
+    <div id="modalEditarPlato" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('modalEditarPlato')">&times;</span>
+            <h2>Editar Plato</h2>
+            <form method="post" action="/editarItemMenu">
+                <label for="platoSelect">Seleccionar Plato:</label>
+                <select id="platoSelect" name="id" required>
+                    <option value="" disabled selected>Selecciona un plato</option>
+                    <th:block th:each="plato : ${items}">
+                        <option th:value="${plato.id}" th:text="${plato.nombre}"></option>
+                    </th:block>
+                </select>
+                <label for="nombrePlatoEdit">Nuevo Nombre:</label>
+                <input type="text" id="nombrePlatoEdit" name="nombre" required>
+                <label for="descripcionPlatoEdit">Nueva Descripción:</label>
+                <input type="text" id="descripcionPlatoEdit" name="descripcion" required>
+                <label for="precioPlatoEdit">Nuevo Precio:</label>
+                <input type="number" id="precioPlatoEdit" name="precio" step="0.01" required>
+                <button type="submit">Actualizar Plato</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal para editar restaurante -->
+    <div id="modalEditarRestaurante" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('modalEditarRestaurante')">&times;</span>
+            <h2>Editar Restaurante</h2>
+            <form method="post" action="/editarRestaurante">
+                <input type="hidden" id="restauranteId" name="id" th:value="${restaurante.id}">
+                <label for="nombreRestauranteEdit">Nuevo Nombre:</label>
+                <input type="text" id="nombreRestauranteEdit" name="nombre" th:value="${restaurante.nombre}" required>
+                <label for="direccionRestauranteEdit">Nueva Dirección:</label>
+                <input type="text" id="direccionRestauranteEdit" name="direccion" th:value="${restaurante.direccion}"
+                    required>
+                <button type="submit">Actualizar Restaurante</button>
+            </form>
+        </div>
+    </div>
 </body>
+
 </html>
