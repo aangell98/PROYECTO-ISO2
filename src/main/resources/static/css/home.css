@@ -126,3 +126,55 @@ button[onclick="location.href='/login'"] {
 .btn-logout:hover {
     background-color: #d32f2f; /* Color de fondo del botón al pasar el ratón */
 }
+
+.cta {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    margin: 0;
+    padding: 10px 15px;
+    transition: all 0.2s ease;
+    text-decoration: none;
+}
+.cta:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: block;
+    border-radius: 20px;
+    background: rgba(227, 103, 2, 0.945);
+    width: 40px;
+    height: 40px;
+    transition: all 0.3s ease;
+}
+.cta span {
+    position: relative;
+    font-size: 12px;
+    font-weight: 900;
+    text-transform: uppercase;
+    vertical-align: middle;
+    color: #000; /* Texto negro */
+}
+.cta svg {
+    position: relative;
+    top: 0;
+    margin-left: 5px;
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke: #000000;
+    stroke-width: 2;
+    transform: translateX(-3px);
+    transition: all 0.3s ease;
+}
+.cta:hover:before {
+    width: 100%;
+    background: rgba(255, 116, 3, 0.945);
+}
+.cta:hover svg {
+    transform: translateX(0);
+}
+.cta:active {
+    transform: scale(0.96);
+}

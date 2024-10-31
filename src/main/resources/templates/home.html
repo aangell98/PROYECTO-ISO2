@@ -8,7 +8,12 @@
 </head>
 <body>
     <main>
-        <button onclick="location.href='/login'">Iniciar Sesión</button>
+        <a href="/login" class="cta">
+            <span>Iniciar Sesión</span>
+            <svg width="13px" height="10px" viewBox="0 0 13 10">
+              <polyline points="8 1 12 5 8 9"></polyline>
+            </svg>
+          </a>
         <div class="search-container">
             <input type="text" id="search" placeholder="Buscar restaurantes...">
             <button onclick="searchRestaurants()">Buscar</button>
