@@ -12,10 +12,10 @@ public class Restaurante {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "nombre", nullable = false)
+    @Column(name = "nombre", nullable = true)
     private String nombre;
 
-    @Column(name = "direccion", nullable = false)
+    @Column(name = "direccion", nullable = true)
     private String direccion;
 
     @OneToMany(mappedBy = "restaurante", cascade = CascadeType.ALL, orphanRemoval = true)
