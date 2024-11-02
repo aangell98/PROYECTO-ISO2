@@ -8,6 +8,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import es.uclm.delivery.dominio.entidades.Cliente;
+import es.uclm.delivery.dominio.entidades.Repartidor;
+import es.uclm.delivery.dominio.entidades.Restaurante;
 import es.uclm.delivery.dominio.entidades.Usuario;
 import es.uclm.delivery.persistencia.UsuarioDAO;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,7 +28,6 @@ public class IULogin {
 
     @Autowired
     private UsuarioDAO usuarioDAO;
-
 
     @GetMapping("/login")
     public String showLoginForm(Model model) {
@@ -54,11 +57,11 @@ public class IULogin {
             log.info("Atributos de la sesión: username=" + session.getAttribute("username") + ", role=" + session.getAttribute("role"));
             
             
-            if (role.equals("CLIENTE")) {
+            if (role.equals("ROLE_CLIENTE")) {
                 return "redirect:/homeCliente";
-            } else if (role.equals("REPARTIDOR")) {
+            } else if (role.equals("ROLE_REPARTIDOR")) {
                 return "redirect:/homeRepartidor";
-            } else if (role.equals("RESTAURANTE")) {
+            } else if (role.equals("ROLE_RESTAURANTE")) {
                 return "redirect:/homeRestaurante";
             } else {
                 model.addAttribute("error", "Rol desconocido");
@@ -77,8 +80,8 @@ public class IULogin {
     }
 
     @PostMapping("/registroCliente")
-    public String registrarCliente(@ModelAttribute Usuario usuario, Model model) {
-        if (gestorLogin.registrar(usuario.getUsername(), usuario.getPassword(), "CLIENTE")) {
+    public String registrarCliente(@ModelAttribute Usuario usuario, @ModelAttribute Cliente cliente, Model model) {
+        if (gestorLogin.registrarCliente(usuario.getUsername(), usuario.getPassword(), "CLIENTE", cliente.getNombre(),cliente.getApellidos(),cliente.getDni())) {
             log.info("Cliente registrado: " + usuario.getUsername());
             return "redirect:/login";
         } else {
@@ -94,8 +97,8 @@ public class IULogin {
     }
 
     @PostMapping("/registroRepartidor")
-    public String registrarRepartidor(@ModelAttribute Usuario usuario, Model model) {
-        if (gestorLogin.registrar(usuario.getUsername(), usuario.getPassword(), "REPARTIDOR")) {
+    public String registrarRepartidor(@ModelAttribute Usuario usuario, @ModelAttribute Repartidor repartidor, Model model) {
+        if (gestorLogin.registrarRepartidor(usuario.getUsername(), usuario.getPassword(), "REPARTIDOR", repartidor.getNombre(), repartidor.getApellidos(), repartidor.getDni())) {
             log.info("Repartidor registrado: " + usuario.getUsername());
             return "redirect:/login";
         } else {
@@ -111,8 +114,8 @@ public class IULogin {
     }
 
     @PostMapping("/registroRestaurante")
-    public String registrarRestaurante(@ModelAttribute Usuario usuario, Model model) {
-        if (gestorLogin.registrar(usuario.getUsername(), usuario.getPassword(), "RESTAURANTE")) {
+    public String registrarRestaurante(@ModelAttribute Usuario usuario, @ModelAttribute Restaurante restaurante, Model model) {
+        if (gestorLogin.registrarRestaurante(usuario.getUsername(), usuario.getPassword(), "RESTAURANTE", restaurante.getNombre(), restaurante.getDireccion())) {
             log.info("Restaurante registrado: " + usuario.getUsername());
             return "redirect:/login";
         } else {
@@ -136,8 +139,4 @@ public class IULogin {
         return "homeRepartidor"; 
     }
 
-    @GetMapping("/homeRestaurante")
-    public String homeRestaurante() {
-        return "homeRestaurante"; 
-    }
 }

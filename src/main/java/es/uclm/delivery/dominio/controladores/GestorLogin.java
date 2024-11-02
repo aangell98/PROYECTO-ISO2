@@ -5,7 +5,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import es.uclm.delivery.dominio.entidades.Usuario;
+import es.uclm.delivery.dominio.entidades.Cliente;
+import es.uclm.delivery.dominio.entidades.Repartidor;
+import es.uclm.delivery.dominio.entidades.Restaurante;
 import es.uclm.delivery.persistencia.UsuarioDAO;
+import es.uclm.delivery.persistencia.ClienteDAO;
+import es.uclm.delivery.persistencia.RepartidorDAO;
+import es.uclm.delivery.persistencia.RestauranteDAO;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -17,6 +23,15 @@ public class GestorLogin {
 
     @Autowired
     private UsuarioDAO usuarioDAO;
+
+    @Autowired
+    private ClienteDAO clienteDAO;
+
+    @Autowired
+    private RepartidorDAO repartidorDAO;
+
+    @Autowired
+    private RestauranteDAO restauranteDAO;
 
     private String cifrarPassword(String password) {
         try {
@@ -61,6 +76,65 @@ public class GestorLogin {
         usuario.setRole(role); // Asignar el rol adecuado
         usuarioDAO.insert(usuario);
         log.info("Usuario registrado: " + username + " con rol: " + role);
+        return true;
+    }
+
+    public boolean registrarCliente(String username, String password, String role, String nombre, String apellidos, String dni) {
+        if (usuarioDAO.select(username).isPresent()) {
+            log.warn("Intento de registro fallido. El usuario ya existe: " + username);
+            return false; // El usuario ya existe
+        }
+        Usuario usuario = new Usuario();
+        usuario.setUsername(username);
+        usuario.setPassword(cifrarPassword(password)); // La contraseña se encripta aquí
+        usuario.setRole(role); // Asignar el rol adecuado
+        usuarioDAO.insert(usuario);
+        Cliente cliente = new Cliente();
+        cliente.setNombre(nombre);
+        cliente.setApellidos(apellidos);
+        cliente.setDni(dni);
+        cliente.setUsuario(usuario);
+        clienteDAO.insert(cliente);
+        log.info("Cliente registrado: " + username);
+        return true;
+    }
+
+    public boolean registrarRepartidor(String username, String password, String role, String nombre, String apellidos, String dni) {
+        if (usuarioDAO.select(username).isPresent()) {
+            log.warn("Intento de registro fallido. El usuario ya existe: " + username);
+            return false; // El usuario ya existe
+        }
+        Usuario usuario = new Usuario();
+        usuario.setUsername(username);
+        usuario.setPassword(cifrarPassword(password)); // La contraseña se encripta aquí
+        usuario.setRole(role); // Asignar el rol adecuado
+        usuarioDAO.insert(usuario);
+        Repartidor repartidor = new Repartidor();
+        repartidor.setNombre(nombre);
+        repartidor.setApellidos(apellidos);
+        repartidor.setDni(dni);
+        repartidor.setUsuario(usuario);
+        repartidorDAO.insert(repartidor);
+        log.info("Repartidor registrado: " + username);
+        return true;
+    }
+
+    public boolean registrarRestaurante(String username, String password, String role, String nombre, String direccion){
+        if (usuarioDAO.select(username).isPresent()) {
+            log.warn("Intento de registro fallido. El usuario ya existe: " + username);
+            return false; // El usuario ya existe
+        }
+        Usuario usuario = new Usuario();
+        usuario.setUsername(username);
+        usuario.setPassword(cifrarPassword(password)); // La contraseña se encripta aquí
+        usuario.setRole(role); // Asignar el rol adecuado
+        usuarioDAO.insert(usuario);
+        Restaurante restaurante = new Restaurante();
+        restaurante.setNombre(nombre);
+        restaurante.setDireccion(direccion);
+        restaurante.setUsuario(usuario);
+        restauranteDAO.insert(restaurante);
+        log.info("Restaurante registrado: " + username);
         return true;
     }
 }

@@ -3,48 +3,209 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home Restaurante</title>
+    <title>Administración del Restaurante</title>
     <link rel="stylesheet" href="/css/styles.css">
+    <script>
+        function openModal(id) {
+            document.getElementById(id).style.display = 'block';
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).style.display = 'none';
+        }
+    </script>
 </head>
+
 <body>
     <div class="container">
         <header>
-            <h1>Bienvenidos a Restaurante WIP</h1>
+            <h1>Administración del Restaurante</h1>
             <nav>
-                <ul>
-                    <li><a href="#inicio">Inicio</a></li>
-                    <li><a href="#menu">Menú</a></li>
-                    <li><a href="#reservas">Reservas</a></li>
-                    <li><a href="#contacto">Contacto</a></li>
-                    <li>
-                        <form method="post" action="/perform_logout" style="display: inline;">
-                            <button type="submit" class="btn-logout">Cerrar Sesión</button>
-                        </form>
-                    </li>
-                </ul>
+                <form method="post" action="/perform_logout" style="display: inline;">
+                    <button type="submit" class="btn-logout">Cerrar Sesión</button>
+                </form>
             </nav>
         </header>
         <main>
-            <section id="inicio">
-                <h2>Inicio</h2>
-                <p>Disfruta de la mejor comida en Restaurante WIP.</p>
+            <section id="mensajes">
+                <th:block th:if="${successMessage}">
+                    <div class="success-message" th:text="${successMessage}"></div>
+                </th:block>
+                <th:block th:if="${errorMessage}">
+                    <div class="error-message" th:text="${errorMessage}"></div>
+                </th:block>
             </section>
-            <section id="menu">
-                <h2>Menú</h2>
-                <p>Explora nuestro delicioso menú.</p>
+            <section id="menus">
+                <h2>Menús</h2>
+                <ul>
+                    <!-- Bucle para mostrar cada menú con un botón de edición y eliminación -->
+                    <th:block th:each="menu : ${menus}">
+                        <li>
+                            <span th:text="${menu.nombre}"></span>
+                            <button onclick="openModal('modalEditarMenu')">Editar</button>
+                            <form method="post" action="/eliminarCartaMenu" style="display: inline;">
+                                <input type="hidden" name="menuId" th:value="${menu.id}">
+                                <button type="submit" class="btn-delete">Eliminar</button>
+                            </form>
+                        </li>
+                    </th:block>
+                </ul>
+                <th:block th:if="${isRestauranteRegistrado}">
+                    <!-- Botón para crear un menú -->
+                    <button onclick="openModal('modalCrearMenu')">Crear Menú</button>
+                    <!-- Botones para añadir y editar plato -->
+                    <button onclick="openModal('modalPlato')">Crear Plato</button>
+                    <button onclick="openModal('modalEditarPlato')">Editar Plato</button>
+                </th:block>
             </section>
-            <section id="reservas">
-                <h2>Reservas</h2>
-                <p>Haz tu reserva en línea.</p>
+            <section id="platos">
+                <h2>Platos</h2>
+                <ul>
+                    <!-- Bucle para mostrar cada plato con un botón de edición y eliminación -->
+                    <th:block th:each="plato : ${items}">
+                        <li>
+                            <span th:text="${plato.nombre}"></span>
+                            <button onclick="openModal('modalEditarPlato')">Editar</button>
+                            <form method="post" action="/eliminarItemMenu" style="display: inline;">
+                                <input type="hidden" name="platoId" th:value="${plato.id}">
+                                <button type="submit" class="btn-delete">Eliminar</button>
+                            </form>
+                        </li>
+                    </th:block>
+                </ul>
             </section>
-            <section id="contacto">
-                <h2>Contacto</h2>
-                <p>Información de contacto y formulario.</p>
+            <section id="restaurante">
+                <h2>Restaurante</h2>
+                <th:block th:if="${isRestauranteRegistrado}">
+                    <p th:text="'Restaurante: ' + ${restaurante.nombre}"></p>
+                    <p th:text="'Dirección: ' + ${restaurante.direccion}"></p>
+                    <button onclick="openModal('modalEditarRestaurante')">Editar Restaurante</button>
+                </th:block>
+                <th:block th:unless="${isRestauranteRegistrado}">
+                    <p>Actualmente no hay ningún restaurante registrado. Por favor, crea uno para comenzar.</p>
+                    <button onclick="openModal('modalCrearRestaurante')">Crear Restaurante</button>
+                </th:block>
             </section>
         </main>
         <footer>
             <p>&copy; 2024 Restaurante WIP. Todos los derechos reservados.</p>
         </footer>
     </div>
+
+    <!-- Modal para añadir menú -->
+    <div id="modalMenu" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('modalMenu')">&times;</span>
+            <h2>Añadir Menú</h2>
+            <form method="post" action="/crearCartaMenu">
+                <label for="nombreMenu">Nombre del Menú:</label>
+                <input type="text" id="nombreMenu" name="nombre" required>
+
+                <label for="descripcionMenu">Descripción:</label>
+                <input type="text" id="descripcionMenu" name="descripcion" required>
+
+                <h3>Platos disponibles</h3>
+                <ul>
+                    <th:block th:each="item : ${items}">
+                        <li>
+                            <input type="checkbox" th:value="${item.id}" name="itemsIds">
+                            <span th:text="${item.nombre} + ': ' + ${item.descripcion}"></span>
+                        </li>
+                    </th:block>
+                </ul>
+                <button type="submit">Añadir Menú</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal para añadir plato -->
+    <div id="modalPlato" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('modalPlato')">&times;</span>
+            <h2>Añadir Plato</h2>
+            <form method="post" action="/crearItemMenu">
+                <label for="nombrePlato">Nombre:</label>
+                <input type="text" id="nombrePlato" name="nombre" required>
+                <label for="descripcionPlato">Descripción:</label>
+                <input type="text" id="descripcionPlato" name="descripcion" required>
+                <label for="precioPlato">Precio:</label>
+                <input type="number" id="precioPlato" name="precio" step="0.01" required>
+                <button type="submit">Crear Plato</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal para editar menú -->
+    <div id="modalEditarMenu" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('modalEditarMenu')">&times;</span>
+            <h2>Editar Menú</h2>
+            <form method="post" action="/editarCartaMenu">
+                <label for="menuSelect">Seleccionar Menú:</label>
+                <select id="menuSelect" name="id" required>
+                    <option value="" disabled selected>Selecciona un menú</option>
+                    <th:block th:each="menu : ${menus}">
+                        <option th:value="${menu.id}" th:text="${menu.nombre}"></option>
+                    </th:block>
+                </select>
+                <label for="nombreMenuEdit">Nuevo Nombre del Menú:</label>
+                <input type="text" id="nombreMenuEdit" name="nombre" required>
+                <label for="descripcionMenuEdit">Nueva Descripción:</label>
+                <input type="text" id="descripcionMenuEdit" name="descripcion" required>
+
+                <h3>Platos disponibles</h3>
+                <ul>
+                    <th:block th:each="item : ${items}">
+                        <li>
+                            <input type="checkbox" th:value="${item.id}" name="itemsIds">
+                            <span th:text="${item.nombre} + ': ' + ${item.descripcion}"></span>
+                        </li>
+                    </th:block>
+                </ul>
+                <button type="submit">Actualizar Menú</button>
+            </form>
+        </div>
+    </div>
+    <!-- Modal para editar plato -->
+    <div id="modalEditarPlato" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('modalEditarPlato')">&times;</span>
+            <h2>Editar Plato</h2>
+            <form method="post" action="/editarItemMenu">
+                <label for="platoSelect">Seleccionar Plato:</label>
+                <select id="platoSelect" name="id" required>
+                    <option value="" disabled selected>Selecciona un plato</option>
+                    <th:block th:each="plato : ${items}">
+                        <option th:value="${plato.id}" th:text="${plato.nombre}"></option>
+                    </th:block>
+                </select>
+                <label for="nombrePlatoEdit">Nuevo Nombre:</label>
+                <input type="text" id="nombrePlatoEdit" name="nombre" required>
+                <label for="descripcionPlatoEdit">Nueva Descripción:</label>
+                <input type="text" id="descripcionPlatoEdit" name="descripcion" required>
+                <label for="precioPlatoEdit">Nuevo Precio:</label>
+                <input type="number" id="precioPlatoEdit" name="precio" step="0.01" required>
+                <button type="submit">Actualizar Plato</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal para editar restaurante -->
+    <div id="modalEditarRestaurante" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('modalEditarRestaurante')">&times;</span>
+            <h2>Editar Restaurante</h2>
+            <form method="post" action="/editarRestaurante">
+                <input type="hidden" id="restauranteId" name="id" th:value="${restaurante.id}">
+                <label for="nombreRestauranteEdit">Nuevo Nombre:</label>
+                <input type="text" id="nombreRestauranteEdit" name="nombre" th:value="${restaurante.nombre}" required>
+                <label for="direccionRestauranteEdit">Nueva Dirección:</label>
+                <input type="text" id="direccionRestauranteEdit" name="direccion" th:value="${restaurante.direccion}"
+                    required>
+                <button type="submit">Actualizar Restaurante</button>
+            </form>
+        </div>
+    </div>
 </body>
+
 </html>

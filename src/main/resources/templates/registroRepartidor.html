@@ -17,6 +17,18 @@
                 <input type="password" id="password" name="password" required>
             </div>
             <div>
+                <label for="nombre">Nombre:</label>
+                <input type="text" id="nombre" name="nombre" required>
+            </div>
+            <div>
+                <label for="apellidos">Apellidos:</label>
+                <input type="text" id="apellidos" name="apellidos" required>
+            </div>
+            <div>
+                <label for ="dni">DNI:</label>
+                <input type="text" id="dni" name="dni" required>
+            </div>
+            <div>
                 <button type="submit">Registrarse</button>
             </div>
             <div th:if="${error}">

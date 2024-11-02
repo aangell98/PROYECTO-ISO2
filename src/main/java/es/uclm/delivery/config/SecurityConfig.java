@@ -38,7 +38,7 @@ public class SecurityConfig {
                                                                                                  // público a /home
                         .requestMatchers("/homeCliente/**").hasRole("CLIENTE")
                         .requestMatchers("/homeRepartidor/**").hasRole("REPARTIDOR")
-                        .requestMatchers("/homeRestaurante/**").hasRole("RESTAURANTE")
+                        .requestMatchers("/homeRestaurante/**", "/altaMenu/**").hasRole("RESTAURANTE")
                         .anyRequest().authenticated())
                 .formLogin(form -> form
                         .loginPage("/login")

@@ -1,52 +1,44 @@
 package es.uclm.delivery.dominio.entidades;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Column;
+import jakarta.persistence.*;
 import java.util.Collection;
-import java.util.List;
 
 @Entity
 @Table(name = "restaurante")
-public class Restaurante extends Usuario {
+public class Restaurante {
 
-    @OneToMany(mappedBy = "restaurante")
-    private Collection<Pedido> pedidos;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
 
-    @OneToMany(mappedBy = "restaurante")
-    private Collection<CartaMenu> cartasMenu;
-
-    @ManyToOne
-    private Direccion direccion;
-
-    @Column(name = "nombre")
+    @Column(name = "nombre", nullable = false)
     private String nombre;
 
+    @Column(name = "direccion", nullable = false)
+    private String direccion;
+
+    @OneToMany(mappedBy = "restaurante", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Collection<CartaMenu> cartasMenu;
+
+    @OneToMany(mappedBy = "restaurante", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Collection<ItemMenu> itemMenu;
+
+    @OneToMany(mappedBy = "restaurante", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Collection<ClienteFavoritos> favoritos;
+
+    @OneToOne
+    @JoinColumn(name = "username", referencedColumnName = "username")
+    private Usuario usuario;
+
     // Getters y setters
-    public Collection<Pedido> getPedidos() {
-        return pedidos;
+
+    public Long getId() {
+        return id;
     }
 
-    public void setPedidos(Collection<Pedido> pedidos) {
-        this.pedidos = pedidos;
-    }
-
-    public Collection<CartaMenu> getCartasMenu() {
-        return cartasMenu;
-    }
-
-    public void setCartasMenu(Collection<CartaMenu> cartasMenu) {
-        this.cartasMenu = cartasMenu;
-    }
-
-    public Direccion getDireccion() {
-        return direccion;
-    }
-
-    public void setDireccion(Direccion direccion) {
-        this.direccion = direccion;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getNombre() {
@@ -57,12 +49,44 @@ public class Restaurante extends Usuario {
         this.nombre = nombre;
     }
 
-    /**
-	 * @param idRestaurante
-	 */
-	public List<ItemMenu> listarMenu(String idRestaurante) {
-		// TODO - implement Restaurante.listarMenu
-		throw new UnsupportedOperationException();
-	}
+    public String getDireccion() {
+        return direccion;
+    }
+
+    public void setDireccion(String direccion) {
+        this.direccion = direccion;
+    }
+
+    public Collection<CartaMenu> getCartasMenu() {
+        return cartasMenu;
+    }
+
+    public void setCartasMenu(Collection<CartaMenu> cartasMenu) {
+        this.cartasMenu = cartasMenu;
+    }
+
+    public Collection<ClienteFavoritos> getFavoritos() {
+        return favoritos;
+    }
+
+    public void setFavoritos(Collection<ClienteFavoritos> favoritos) {
+        this.favoritos = favoritos;
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
+
+    public Collection<ItemMenu> getItemMenu() {
+        return itemMenu;
+    }
+
+    public void setItemMenu(Collection<ItemMenu> itemMenu) {
+        this.itemMenu = itemMenu;
+    }
 
 }

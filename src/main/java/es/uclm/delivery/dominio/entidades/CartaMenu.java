@@ -1,13 +1,6 @@
 package es.uclm.delivery.dominio.entidades;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Column;
-import jakarta.persistence.Id;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
+import jakarta.persistence.*;
 import java.util.Collection;
 
 @Entity
@@ -16,24 +9,51 @@ public class CartaMenu {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
-    @ManyToOne
-    private Restaurante restaurante;
-
-    @OneToMany
-    private Collection<ItemMenu> items;
-
-    @Column(name = "nombre")
+    @Column(name = "nombre", nullable = false)
     private String nombre;
 
+    @Column(name = "descripcion", nullable = false)
+    private String descripcion;
+
+    @ManyToOne
+    @JoinColumn(name = "restaurante_id")
+    private Restaurante restaurante;
+
+    @ManyToMany
+    @JoinTable(
+        name = "carta_menu_item",
+        joinColumns = @JoinColumn(name = "carta_menu_id"),
+        inverseJoinColumns = @JoinColumn(name = "item_menu_id")
+    )
+    private Collection<ItemMenu> items;
+
     // Getters y setters
+
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
     }
 
     public Restaurante getRestaurante() {
@@ -50,13 +70,5 @@ public class CartaMenu {
 
     public void setItems(Collection<ItemMenu> items) {
         this.items = items;
-    }
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
     }
 }
