@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home Cliente</title>
     <link rel="stylesheet" href="/css/styles.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
     <div class="container">
@@ -23,6 +24,17 @@
                 <h2>Servicios</h2>
                 <p>Descripción de los servicios disponibles para el cliente.</p>
             </section>
+            <section id="search">
+                <h2>Buscar Restaurantes</h2>
+                <form id="searchForm">
+                    <label for="codigoPostal">Código Postal:</label>
+                    <input type="text" id="codigoPostal" name="codigoPostal" required>
+                    <button type="submit">Buscar</button>
+                </form>
+                <div id="resultadosBusqueda">
+                    <!-- Aquí se mostrarán los resultados de la búsqueda -->
+                </div>
+            </section>
             <section id="contact">
                 <h2>Contacto</h2>
                 <p>Información de contacto y formulario.</p>
@@ -32,5 +44,32 @@
             <p>&copy; 2024 Delivery. Todos los derechos reservados. Work In Progress</p>
         </footer>
     </div>
+    <script>
+        $(document).ready(function() {
+            $('#searchForm').on('submit', function(event) {
+                event.preventDefault();
+                var codigoPostal = $('#codigoPostal').val();
+                console.log("Formulario enviado con código postal: " + codigoPostal);
+                $.ajax({
+                    url: '/buscar_restaurantes',
+                    type: 'GET',
+                    data: { codigoPostal: codigoPostal },
+                    success: function(data) {
+                        console.log("Respuesta recibida del servidor");
+                        var resultadosHtml = '<h2>Restaurantes Encontrados</h2><ul>';
+                        data.forEach(function(restaurante) {
+                            resultadosHtml += '<li>' + restaurante.nombre + ' - ' + restaurante.direccion + '</li>';
+                        });
+                        resultadosHtml += '</ul>';
+                        $('#resultadosBusqueda').html(resultadosHtml);
+                    },
+                    error: function() {
+                        console.log("Error al buscar restaurantes");
+                        $('#resultadosBusqueda').html('<p>Error al buscar restaurantes.</p>');
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>

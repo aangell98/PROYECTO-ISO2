@@ -4,6 +4,7 @@ import es.uclm.delivery.dominio.entidades.Restaurante;
 import es.uclm.delivery.dominio.entidades.Usuario;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -21,6 +22,18 @@ public class RestauranteDAO extends EntidadDAO<Restaurante> {
                     .getSingleResult());
         } catch (Exception e) {
             return Optional.empty();
+        }
+    }
+    
+    public List<Restaurante> findByCodigoPostal(String codigoPostal) {
+        try {
+            return entityManager.createQuery(
+                    "SELECT r FROM Restaurante r WHERE r.direccion LIKE :codigoPostal", Restaurante.class)
+                    .setParameter("codigoPostal", "%" + codigoPostal + "%")
+                    .getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return List.of();
         }
     }
 }

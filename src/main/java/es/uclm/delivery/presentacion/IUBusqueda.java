@@ -2,18 +2,23 @@ package es.uclm.delivery.presentacion;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+
+import es.uclm.delivery.dominio.controladores.GestorClientes;
 import es.uclm.delivery.dominio.entidades.*;
+import es.uclm.delivery.persistencia.RestauranteDAO;
 
+@Service
 public class IUBusqueda {
+	
+    @Autowired
+    private RestauranteDAO restauranteDAO;
 
-	/**
-	 * 
-	 * @param zona
-	 */
-	public List<Restaurante> buscar(CodigoPostal zona) {
-		// TODO - implement IUBusqueda.buscar
-		throw new UnsupportedOperationException();
-	}
+    public List<Restaurante> buscarRestaurantesPorCodigoPostal(String codigoPostal) {
+        return restauranteDAO.findByCodigoPostal(codigoPostal);
+    }
 
 	/**
 	 * 
