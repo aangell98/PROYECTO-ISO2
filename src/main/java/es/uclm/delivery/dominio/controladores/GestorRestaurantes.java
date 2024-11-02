@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
 import java.util.List;
@@ -31,20 +32,87 @@ public class GestorRestaurantes {
     @Autowired
     private IUEdicionMenu iuEdicionMenu;
 
-    @PostMapping("/editarRestaurante")
-public String editarRestaurante(@ModelAttribute Restaurante restaurante, Model model) {
-    Optional<Restaurante> restauranteExistente = restauranteDAO.findById(restaurante.getId());
-    if (restauranteExistente.isPresent()) {
-        Restaurante original = restauranteExistente.get();
-        original.setNombre(restaurante.getNombre());
-        original.setDireccion(restaurante.getDireccion());
-        restauranteDAO.update(original);
-        model.addAttribute("message", "Restaurante actualizado exitosamente.");
-    } else {
-        model.addAttribute("error", "Error: Restaurante no encontrado.");
+    @PostMapping("/eliminarCartaMenu")
+    public String eliminarMenu(@RequestParam("menuId") Long menuId, RedirectAttributes redirectAttributes) {
+        int resultado = cartaMenuDAO.eliminarCartaMenuPorId(menuId);
+        if (resultado == 1) {
+            redirectAttributes.addFlashAttribute("mensaje", "Menú eliminado con éxito.");
+        } else {
+            redirectAttributes.addFlashAttribute("error", "Error al eliminar el menú.");
+        }
+        return "redirect:/homeRestaurante";
     }
-    return "redirect:/homeRestaurante";
-}
+
+    @PostMapping("/eliminarItemMenu")
+    public String eliminarItemMenu(@RequestParam Long platoId, Model model) {
+        ItemMenu itemMenu = itemMenuDAO.findById(platoId).orElse(null);
+        if (itemMenu != null) {
+            try {
+                int result = itemMenuDAO.delete(itemMenu);
+                if (result == 1) {
+                    // Éxito, redirigir o mostrar mensaje
+                    model.addAttribute("successMessage", "Plato eliminado correctamente.");
+                } else {
+                    // Error en la eliminación
+                    model.addAttribute("errorMessage", "No se pudo eliminar el plato.");
+                }
+            } catch (Exception e) {
+                // Manejo de la excepción
+                model.addAttribute("errorMessage",
+                        "No se puede eliminar el plato porque está asociado a uno o más menús.");
+                e.printStackTrace(); // O puedes registrar el error
+            }
+        } else {
+            model.addAttribute("errorMessage", "El plato no existe.");
+        }
+        return "redirect:/homeRestaurante"; // O la vista que desees
+    }
+
+    @PostMapping("/editarRestaurante")
+    public String editarRestaurante(@ModelAttribute Restaurante restaurante, Model model) {
+        Optional<Restaurante> restauranteExistente = restauranteDAO.findById(restaurante.getId());
+        if (restauranteExistente.isPresent()) {
+            Restaurante original = restauranteExistente.get();
+            original.setNombre(restaurante.getNombre());
+            original.setDireccion(restaurante.getDireccion());
+            restauranteDAO.update(original);
+            model.addAttribute("message", "Restaurante actualizado exitosamente.");
+        } else {
+            model.addAttribute("error", "Error: Restaurante no encontrado.");
+        }
+        return "redirect:/homeRestaurante";
+    }
+
+    @PostMapping("/eliminarNombreDireccionRestaurante")
+    public String eliminarNombreDireccionRestaurante(Principal principal) {
+        Optional<Usuario> usuarioOpt = usuarioDAO.encontrarUser(principal.getName());
+        if (usuarioOpt.isPresent()) {
+            Usuario usuario = usuarioOpt.get();
+            Optional<Restaurante> restauranteOpt = restauranteDAO.findByUsuario(usuario);
+
+            if (restauranteOpt.isPresent()) {
+                Restaurante restaurante = restauranteOpt.get();
+                restaurante.setNombre(null);
+                restaurante.setDireccion(null);
+                restauranteDAO.update(restaurante);
+            }
+        }
+        return "redirect:/homeRestaurante";
+    }
+
+    @PostMapping("/eliminarRestaurante")
+    public String eliminarRestaurante(@RequestParam(name = "restauranteId", required = true) Long restauranteId,
+            Model model) {
+        Optional<Restaurante> restauranteOpt = restauranteDAO.findById(restauranteId);
+        if (restauranteOpt.isPresent()) {
+            Restaurante restaurante = restauranteOpt.get();
+            restauranteDAO.delete(restaurante);
+            model.addAttribute("message", "Restaurante eliminado exitosamente.");
+        } else {
+            model.addAttribute("error", "Error: Restaurante no encontrado.");
+        }
+        return "redirect:/homeRestaurante";
+    }
 
     @PostMapping("/editarCartaMenu")
     public String editarCartaMenu(@ModelAttribute CartaMenu cartaMenu, @RequestParam List<Long> itemsIds) {
@@ -79,7 +147,14 @@ public String editarRestaurante(@ModelAttribute Restaurante restaurante, Model m
             Usuario usuario = usuarioOpt.get();
             Optional<Restaurante> restauranteOpt = restauranteDAO.findByUsuario(usuario);
 
-            if (restauranteOpt.isEmpty()) {
+            List<CartaMenu> menus = restauranteOpt
+                    .map(restaurante -> cartaMenuDAO.findAllByRestaurante(restaurante.getId()))
+                    .orElse(List.of());
+
+            // Agregar log para verificar los valores de menus
+            menus.forEach(menu -> System.out.println("Menu encontrado: " + (menu != null ? menu.getId() : "null")));
+
+            if (restauranteOpt.isEmpty() || restauranteOpt.get().getNombre() == null) {
                 model.addAttribute("restaurante", new Restaurante());
                 model.addAttribute("isRestauranteRegistrado", false);
             } else {
@@ -87,7 +162,7 @@ public String editarRestaurante(@ModelAttribute Restaurante restaurante, Model m
                 model.addAttribute("restaurante", restaurante);
                 model.addAttribute("isRestauranteRegistrado", true);
                 model.addAttribute("items", itemMenuDAO.findAll());
-                model.addAttribute("menus", cartaMenuDAO.findAllByRestaurante(restaurante.getId()));
+                model.addAttribute("menus", menus);
                 model.addAttribute("cartaMenu", new CartaMenu());
                 model.addAttribute("itemMenu", new ItemMenu());
             }

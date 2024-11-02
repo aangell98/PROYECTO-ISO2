@@ -24,6 +24,10 @@ public class ItemMenu {
     @Column(name = "precio", nullable = false)
     private double precio;
 
+    @ManyToOne
+    @JoinColumn(name = "restaurante_id")
+    private Restaurante restaurante;
+
     // Getters y setters
 
     public Long getId() {
@@ -56,5 +60,13 @@ public class ItemMenu {
 
     public void setPrecio(double precio) {
         this.precio = precio;
+    }
+
+    public Restaurante getRestaurante() {
+        return restaurante;
+    }
+
+    public void setRestaurante(Restaurante restaurante) {
+        this.restaurante = restaurante;
     }
 }

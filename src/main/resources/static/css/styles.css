@@ -88,15 +88,24 @@ button:hover {
     background-color: #0056b3;
 }
 
-.error {
-    color: red;
+/* Estilo para mensajes de error y éxito */
+.success-message, .error-message {
     text-align: center;
-    margin-top: 10px;
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 4px;
 }
 
-.message {
-    text-align: center;
-    color: #333;
+.success-message {
+    color: green;
+    background-color: #e6ffed; /* Fondo claro para éxito */
+    border: 1px solid green;
+}
+
+.error-message {
+    color: red;
+    background-color: #ffe6e6; /* Fondo claro para error */
+    border: 1px solid red;
 }
 
 /* Estilo para el botón de cierre de sesión */

@@ -1,26 +1,11 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Administración del Restaurante</title>
     <link rel="stylesheet" href="/css/styles.css">
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            fetch('/homeRestaurante')
-                .then(response => response.json())
-                .then(menus => {
-                    const ul = document.querySelector('#menus ul');
-                    ul.innerHTML = ''; // Clear previous items
-                    menus.forEach(menu => {
-                        const li = document.createElement('li');
-                        li.textContent = `${menu.nombre}: ${menu.descripcion}`;
-                        ul.appendChild(li);
-                    });
-                })
-                .catch(error => console.error('Error fetching menus:', error));
-        });
         function openModal(id) {
             document.getElementById(id).style.display = 'block';
         }
@@ -42,15 +27,64 @@
             </nav>
         </header>
         <main>
+            <section id="mensajes">
+                <th:block th:if="${successMessage}">
+                    <div class="success-message" th:text="${successMessage}"></div>
+                </th:block>
+                <th:block th:if="${errorMessage}">
+                    <div class="error-message" th:text="${errorMessage}"></div>
+                </th:block>
+            </section>
             <section id="menus">
                 <h2>Menús</h2>
                 <ul>
+                    <!-- Bucle para mostrar cada menú con un botón de edición y eliminación -->
+                    <th:block th:each="menu : ${menus}">
+                        <li>
+                            <span th:text="${menu.nombre}"></span>
+                            <button onclick="openModal('modalEditarMenu')">Editar</button>
+                            <form method="post" action="/eliminarCartaMenu" style="display: inline;">
+                                <input type="hidden" name="menuId" th:value="${menu.id}">
+                                <button type="submit" class="btn-delete">Eliminar</button>
+                            </form>
+                        </li>
+                    </th:block>
                 </ul>
-                <button onclick="openModal('modalMenu')">Añadir Menú</button>
-                <button onclick="openModal('modalPlato')">Añadir Plato</button>
-                <button onclick="openModal('modalEditarMenu')">Editar Menú</button>
-                <button onclick="openModal('modalEditarPlato')">Editar Plato</button>
-                <button onclick="openModal('modalEditarRestaurante')">Editar Restaurante</button>
+                <th:block th:if="${isRestauranteRegistrado}">
+                    <!-- Botón para crear un menú -->
+                    <button onclick="openModal('modalCrearMenu')">Crear Menú</button>
+                    <!-- Botones para añadir y editar plato -->
+                    <button onclick="openModal('modalPlato')">Crear Plato</button>
+                    <button onclick="openModal('modalEditarPlato')">Editar Plato</button>
+                </th:block>
+            </section>
+            <section id="platos">
+                <h2>Platos</h2>
+                <ul>
+                    <!-- Bucle para mostrar cada plato con un botón de edición y eliminación -->
+                    <th:block th:each="plato : ${items}">
+                        <li>
+                            <span th:text="${plato.nombre}"></span>
+                            <button onclick="openModal('modalEditarPlato')">Editar</button>
+                            <form method="post" action="/eliminarItemMenu" style="display: inline;">
+                                <input type="hidden" name="platoId" th:value="${plato.id}">
+                                <button type="submit" class="btn-delete">Eliminar</button>
+                            </form>
+                        </li>
+                    </th:block>
+                </ul>
+            </section>
+            <section id="restaurante">
+                <h2>Restaurante</h2>
+                <th:block th:if="${isRestauranteRegistrado}">
+                    <p th:text="'Restaurante: ' + ${restaurante.nombre}"></p>
+                    <p th:text="'Dirección: ' + ${restaurante.direccion}"></p>
+                    <button onclick="openModal('modalEditarRestaurante')">Editar Restaurante</button>
+                </th:block>
+                <th:block th:unless="${isRestauranteRegistrado}">
+                    <p>Actualmente no hay ningún restaurante registrado. Por favor, crea uno para comenzar.</p>
+                    <button onclick="openModal('modalCrearRestaurante')">Crear Restaurante</button>
+                </th:block>
             </section>
         </main>
         <footer>

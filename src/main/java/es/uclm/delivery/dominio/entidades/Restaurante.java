@@ -22,9 +22,11 @@ public class Restaurante {
     private Collection<CartaMenu> cartasMenu;
 
     @OneToMany(mappedBy = "restaurante", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Collection<ItemMenu> itemMenu;
+
+    @OneToMany(mappedBy = "restaurante", cascade = CascadeType.ALL, orphanRemoval = true)
     private Collection<ClienteFavoritos> favoritos;
 
-    
     @OneToOne
     @JoinColumn(name = "username", referencedColumnName = "username")
     private Usuario usuario;
@@ -77,6 +79,14 @@ public class Restaurante {
 
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
+    }
+
+    public Collection<ItemMenu> getItemMenu() {
+        return itemMenu;
+    }
+
+    public void setItemMenu(Collection<ItemMenu> itemMenu) {
+        this.itemMenu = itemMenu;
     }
 
 }
