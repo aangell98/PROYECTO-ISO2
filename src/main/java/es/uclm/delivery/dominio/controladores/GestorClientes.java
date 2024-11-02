@@ -3,9 +3,7 @@ package es.uclm.delivery.dominio.controladores;
 import es.uclm.delivery.dominio.entidades.Restaurante;
 import es.uclm.delivery.presentacion.IUBusqueda;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -21,5 +19,20 @@ public class GestorClientes {
         List<Restaurante> restaurantes = IUBusqueda.buscarRestaurantesPorCodigoPostal(codigoPostal);
         System.out.println("Restaurantes encontrados: " + restaurantes.size());
         return restaurantes;
+    }
+
+    @PostMapping("/agregar_favorito")
+    public void agregarFavorito(@RequestParam("idRestaurante") Long idRestaurante) {
+        IUBusqueda.marcarFavorito(idRestaurante);
+    }
+
+    @PostMapping("/eliminar_favorito")
+    public void eliminarFavorito(@RequestParam("idRestaurante") Long idRestaurante) {
+        IUBusqueda.desmarcarFavorito(idRestaurante);
+    }
+
+    @GetMapping("/listar_favoritos")
+    public List<Restaurante> listarFavoritos() {
+        return IUBusqueda.listarFavoritos();
     }
 }
