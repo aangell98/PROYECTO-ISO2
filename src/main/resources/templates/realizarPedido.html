@@ -35,8 +35,10 @@
                                 <p><strong>Precio:</strong> <span th:text="${item.precio} + ' €'"></span></p>
                             </li>
                         </ul>
-                        
-                        <button onclick="agregarAlCarrito('${cartaMenu.id}')">Añadir al Carrito</button>
+
+                        <button th:onclick="'agregarAlCarrito(' + ${cartaMenu.id} + ')'">Añadir al Carrito</button>
+
+
 
                         <hr> <!-- Separador entre menús -->
                     </li>
@@ -69,7 +71,7 @@
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ id: cartaMenuId }) // Enviar ID del menú como JSON
+                body: JSON.stringify({ id: cartaMenuId }) // Enviar ID del menú completo como JSON
             })
                 .then(response => response.json())
                 .then(carrito => {
@@ -83,6 +85,9 @@
                 })
                 .catch(error => console.error("Error al agregar al carrito:", error));
         }
+
+
+
 
         function realizarPedido() {
             alert("Pedido confirmado! Procediendo al pago...");

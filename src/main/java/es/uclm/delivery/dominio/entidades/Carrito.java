@@ -36,4 +36,8 @@ public class Carrito {
             this.precioTotal -= item.getPrecio();
         }
     }
+
+    public void actualizarPrecioTotal() {
+        precioTotal = items.stream().mapToDouble(ItemMenu::getPrecio).sum();
+    }
 }

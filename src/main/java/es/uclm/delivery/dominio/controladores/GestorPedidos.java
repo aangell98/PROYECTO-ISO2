@@ -3,14 +3,13 @@ package es.uclm.delivery.dominio.controladores;
 import es.uclm.delivery.persistencia.*;
 import es.uclm.delivery.presentacion.IUBusqueda;
 
-import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -32,16 +31,13 @@ public class GestorPedidos {
     }
 
     @Autowired
-    private PedidoDAO pedidoDAO;
-
-    @Autowired
-    private ServicioEntregaDAO servicioEntregaDAO;
-
-    @Autowired
     private IUBusqueda IUBusqueda;
 
     @Autowired
     private ItemMenuDAO itemMenuDAO;
+
+    @Autowired
+    private CartaMenuDAO cartaMenuDAO;
 
 
     @GetMapping("/realizar_pedido")
@@ -61,16 +57,21 @@ public String realizarPedido(@RequestParam("restauranteId") Long restauranteId, 
 }
 
 @PostMapping("/agregar_al_carrito")
-public ResponseEntity<?> agregarAlCarrito(@ModelAttribute("carrito") Carrito carrito, @RequestBody Long itemId) {
-    // Buscar el item por ID
-    Optional<ItemMenu> itemOpt = itemMenuDAO.findById(itemId);
-    if (itemOpt.isPresent()) {
-        // Agregar el item al carrito del cliente
-        carrito.agregarItem(itemOpt.get()); // Usar el método agregarItem de Carrito
+public ResponseEntity<?> agregarAlCarrito(@ModelAttribute("carrito") Carrito carrito, @RequestBody Map<String, Long> requestData) {
+    Long menuId = requestData.get("id"); // Obtener el ID del menú completo desde el JSON
+    Optional<CartaMenu> menuOpt = cartaMenuDAO.findById(menuId);
+
+    if (menuOpt.isPresent()) {
+        // Agregar todos los ítems del menú al carrito
+        CartaMenu menu = menuOpt.get();
+        menu.getItems().forEach(carrito::agregarItem); // Agrega cada ítem al carrito
+        carrito.actualizarPrecioTotal(); // Asegúrate de actualizar el precio total del carrito
+
         return ResponseEntity.ok(carrito); // Devuelve el carrito actualizado al frontend
     }
-    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Item no encontrado");
+    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Menú no encontrado");
 }
+
 
 
 }
