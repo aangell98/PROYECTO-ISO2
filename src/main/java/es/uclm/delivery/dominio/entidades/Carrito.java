@@ -25,19 +25,18 @@ public class Carrito {
         return precioTotal;
     }
 
-    public void vaciar() {
-        this.items.clear();
-        this.precioTotal = 0.0;
-    }
-
     // Método para eliminar un item del carrito (opcional)
-    public void eliminarItem(ItemMenu item) {
-        if (this.items.remove(item)) {
-            this.precioTotal -= item.getPrecio();
-        }
+    public void eliminarItem(Long itemId) {
+        items.removeIf(item -> item.getId().equals(itemId));
+        actualizarPrecioTotal();
     }
 
     public void actualizarPrecioTotal() {
         precioTotal = items.stream().mapToDouble(ItemMenu::getPrecio).sum();
+    }
+
+    public void vaciar() {
+        items.clear();
+        actualizarPrecioTotal();
     }
 }

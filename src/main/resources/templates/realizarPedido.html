@@ -45,13 +45,15 @@
                 </ul>
             </section>
             <section id="carrito">
-                <!-- Carrito de Compras -->
                 <div class="carrito-container">
                     <h3>Carrito</h3>
                     <ul id="carritoItems"></ul> <!-- Aquí se mostrarán los ítems añadidos al carrito -->
                     <p>Total: <span id="precioTotal">0</span> €</p>
+
+                    <!-- Botón para limpiar el carrito completo -->
+                    <button onclick="limpiarCarrito()">Vaciar Carrito</button>
                     <!-- Botón para realizar el pedido -->
-                    <button onclick="realizarPedido()">Confirmar Pedido</button>
+                    <button onclick="realizarPedido()">Proceder al pago</button>
                 </div>
             </section>
 
@@ -71,21 +73,52 @@
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ id: cartaMenuId }) // Enviar ID del menú completo como JSON
+                body: JSON.stringify({ id: cartaMenuId })
             })
                 .then(response => response.json())
                 .then(carrito => {
-                    // Actualiza el contenido del carrito en la vista
-                    let carritoItems = document.getElementById('carritoItems');
-                    carritoItems.innerHTML = ''; // Limpia el carrito
-                    carrito.items.forEach(item => {
-                        carritoItems.innerHTML += `<li>${item.nombre} - ${item.precio} €</li>`;
-                    });
-                    document.getElementById('precioTotal').innerText = carrito.precioTotal;
+                    actualizarVistaCarrito(carrito);
                 })
                 .catch(error => console.error("Error al agregar al carrito:", error));
         }
 
+        // Función para eliminar un menú específico del carrito
+        function eliminarDelCarrito(cartaMenuId) {
+            fetch(`/eliminar_del_carrito/${cartaMenuId}`, {
+                method: 'DELETE'
+            })
+                .then(response => response.json())
+                .then(carrito => {
+                    actualizarVistaCarrito(carrito);
+                })
+                .catch(error => console.error("Error al eliminar del carrito:", error));
+        }
+
+        // Función para limpiar todo el carrito
+        function limpiarCarrito() {
+            fetch('/limpiar_carrito', {
+                method: 'DELETE'
+            })
+                .then(response => response.json())
+                .then(carrito => {
+                    actualizarVistaCarrito(carrito);
+                })
+                .catch(error => console.error("Error al limpiar el carrito:", error));
+        }
+
+        // Función para actualizar la vista del carrito
+        function actualizarVistaCarrito(carrito) {
+            let carritoItems = document.getElementById('carritoItems');
+            carritoItems.innerHTML = '';
+            carrito.items.forEach(item => {
+                carritoItems.innerHTML += `
+                <li>
+                    ${item.nombre} - ${item.precio} €
+                    <button onclick="eliminarDelCarrito(${item.id})">Eliminar</button>
+                </li>`;
+            });
+            document.getElementById('precioTotal').innerText = carrito.precioTotal;
+        }
 
 
 
