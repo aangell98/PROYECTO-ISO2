@@ -1,3 +1,4 @@
+es\uclm\delivery\dominio\entidades\PedidoRequest.class
 es\uclm\delivery\dominio\entidades\MetodoPago.class
 es\uclm\delivery\presentacion\IULogin.class
 es\uclm\delivery\config\CustomAuthenticationProvider.class

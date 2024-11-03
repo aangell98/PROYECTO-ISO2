@@ -1,18 +1,7 @@
 package es.uclm.delivery.dominio.entidades;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
-import jakarta.persistence.Id;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import java.util.Collection;
-import java.util.Date;
+import jakarta.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "pedido")
@@ -20,30 +9,26 @@ public class Pedido {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
     @ManyToOne
+    @JoinColumn(name = "cliente_id")
     private Cliente cliente;
 
     @ManyToOne
-    private Pago pago;
-
-    @OneToMany
-    private Collection<ItemMenu> items;
-
-    @ManyToOne
+    @JoinColumn(name = "restaurante_id")
     private Restaurante restaurante;
 
-    @ManyToOne
-    private ServicioEntrega entrega;
+    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ItemMenu> items;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "estado", nullable = false)
     private EstadoPedido estado;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date fecha;
-
     // Getters y setters
+
     public Long getId() {
         return id;
     }
@@ -60,22 +45,6 @@ public class Pedido {
         this.cliente = cliente;
     }
 
-    public Pago getPago() {
-        return pago;
-    }
-
-    public void setPago(Pago pago) {
-        this.pago = pago;
-    }
-
-    public Collection<ItemMenu> getItems() {
-        return items;
-    }
-
-    public void setItems(Collection<ItemMenu> items) {
-        this.items = items;
-    }
-
     public Restaurante getRestaurante() {
         return restaurante;
     }
@@ -84,12 +53,12 @@ public class Pedido {
         this.restaurante = restaurante;
     }
 
-    public ServicioEntrega getEntrega() {
-        return entrega;
+    public List<ItemMenu> getItems() {
+        return items;
     }
 
-    public void setEntrega(ServicioEntrega entrega) {
-        this.entrega = entrega;
+    public void setItems(List<ItemMenu> items) {
+        this.items = items;
     }
 
     public EstadoPedido getEstado() {
@@ -98,18 +67,5 @@ public class Pedido {
 
     public void setEstado(EstadoPedido estado) {
         this.estado = estado;
-    }
-
-    public Date getFecha() {
-        return fecha;
-    }
-
-    public void setFecha(Date fecha) {
-        this.fecha = fecha;
-    }
-
-    // Método add para agregar items al pedido
-    public void add(ItemMenu itemMenu) {
-        this.items.add(itemMenu);
     }
 }

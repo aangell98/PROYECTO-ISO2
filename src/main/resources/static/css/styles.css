@@ -160,3 +160,18 @@ button:hover {
     text-decoration: none;
     cursor: pointer;
 }
+
+.carrito-container {
+    border: 1px solid #ddd;
+    padding: 15px;
+    margin-top: 20px;
+    background-color: #f9f9f9;
+}
+.carrito-container h3 {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+}
+#carritoItems li {
+    margin-bottom: 5px;
+}
+

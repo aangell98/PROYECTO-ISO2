@@ -8,6 +8,7 @@ C:\Users\angel\Documents\GitHub\PROYECTO-ISO2\src\main\java\es\uclm\delivery\dom
 C:\Users\angel\Documents\GitHub\PROYECTO-ISO2\src\main\java\es\uclm\delivery\dominio\controladores\GestorPedidos.java
 C:\Users\angel\Documents\GitHub\PROYECTO-ISO2\src\main\java\es\uclm\delivery\dominio\controladores\GestorRepartos.java
 C:\Users\angel\Documents\GitHub\PROYECTO-ISO2\src\main\java\es\uclm\delivery\dominio\controladores\GestorRestaurantes.java
+C:\Users\angel\Documents\GitHub\PROYECTO-ISO2\src\main\java\es\uclm\delivery\dominio\entidades\Carrito.java
 C:\Users\angel\Documents\GitHub\PROYECTO-ISO2\src\main\java\es\uclm\delivery\dominio\entidades\CartaMenu.java
 C:\Users\angel\Documents\GitHub\PROYECTO-ISO2\src\main\java\es\uclm\delivery\dominio\entidades\Cliente.java
 C:\Users\angel\Documents\GitHub\PROYECTO-ISO2\src\main\java\es\uclm\delivery\dominio\entidades\ClienteFavoritos.java
@@ -18,6 +19,7 @@ C:\Users\angel\Documents\GitHub\PROYECTO-ISO2\src\main\java\es\uclm\delivery\dom
 C:\Users\angel\Documents\GitHub\PROYECTO-ISO2\src\main\java\es\uclm\delivery\dominio\entidades\MetodoPago.java
 C:\Users\angel\Documents\GitHub\PROYECTO-ISO2\src\main\java\es\uclm\delivery\dominio\entidades\Pago.java
 C:\Users\angel\Documents\GitHub\PROYECTO-ISO2\src\main\java\es\uclm\delivery\dominio\entidades\Pedido.java
+C:\Users\angel\Documents\GitHub\PROYECTO-ISO2\src\main\java\es\uclm\delivery\dominio\entidades\PedidoRequest.java
 C:\Users\angel\Documents\GitHub\PROYECTO-ISO2\src\main\java\es\uclm\delivery\dominio\entidades\Repartidor.java
 C:\Users\angel\Documents\GitHub\PROYECTO-ISO2\src\main\java\es\uclm\delivery\dominio\entidades\Restaurante.java
 C:\Users\angel\Documents\GitHub\PROYECTO-ISO2\src\main\java\es\uclm\delivery\dominio\entidades\ServicioEntrega.java

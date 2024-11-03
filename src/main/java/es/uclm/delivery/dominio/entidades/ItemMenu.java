@@ -15,6 +15,10 @@ public class ItemMenu {
     @Column(name = "tipo")
     private TipoItemMenu tipo;
 
+    @ManyToOne
+    @JoinColumn(name = "pedido_id")
+    private Pedido pedido;
+
     @Column(name = "nombre", nullable = false)
     private String nombre;
 
@@ -68,5 +72,13 @@ public class ItemMenu {
 
     public void setRestaurante(Restaurante restaurante) {
         this.restaurante = restaurante;
+    }
+
+    public Pedido getPedido() {
+        return pedido;
+    }
+
+    public void setPedido(Pedido pedido) {
+        this.pedido = pedido;
     }
 }

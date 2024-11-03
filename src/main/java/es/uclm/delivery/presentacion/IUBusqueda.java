@@ -52,4 +52,19 @@ public class IUBusqueda {
         Cliente cliente = clienteDAO.findById(1L).orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
         return cliente.getFavoritos().stream().map(ClienteFavoritos::getRestaurante).toList();
     }
+
+    public Restaurante obtenerRestaurante(Long restauranteId) {
+        Restaurante restaurante = restauranteDAO.findById(restauranteId)
+                .orElseThrow(() -> new RuntimeException("Restaurante no encontrado"));
+        
+        // Cargar y asignar las cartas de menú del restaurante
+        List<CartaMenu> cartasMenu = restauranteDAO.findCartasMenuByRestauranteId(restauranteId);
+        restaurante.setCartasMenu(cartasMenu);  // Asigna las cartas de menú al restaurante
+        
+        return restaurante;
+    }
+
+    public Cliente obtenerClienteActual() {
+        return clienteDAO.findById(1L).orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
+    }
 }

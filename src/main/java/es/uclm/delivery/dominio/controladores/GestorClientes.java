@@ -1,8 +1,10 @@
 package es.uclm.delivery.dominio.controladores;
 
-import es.uclm.delivery.dominio.entidades.Restaurante;
+import es.uclm.delivery.dominio.entidades.*;
 import es.uclm.delivery.presentacion.IUBusqueda;
+import es.uclm.delivery.dominio.controladores.GestorPedidos;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,6 +14,9 @@ public class GestorClientes {
 
     @Autowired
     private IUBusqueda IUBusqueda;
+
+    @Autowired
+    private GestorPedidos gestorPedidos;
 
     @GetMapping("/buscar_restaurantes")
     public List<Restaurante> buscarRestaurantes(@RequestParam("codigoPostal") String codigoPostal) {
@@ -35,4 +40,10 @@ public class GestorClientes {
     public List<Restaurante> listarFavoritos() {
         return IUBusqueda.listarFavoritos();
     }
+
+    @GetMapping("/obtener_restaurante")
+    public Restaurante obtenerRestaurante(@RequestParam("restauranteId") Long restauranteId) {
+        return IUBusqueda.obtenerRestaurante(restauranteId);
+    }
+
 }
