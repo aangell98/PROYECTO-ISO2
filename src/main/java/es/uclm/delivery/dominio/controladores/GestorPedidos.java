@@ -3,6 +3,7 @@ package es.uclm.delivery.dominio.controladores;
 import es.uclm.delivery.persistencia.*;
 import es.uclm.delivery.presentacion.IUBusqueda;
 
+import java.util.Date;
 import java.util.Map;
 import java.util.Optional;
 
@@ -40,6 +41,12 @@ public class GestorPedidos {
 
     @Autowired
     private CartaMenuDAO cartaMenuDAO;
+
+    @Autowired
+    private PedidoDAO pedidoDAO;
+    
+    @Autowired
+    private PagoDAO pagoDAO;
 
     @GetMapping("/realizar_pedido")
     public String realizarPedido(@RequestParam("restauranteId") Long restauranteId, Model model) {
@@ -84,6 +91,43 @@ public ResponseEntity<?> eliminarDelCarrito(@ModelAttribute("carrito") Carrito c
     public ResponseEntity<?> limpiarCarrito(@ModelAttribute("carrito") Carrito carrito) {
         carrito.vaciar(); // Método que elimina todos los ítems del carrito
         return ResponseEntity.ok(carrito); // Devuelve el carrito vacío
+    }
+
+    @GetMapping("/pago")
+    public String mostrarPago() {
+        return "pago";
+    }
+
+    @PostMapping("/confirmar_pedido")
+    public ResponseEntity<?> confirmarPedido(@ModelAttribute("carrito") Carrito carrito,
+                                             @RequestBody Map<String, Object> requestData) {
+        String direccion = (String) requestData.get("direccion");
+        String metodoPago = (String) requestData.get("metodoPago");
+        Map<String, String> pagoInfo = (Map<String, String>) requestData.get("pagoInfo");
+
+        if (direccion == null || metodoPago == null || pagoInfo == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Dirección, método de pago y datos de pago son requeridos");
+        }
+
+        // Crear y guardar el pedido
+        Pedido pedido = new Pedido();
+        pedido.setCliente(IUBusqueda.obtenerClienteActual());
+        pedido.setRestaurante(IUBusqueda.obtenerRestaurante(carrito.getRestauranteId()));
+        pedido.setItems(carrito.getItems());
+        pedido.setEstado(EstadoPedido.PEDIDO);
+        pedidoDAO.save(pedido);
+
+        // Crear y guardar el pago
+        Pago pago = new Pago();
+        pago.setPedido(pedido);
+        pago.setTipo(MetodoPago.valueOf(metodoPago));
+        pago.setFechaTransaccion(new Date());
+        pagoDAO.insert(pago);
+
+        // Limpiar el carrito después de confirmar el pedido
+        carrito.vaciar();
+
+        return ResponseEntity.ok("Pedido confirmado");
     }
 
 }

@@ -1,13 +1,11 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Realizar Pedido</title>
     <link rel="stylesheet" href="/css/styles.css">
 </head>
-
 <body>
     <div class="container">
         <header>
@@ -37,9 +35,6 @@
                         </ul>
 
                         <button th:onclick="'agregarAlCarrito(' + ${cartaMenu.id} + ')'">Añadir al Carrito</button>
-
-
-
                         <hr> <!-- Separador entre menús -->
                     </li>
                 </ul>
@@ -53,7 +48,7 @@
                     <!-- Botón para limpiar el carrito completo -->
                     <button onclick="limpiarCarrito()">Vaciar Carrito</button>
                     <!-- Botón para realizar el pedido -->
-                    <button onclick="realizarPedido()">Proceder al pago</button>
+                    <button onclick="procederAlPago()">Proceder al pago</button>
                 </div>
             </section>
 
@@ -120,12 +115,9 @@
             document.getElementById('precioTotal').innerText = carrito.precioTotal;
         }
 
-
-
-        function realizarPedido() {
-            alert("Pedido confirmado! Procediendo al pago...");
+        function procederAlPago() {
+            window.location.href = '/pago';
         }
     </script>
 </body>
-
 </html>

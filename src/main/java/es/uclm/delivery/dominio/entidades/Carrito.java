@@ -6,6 +6,7 @@ import java.util.List;
 public class Carrito {
     private List<ItemMenu> items;
     private double precioTotal;
+    private Long restauranteId; // Añadir campo para almacenar el ID del restaurante
 
     public Carrito() {
         this.items = new ArrayList<>();
@@ -23,6 +24,14 @@ public class Carrito {
 
     public double getPrecioTotal() {
         return precioTotal;
+    }
+
+    public Long getRestauranteId() {
+        return restauranteId;
+    }
+
+    public void setRestauranteId(Long restauranteId) {
+        this.restauranteId = restauranteId;
     }
 
     // Método para eliminar un item del carrito (opcional)
