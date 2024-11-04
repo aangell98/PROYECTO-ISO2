@@ -45,6 +45,8 @@
         </footer>
     <script>
         $(document).ready(function() {
+            let favoritos = [];
+
             $('#searchForm').on('submit', function(event) {
                 event.preventDefault();
                 var codigoPostal = $('#codigoPostal').val();
@@ -57,9 +59,11 @@
                         console.log("Respuesta recibida del servidor");
                         var resultadosHtml = '<h2>Restaurantes Encontrados:</h2><ul>';
                         data.forEach(function(restaurante) {
-                            resultadosHtml += '<li>' + restaurante.nombre + ' - ' + restaurante.direccion + 
-                                ' <button onclick="agregarFavorito(' + restaurante.id + ')">Agregar a Favoritos</button>' +
-                                ' <button onclick="realizarPedido(' + restaurante.id + ')">Realizar Pedido</button></li>';
+                            resultadosHtml += '<li id="restaurante-' + restaurante.id + '">' + restaurante.nombre + ' - ' + restaurante.direccion;
+                            if (!favoritos.some(fav => fav.id === restaurante.id)) {
+                                resultadosHtml += ' <button onclick="agregarFavorito(' + restaurante.id + ')">Agregar a Favoritos</button>';
+                            }
+                            resultadosHtml += ' <button onclick="realizarPedido(' + restaurante.id + ')">Realizar Pedido</button></li>';
                         });
                         resultadosHtml += '</ul>';
                         $('#resultadosBusqueda').html(resultadosHtml);
@@ -76,9 +80,10 @@
                     url: '/listar_favoritos',
                     type: 'GET',
                     success: function(data) {
+                        favoritos = data; // Actualizar la lista de favoritos
                         var favoritosHtml = '';
                         data.forEach(function(restaurante) {
-                            favoritosHtml += '<li>' + restaurante.nombre + ' - ' + restaurante.direccion + 
+                            favoritosHtml += '<li id="favorito-' + restaurante.id + '">' + restaurante.nombre + ' - ' + restaurante.direccion + 
                                 ' <button class="btn-eliminar-favorito" onclick="eliminarFavorito(' + restaurante.id + ')">Eliminar de Favoritos</button>' +
                                 ' <button onclick="realizarPedido(' + restaurante.id + ')">Realizar Pedido</button></li>';
                         });
@@ -99,6 +104,8 @@
                     success: function() {
                         console.log("Restaurante agregado a favoritos");
                         cargarFavoritos();
+                        // Actualizar la lista de resultados de búsqueda
+                        $('#restaurante-' + idRestaurante + ' button').first().remove();
                     },
                     error: function() {
                         console.log("Error al agregar a favoritos");
@@ -114,6 +121,10 @@
                     success: function() {
                         console.log("Restaurante eliminado de favoritos");
                         cargarFavoritos();
+                        // Actualizar la lista de resultados de búsqueda
+                        if ($('#restaurante-' + idRestaurante).length) {
+                            $('#restaurante-' + idRestaurante).append(' <button onclick="agregarFavorito(' + idRestaurante + ')">Agregar a Favoritos</button>');
+                        }
                     },
                     error: function() {
                         console.log("Error al eliminar de favoritos");

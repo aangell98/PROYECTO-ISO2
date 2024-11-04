@@ -13,6 +13,9 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.access.AccessDeniedHandlerImpl;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
+import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
+import org.springframework.security.web.savedrequest.RequestCache;
+import org.springframework.security.web.savedrequest.SavedRequest;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -30,63 +33,51 @@ public class SecurityConfig {
     @Autowired
     private CustomAuthenticationProvider customAuthenticationProvider;
 
+    private final RequestCache requestCache = new HttpSessionRequestCache();
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/home", "/registroCliente", "/registroRepartidor", "/registroRestaurante", "/css/**", "/js/**", "/images/**").permitAll() // Permitir acceso
-                                                                                                 // público a /home
-                        .requestMatchers("/homeCliente/**", "/realizarPedido/**", "/realizar_pedido").hasRole("CLIENTE")
-                        .requestMatchers("/homeRepartidor/**").hasRole("REPARTIDOR")
-                        .requestMatchers("/homeRestaurante/**", "/altaMenu/**").hasRole("RESTAURANTE")
-                        .anyRequest().authenticated())
-                .formLogin(form -> form
-                        .loginPage("/login")
-                        .loginProcessingUrl("/login")
-                        .successHandler((request, response, authentication) -> {
-                            String username = authentication.getName();
-                            String role = authentication.getAuthorities().iterator().next().getAuthority();
+            .authorizeHttpRequests((requests) -> requests
+                .requestMatchers("/home", "/buscar_restaurantes", "/registroCliente", "/registroRepartidor", "/registroRestaurante", "/css/**", "/js/**", "/images/**").permitAll()
+                .requestMatchers("/homeCliente/**", "/realizarPedido/**", "/realizar_pedido").hasRole("CLIENTE")
+                .requestMatchers("/homeRepartidor/**").hasRole("REPARTIDOR")
+                .requestMatchers("/homeRestaurante/**", "/altaMenu/**").hasRole("RESTAURANTE")
+                .anyRequest().authenticated())
+            .formLogin(form -> form
+                .loginPage("/login")
+                .loginProcessingUrl("/login")
+                .successHandler((request, response, authentication) -> {
+                    // Verifica si hay una URL solicitada antes de la autenticación
+                    SavedRequest savedRequest = requestCache.getRequest(request, response);
 
-                            // Log del usuario autenticado
-                            Logger log = LoggerFactory.getLogger(SecurityConfig.class);
-                            log.info("Usuario autenticado: " + username);
-                            log.info("Rol asignado: " + role);
+                    if (savedRequest != null) {
+                        // Redirige a la URL almacenada en la cache
+                        response.sendRedirect(savedRequest.getRedirectUrl());
+                        return;
+                    }
 
-                            // Manejar la sesión
-                            HttpSession session = request.getSession();
-                            session.setAttribute("username", username);
-                            session.setAttribute("role", role);
-                            session.setMaxInactiveInterval(30 * 60); // La sesión expira en 30 minutos de inactividad
-
-                            log.info("Sesion creada: " + session.getId());
-                            log.info("Atributos de la sesion: username=" + session.getAttribute("username") + ", role="
-                                    + session.getAttribute("role"));
-
-                            // Redireccionar según el rol
-                            if (role.equals("ROLE_CLIENTE")) {
-                                log.info("Redirigiendo a /homeCliente");
-                                response.sendRedirect("/homeCliente");
-                            } else if (role.equals("ROLE_REPARTIDOR")) {
-                                log.info("Redirigiendo a /homeRepartidor");
-                                response.sendRedirect("/homeRepartidor");
-                            } else if (role.equals("ROLE_RESTAURANTE")) {
-                                log.info("Redirigiendo a /homeRestaurante");
-                                response.sendRedirect("/homeRestaurante");
-                            } else {
-                                log.info("Redirigiendo a /home por rol desconocido");
-                                response.sendRedirect("/home");
-                            }
-                        })
-
-                        .failureUrl("/login?error=true")
-                        .permitAll())
-                .logout(logout -> logout
-                        .logoutUrl("/perform_logout")
-                        .logoutSuccessHandler(customLogoutSuccessHandler()) // Usamos un handler personalizado
-                        .logoutSuccessUrl("/login?logout=true")
-                        .invalidateHttpSession(true) // Invalida la sesión de usuario
-                        .permitAll())
-                .csrf(csrf -> csrf.disable());
+                    // Redirección según el rol si no hay URL almacenada
+                    String role = authentication.getAuthorities().iterator().next().getAuthority();
+                    if (role.equals("ROLE_CLIENTE")) {
+                        response.sendRedirect("/homeCliente");
+                    } else if (role.equals("ROLE_REPARTIDOR")) {
+                        response.sendRedirect("/homeRepartidor");
+                    } else if (role.equals("ROLE_RESTAURANTE")) {
+                        response.sendRedirect("/homeRestaurante");
+                    } else {
+                        response.sendRedirect("/home");
+                    }
+                })
+                .failureUrl("/login?error=true")
+                .permitAll())
+            .logout(logout -> logout
+                .logoutUrl("/perform_logout")
+                .logoutSuccessHandler(customLogoutSuccessHandler())
+                .logoutSuccessUrl("/login?logout=true")
+                .invalidateHttpSession(true)
+                .permitAll())
+            .csrf(csrf -> csrf.disable());
 
         return http.build();
     }
