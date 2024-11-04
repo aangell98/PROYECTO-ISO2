@@ -3,6 +3,8 @@ package es.uclm.delivery.presentacion;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import es.uclm.delivery.dominio.entidades.*;
@@ -54,17 +56,24 @@ public class IUBusqueda {
     }
 
     public Restaurante obtenerRestaurante(Long restauranteId) {
-        Restaurante restaurante = restauranteDAO.findById(restauranteId)
-                .orElseThrow(() -> new RuntimeException("Restaurante no encontrado"));
-        
-        // Cargar y asignar las cartas de menú del restaurante
+        Restaurante restaurante = restauranteDAO.findById(restauranteId).orElseThrow(() -> new RuntimeException("Restaurante no encontrado"));
         List<CartaMenu> cartasMenu = restauranteDAO.findCartasMenuByRestauranteId(restauranteId);
-        restaurante.setCartasMenu(cartasMenu);  // Asigna las cartas de menú al restaurante
-        
+        restaurante.getCartasMenu().clear();
+        restaurante.getCartasMenu().addAll(cartasMenu);
         return restaurante;
     }
 
     public Cliente obtenerClienteActual() {
-        return clienteDAO.findById(1L).orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
+        // Obtener el nombre de usuario del cliente autenticado
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String username;
+        if (principal instanceof UserDetails) {
+            username = ((UserDetails) principal).getUsername();
+        } else {
+            username = principal.toString();
+        }
+
+        // Buscar el cliente por el nombre de usuario
+        return clienteDAO.findByUsername(username).orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
     }
 }

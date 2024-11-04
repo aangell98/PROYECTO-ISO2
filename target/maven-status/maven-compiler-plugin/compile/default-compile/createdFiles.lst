@@ -14,6 +14,7 @@ es\uclm\delivery\dominio\entidades\ItemMenu.class
 es\uclm\delivery\dominio\entidades\EstadoPedido.class
 es\uclm\delivery\persistencia\ItemMenuDAO.class
 es\uclm\delivery\persistencia\RepartidorDAO.class
+es\uclm\delivery\dominio\entidades\Carrito.class
 es\uclm\delivery\persistencia\CartaMenuDAO.class
 es\uclm\delivery\dominio\entidades\ClienteFavoritos.class
 es\uclm\App.class
@@ -30,12 +31,14 @@ es\uclm\delivery\dominio\controladores\GestorPedidos.class
 es\uclm\delivery\ServletInitializer.class
 es\uclm\delivery\dominio\entidades\Restaurante.class
 es\uclm\delivery\presentacion\IUAltaUsuario.class
+es\uclm\delivery\persistencia\PagoDAO.class
 es\uclm\delivery\persistencia\PedidoDAO.class
 es\uclm\delivery\dominio\controladores\GestorRestaurantes.class
 es\uclm\delivery\dominio\controladores\GestorClientes.class
 es\uclm\delivery\dominio\entidades\CodigoPostal.class
 es\uclm\delivery\dominio\entidades\CartaMenu.class
 es\uclm\delivery\dominio\entidades\Pago.class
+es\uclm\delivery\dominio\entidades\ItemRequest.class
 es\uclm\delivery\config\ManejoErrores.class
 es\uclm\delivery\persistencia\RestauranteDAO.class
 es\uclm\delivery\persistencia\ServicioEntregaDAO.class

@@ -1,6 +1,6 @@
 ----------------------------------------------------------------
-Mon Nov 04 12:36:30 CET 2024:
-Booting Derby version The Apache Software Foundation - Apache Derby - 10.17.1.0 - (1913217): instance a816c00e-0192-f6f6-4bdc-0000025395c0 
+Mon Nov 04 16:25:34 CET 2024:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.17.1.0 - (1913217): instance a816c00e-0192-f7c8-06ab-000001165000 
 on database directory C:\Users\angel\Documents\GitHub\PROYECTO-ISO2\database with class loader jdk.internal.loader.ClassLoaders$AppClassLoader@33909752 
 Loaded from file:/C:/Users/angel/.m2/repository/org/apache/derby/derby/10.17.1.0/derby-10.17.1.0.jar
 java.vendor=Oracle Corporation
