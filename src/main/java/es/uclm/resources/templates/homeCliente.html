@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Cliente</title>
+    <link rel="stylesheet" href="/css/home.css">
+</head>
+<body>
+    <main>
+        <form method="post" action="/perform_logout" style="display: inline;">
+            <button type="submit" class="btn-logout">Cerrar Sesión</button>
+        </form>
+        <div class="search-container">
+            <input type="text" id="search" placeholder="Buscar restaurantes...">
+            <button onclick="searchRestaurants()">Buscar</button>
+        </div>
+        <div class="header-section">
+            <img src="/images/inicio.png" alt="Capricho">
+            <h1>Es el mejor día para darte un capricho. <br> ¿A que esperas para pedir?</h1>
+        </div>
+        <div class="featured-restaurants">
+            <h2>Tus Restaurantes Favoritos</h2>
+            <div class="restaurant" id="restaurant1">
+                <h3>Restaurante 1</h3>
+            </div>
+            <div class="restaurant" id="restaurant2">
+                <h3>Restaurante 2</h3>
+            </div>
+            <div class="restaurant" id="restaurant3">
+                <h3>Restaurante 3</h3>
+            </div>
+            <div class="restaurant" id="restaurant4">
+                <h3>Restaurante 4</h3>
+            </div>
+        </div>
+    </main>
+    <script>
+        function searchRestaurants() {
+            const query = document.getElementById('search').value;
+            // Aquí iría la lógica para buscar restaurantes en la base de datos
+            console.log('Buscando restaurantes para:', query);
+        }
+    </script>
+</body>
+</html>
