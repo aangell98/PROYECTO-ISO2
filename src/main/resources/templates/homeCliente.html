@@ -57,20 +57,27 @@
                     data: { codigoPostal: codigoPostal },
                     success: function(data) {
                         console.log("Respuesta recibida del servidor");
-                        var resultadosHtml = '<h2>Restaurantes Encontrados:</h2><ul>';
-                        data.forEach(function(restaurante) {
-                            resultadosHtml += '<li id="restaurante-' + restaurante.id + '">' + restaurante.nombre + ' - ' + restaurante.direccion;
-                            if (!favoritos.some(fav => fav.id === restaurante.id)) {
-                                resultadosHtml += ' <button onclick="agregarFavorito(' + restaurante.id + ')">Agregar a Favoritos</button>';
-                            }
-                            resultadosHtml += ' <button onclick="realizarPedido(' + restaurante.id + ')">Realizar Pedido</button></li>';
-                        });
-                        resultadosHtml += '</ul>';
-                        $('#resultadosBusqueda').html(resultadosHtml);
-                    },
-                    error: function() {
+                        if (data.length > 0) {
+                    var resultadosHtml = '<h2>Restaurantes Encontrados:</h2><ul>';
+                    data.forEach(function(restaurante) {
+                        resultadosHtml += '<li id="restaurante-' + restaurante.id + '">' + restaurante.nombre + ' - ' + restaurante.direccion;
+                        if (!favoritos.some(fav => fav.id === restaurante.id)) {
+                            resultadosHtml += ' <button onclick="agregarFavorito(' + restaurante.id + ')">Agregar a Favoritos</button>';
+                        }
+                        resultadosHtml += ' <button onclick="realizarPedido(' + restaurante.id + ')">Realizar Pedido</button></li>';
+                    });
+                    resultadosHtml += '</ul>';
+                    $('#resultadosBusqueda').html(resultadosHtml);
+                    $('#resultadosBusqueda').show(); // Mostrar resultados de búsqueda
+                } else {
+                    $('#resultadosBusqueda').html('<p>No se encontraron restaurantes.</p>');
+                    $('#resultadosBusqueda').show(); // Mostrar mensaje de no resultados
+                }
+            },
+            error: function() {
                         console.log("Error al buscar restaurantes");
                         $('#resultadosBusqueda').html('<p>Error al buscar restaurantes.</p>');
+                        
                     }
                 });
             });
