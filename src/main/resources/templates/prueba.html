@@ -1,21 +1,18 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
     <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon">
-    <title>Página Principal</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Cliente</title>
     <link rel="stylesheet" href="/css/home.css">
 </head>
 <body>
     <main>
-        <a href="/login" class="cta">
-            <span>Iniciar Sesión</span>
-            <svg width="13px" height="10px" viewBox="0 0 13 10">
-              <polyline points="8 1 12 5 8 9"></polyline>
-            </svg>
-          </a>
+        <form method="post" action="/perform_logout" style="display: inline;">
+            <button type="submit" class="btn-logout">Cerrar Sesión</button>
+        </form>
         <div class="search-container">
             <input type="text" id="search" placeholder="Buscar restaurantes...">
             <button onclick="searchRestaurants()">Buscar</button>
@@ -25,7 +22,7 @@
             <h1>Es el mejor día para darte un capricho. <br> ¿A que esperas para pedir?</h1>
         </div>
         <div class="featured-restaurants">
-            <h2>Restaurantes Destacados</h2>
+            <h2>Tus Restaurantes Favoritos</h2>
             <div class="restaurant" id="restaurant1">
                 <h3>Restaurante 1</h3>
             </div>
