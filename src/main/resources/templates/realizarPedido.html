@@ -3,27 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon">
     <title>Realizar Pedido</title>
-    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/pedido.css}">
 </head>
 <body>
     <div class="container">
-        <header>
-            <h1>Realizar Pedido</h1>
-        </header>
         <main>
+            <h1>Realizar Pedido</h1>
             <section id="restauranteInfo">
                 <h2>Información del Restaurante</h2>
                 <p>Nombre: <span th:text="${restaurante.nombre}"></span></p>
                 <p>Dirección: <span th:text="${restaurante.direccion}"></span></p>
             </section>
             <section id="menus">
-                <h2>Cartas de Menú Disponibles</h2>
+                <h2>Menús Disponibles</h2>
                 <ul>
                     <li th:each="cartaMenu : ${restaurante.cartasMenu}">
                         <h3 th:text="${cartaMenu.nombre}"></h3>
                         <p th:text="${cartaMenu.descripcion}"></p>
                         <p><strong>Precio Total:</strong> <span th:text="${cartaMenu.precioTotal} + ' €'"></span></p>
+
+                        <h4><strong>Platos del menú:</strong></h4>
 
                         <!-- Lista de items del menú -->
                         <ul>
@@ -51,14 +53,9 @@
                     <button onclick="procederAlPago()">Proceder al pago</button>
                 </div>
             </section>
-
-            <section id="contact">
-                <h2>Contacto</h2>
-                <p>Información de contacto y formulario.</p>
-            </section>
         </main>
         <footer>
-            <p>&copy; 2024 Delivery. Todos los derechos reservados. Work In Progress</p>
+            <p>&copy; 2024 Delivery. Todos los derechos reservados.</p>
         </footer>
     </div>
     <script>

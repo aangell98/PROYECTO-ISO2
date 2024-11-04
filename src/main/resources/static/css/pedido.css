@@ -1,0 +1,185 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    background-color: #fa9302;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 600px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+/* Estilo para la página de inicio (home) */
+.home-container {
+    text-align: center;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    width: 100%;
+    margin: 20px;
+}
+
+/* Botón en la página de inicio (home) ajustado al tamaño del texto */
+.home-container button {
+    width: auto; /* Ajusta el ancho al contenido del texto */
+    padding: 10px 20px; /* Agrega un poco de padding horizontal extra */
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.home-container button:hover {
+    background-color: #0056b3;
+}
+
+
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Alinea los elementos a la izquierda */
+    width: 100%; /* Asegura que el formulario ocupe todo el ancho del contenedor */
+}
+
+label {
+    margin-bottom: 5px;
+    color: #000000;
+    width: 100%; /* Asegura que las etiquetas ocupen todo el ancho del contenedor */
+}
+
+input {
+    margin-bottom: 15px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 100%; /* Asegura que los inputs ocupen todo el ancho del contenedor */
+    box-sizing: border-box; /* Incluye el padding y el borde en el ancho total */
+}
+
+button {
+    padding: 10px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%; /* Asegura que el botón ocupe todo el ancho del contenedor */
+    box-sizing: border-box; /* Incluye el padding y el borde en el ancho total */
+    text-align: center; /* Centra el texto dentro del botón */
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+.error {
+    color: rgb(113, 2, 2);
+    text-align: center;
+    margin-top: 10px;
+}
+
+.message {
+    text-align: center;
+    color: #333;
+}
+
+/* Estilo para el botón de cierre de sesión */
+.btn-logout {
+    background-color: #dc3545;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.btn-logout:hover {
+    background-color: #c82333;
+}
+
+body {
+    background-color: #fab802; /* Fondo amarillo */
+}
+
+button, .btn-logout {
+    background-color: black; /* Fondo de los botones en negro */
+    color: white; /* Texto de los botones en blanco */
+    width: 300px;
+    display: block; /* Asegura que el botón ocupe toda la línea */
+    margin: 0 auto; /* Centra el botón horizontalmente */
+    margin-bottom: 20px;
+}
+
+button:hover, .btn-logout:hover {
+    background-color: #333; /* Fondo de los botones en gris oscuro al pasar el ratón */
+}
+
+a {
+    color: #036b20; /* Color de los enlaces en negro */
+    text-decoration: underline; /* Subrayado de los enlaces */
+}
+
+a:hover {
+    color: #06bb3c; /* Color de los enlaces en gris oscuro al pasar el ratón */
+}
+input[type="text"],
+input[type="password"]{
+    width: 295px;
+}
+
+footer{
+    margin-top: 20px;
+    text-align: center;
+}
+
+h1{
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+h2{
+    margin-top: 40px;
+    text-align: center;
+    margin-bottom: 40px;
+}
+h3{
+    margin-bottom: 20px;
+}
+
+h4{
+    text-align: center;
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+
+
+ul{
+    list-style-type: none; /* Elimina los puntos de la lista */
+}
+
+li{
+    margin-bottom: 40px;
+}
+
+#carrito p {
+    text-align: center;
+}
+
+#restauranteInfo p{
+    text-align: center;
+}
