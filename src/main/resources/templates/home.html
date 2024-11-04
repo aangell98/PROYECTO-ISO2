@@ -16,7 +16,7 @@
             <svg width="13px" height="10px" viewBox="0 0 13 10">
               <polyline points="8 1 12 5 8 9"></polyline>
             </svg>
-          </a>
+        </a>
         <div class="search-container">
             <section id="search">
                 <form id="searchForm">
@@ -34,19 +34,20 @@
         </div>
         <div class="featured-restaurants">
             <h2>Restaurantes Destacados</h2>
-            <div class="restaurant" id="restaurant1">
-                <h3>Restaurante 1</h3>
-            </div>
-            <div class="restaurant" id="restaurant2">
-                <h3>Restaurante 2</h3>
-            </div>
-            <div class="restaurant" id="restaurant3">
-                <h3>Restaurante 3</h3>
-            </div>
-            <div class="restaurant" id="restaurant4">
-                <h3>Restaurante 4</h3>
+            <div id="destacados">
+                <th:block th:each="restaurante : ${restaurantesDestacados}">
+                    <div class="restaurant">
+                        <h3 th:text="${restaurante.nombre}">Nombre del Restaurante</h3>
+                        <p th:text="${restaurante.direccion}">Dirección del Restaurante</p>
+                        
+                        <!-- Botón para realizar pedido sin formulario -->
+                        <button th:onclick="'realizarPedido(' + ${restaurante.id} + ')'" type="button">Realizar Pedido</button>
+
+                    </div>
+                </th:block>
             </div>
         </div>
+        
     </main>
     <script>
         $(document).ready(function() {

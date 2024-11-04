@@ -44,4 +44,16 @@ public class RestauranteDAO extends EntidadDAO<Restaurante> {
                 .setParameter("restauranteId", restauranteId)
                 .getResultList();
     }
+
+    public List<Restaurante> obtenerRestaurantesAleatorios(int cantidad) {
+        try {
+            return entityManager.createQuery(
+                    "SELECT r FROM Restaurante r ORDER BY RAND()", Restaurante.class)
+                    .setMaxResults(cantidad)
+                    .getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return List.of();
+        }
+    }
 }

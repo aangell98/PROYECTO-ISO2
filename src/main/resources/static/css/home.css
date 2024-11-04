@@ -101,6 +101,8 @@ button[onclick="location.href='/login'"] {
 .featured-restaurants h2 {
     width: 100%;
     text-align: center;
+    font-size: 1.8em;
+    color: #000;
 }
 
 .restaurant {
@@ -109,10 +111,41 @@ button[onclick="location.href='/login'"] {
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     margin: 10px;
-    width: calc(25% - 40px);
+    width: 220px; /* Ajusta el ancho según sea necesario */
     box-sizing: border-box;
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
+
+.restaurant h3 {
+    font-size: 1.2em;
+    margin-bottom: 8px;
+    color: #333;
+}
+
+.restaurant p {
+    font-size: 1em;
+    color: #666;
+    margin-bottom: 15px;
+}
+
+button {
+    cursor: pointer;
+    background-color: #000;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-size: 1em;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #333;
+}
+
 
 .btn-logout {
     position: absolute;

@@ -6,6 +6,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,6 +19,7 @@ import es.uclm.delivery.dominio.entidades.Repartidor;
 import es.uclm.delivery.dominio.entidades.Restaurante;
 import es.uclm.delivery.dominio.entidades.Usuario;
 import es.uclm.delivery.persistencia.UsuarioDAO;
+import es.uclm.delivery.persistencia.RestauranteDAO;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import es.uclm.delivery.dominio.controladores.GestorLogin;
@@ -28,6 +34,8 @@ public class IULogin {
 
     @Autowired
     private UsuarioDAO usuarioDAO;
+    @Autowired
+    private RestauranteDAO restauranteDAO;
 
     @GetMapping("/login")
     public String showLoginForm(Model model) {
@@ -125,9 +133,27 @@ public class IULogin {
     }
 
     @GetMapping("/home")
-    public String showHomePage() {
-        return "home";
+public String mostrarHome(Model model) {
+    // Obtenemos todos los restaurantes usando el método existente en restauranteDAO
+    List<Restaurante> todosLosRestaurantes = restauranteDAO.findAll();
+
+    // Comprobamos si la lista no está vacía
+    List<Restaurante> restaurantesDestacados = new ArrayList<>();
+    if (!todosLosRestaurantes.isEmpty()) {
+        // Mezclamos la lista para obtener un orden aleatorio
+        Collections.shuffle(todosLosRestaurantes);
+
+        // Agregamos hasta 4 restaurantes (o menos si no hay suficientes)
+        int maxDestacados = Math.min(4, todosLosRestaurantes.size());
+        for (int i = 0; i < maxDestacados; i++) {
+            restaurantesDestacados.add(todosLosRestaurantes.get(i));
+        }
     }
+
+    // Añadimos la lista de destacados al modelo
+    model.addAttribute("restaurantesDestacados", restaurantesDestacados);
+    return "home";
+}
 
     @GetMapping("/homeCliente")
     public String homeCliente() {
