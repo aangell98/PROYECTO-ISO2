@@ -235,7 +235,11 @@
                 <input type="text" id="nuevaDireccionRestaurante" name="direccion" required>
                 <button type="submit">Crear Restaurante</button>
             </form>
-        </div>
+            <form method="post" action="/eliminarRestaurante">
+                <input type="hidden" name="restauranteId" th:value="${restaurante.id}">
+                <button type="submit" class="btn-delete">Eliminar Restaurante</button>
+            </form>
+        </div>
     </div>
 </body>
 </html>
