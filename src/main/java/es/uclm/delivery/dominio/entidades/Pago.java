@@ -1,17 +1,6 @@
 package es.uclm.delivery.dominio.entidades;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import jakarta.persistence.Id;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
-import java.util.UUID;
+import jakarta.persistence.*;
 import java.util.Date;
 
 @Entity
@@ -19,25 +8,29 @@ import java.util.Date;
 public class Pago {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID idTransaccion;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
 
     @ManyToOne
+    @JoinColumn(name = "pedido_id")
     private Pedido pedido;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "tipo", nullable = false)
     private MetodoPago tipo;
 
-    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "fecha_transaccion", nullable = false)
     private Date fechaTransaccion;
 
     // Getters y setters
-    public UUID getIdTransaccion() {
-        return idTransaccion;
+
+    public Long getId() {
+        return id;
     }
 
-    public void setIdTransaccion(UUID idTransaccion) {
-        this.idTransaccion = idTransaccion;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Pedido getPedido() {
