@@ -1,48 +1,140 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
-    <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home Cliente</title>
-    <link rel="stylesheet" href="/css/home.css">
+    <link rel="stylesheet" href="/css/styles.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
-    <main>
-        <form method="post" action="/perform_logout" style="display: inline;">
-            <button type="submit" class="btn-logout">Cerrar Sesión</button>
-        </form>
-        <div class="search-container">
-            <input type="text" id="search" placeholder="Buscar restaurantes...">
-            <button onclick="searchRestaurants()">Buscar</button>
-        </div>
-        <div class="header-section">
-            <img src="/images/inicio.png" alt="Capricho">
-            <h1>Es el mejor día para darte un capricho. <br> ¿A que esperas para pedir?</h1>
-        </div>
-        <div class="featured-restaurants">
-            <h2>Tus Restaurantes Favoritos</h2>
-            <div class="restaurant" id="restaurant1">
-                <h3>Restaurante 1</h3>
-            </div>
-            <div class="restaurant" id="restaurant2">
-                <h3>Restaurante 2</h3>
-            </div>
-            <div class="restaurant" id="restaurant3">
-                <h3>Restaurante 3</h3>
-            </div>
-            <div class="restaurant" id="restaurant4">
-                <h3>Restaurante 4</h3>
-            </div>
-        </div>
-    </main>
+    <div class="container">
+        <header>
+            <h1>Bienvenido, Cliente</h1>
+            <form method="post" action="/perform_logout" style="display: inline;">
+                <button type="submit" class="btn-logout">Cerrar Sesión</button>
+            </form>
+        </header>
+        <main>
+            <section id="profile">
+                <h2>Tu Perfil</h2>
+                <p>Información del perfil del cliente.</p>
+            </section>
+            <section id="services">
+                <h2>Servicios</h2>
+                <p>Descripción de los servicios disponibles para el cliente.</p>
+            </section>
+            <section id="search">
+                <h2>Buscar Restaurantes</h2>
+                <form id="searchForm">
+                    <label for="codigoPostal">Código Postal:</label>
+                    <input type="text" id="codigoPostal" name="codigoPostal" required>
+                    <button type="submit">Buscar</button>
+                </form>
+                <div id="resultadosBusqueda">
+                    <!-- Aquí se mostrarán los resultados de la búsqueda -->
+                </div>
+            </section>
+            <section id="favorites">
+                <h2>Restaurantes Favoritos</h2>
+                <ul id="listaFavoritos">
+                    <!-- Aquí se mostrarán los restaurantes favoritos -->
+                </ul>
+            </section>
+            <section id="contact">
+                <h2>Contacto</h2>
+                <p>Información de contacto y formulario.</p>
+            </section>
+        </main>
+        <footer>
+            <p>&copy; 2024 Delivery. Todos los derechos reservados. Work In Progress</p>
+        </footer>
+    </div>
     <script>
-        function searchRestaurants() {
-            const query = document.getElementById('search').value;
-            // Aquí iría la lógica para buscar restaurantes en la base de datos
-            console.log('Buscando restaurantes para:', query);
-        }
+        $(document).ready(function() {
+            $('#searchForm').on('submit', function(event) {
+                event.preventDefault();
+                var codigoPostal = $('#codigoPostal').val();
+                console.log("Formulario enviado con código postal: " + codigoPostal);
+                $.ajax({
+                    url: '/buscar_restaurantes',
+                    type: 'GET',
+                    data: { codigoPostal: codigoPostal },
+                    success: function(data) {
+                        console.log("Respuesta recibida del servidor");
+                        var resultadosHtml = '<h2>Restaurantes Encontrados</h2><ul>';
+                        data.forEach(function(restaurante) {
+                            resultadosHtml += '<li>' + restaurante.nombre + ' - ' + restaurante.direccion + 
+                                ' <button onclick="agregarFavorito(' + restaurante.id + ')">Agregar a Favoritos</button>' +
+                                ' <button onclick="realizarPedido(' + restaurante.id + ')">Realizar Pedido</button></li>';
+                        });
+                        resultadosHtml += '</ul>';
+                        $('#resultadosBusqueda').html(resultadosHtml);
+                    },
+                    error: function() {
+                        console.log("Error al buscar restaurantes");
+                        $('#resultadosBusqueda').html('<p>Error al buscar restaurantes.</p>');
+                    }
+                });
+            });
+
+            function cargarFavoritos() {
+                $.ajax({
+                    url: '/listar_favoritos',
+                    type: 'GET',
+                    success: function(data) {
+                        var favoritosHtml = '';
+                        data.forEach(function(restaurante) {
+                            favoritosHtml += '<li>' + restaurante.nombre + ' - ' + restaurante.direccion + 
+                                ' <button onclick="eliminarFavorito(' + restaurante.id + ')">Eliminar de Favoritos</button>' +
+                                ' <button onclick="realizarPedido(' + restaurante.id + ')">Realizar Pedido</button></li>';
+                        });
+                        $('#listaFavoritos').html(favoritosHtml);
+                    },
+                    error: function() {
+                        console.log("Error al cargar favoritos");
+                        $('#listaFavoritos').html('<p>Error al cargar favoritos.</p>');
+                    }
+                });
+            }
+
+            window.agregarFavorito = function(idRestaurante) {
+                $.ajax({
+                    url: '/agregar_favorito',
+                    type: 'POST',
+                    data: { idRestaurante: idRestaurante },
+                    success: function() {
+                        console.log("Restaurante agregado a favoritos");
+                        cargarFavoritos();
+                    },
+                    error: function() {
+                        console.log("Error al agregar a favoritos");
+                    }
+                });
+            };
+
+            window.eliminarFavorito = function(idRestaurante) {
+                $.ajax({
+                    url: '/eliminar_favorito',
+                    type: 'POST',
+                    data: { idRestaurante: idRestaurante },
+                    success: function() {
+                        console.log("Restaurante eliminado de favoritos");
+                        cargarFavoritos();
+                    },
+                    error: function() {
+                        console.log("Error al eliminar de favoritos");
+                    }
+                });
+            };
+
+            window.realizarPedido = function(idRestaurante) {
+                window.location.href = '/realizar_pedido?restauranteId=' + idRestaurante;
+            };
+
+            // Cargar favoritos al cargar la página
+            cargarFavoritos();
+        });
     </script>
 </body>
 </html>
