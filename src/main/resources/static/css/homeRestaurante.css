@@ -226,18 +226,23 @@ main section button:hover span {
     align-items: center;
 }
 
-.modal-content .btn-delete{
+.modal-content form .btn-delete {
     background-color: #000; /* Botones negros */
     color: #fff; /* Texto blanco */
     border: none; /* Sin borde */
-    padding: 10px 20px; /* Espaciado interno del botón */
+    padding: 5px 10px; /* Reduce el espaciado interno del botón */
     border-radius: 8px; /* Bordes redondeados */
     display: block; /* Asegura que el botón esté en una línea aparte */
-    margin: 20px auto; /* Centra el botón horizontalmente y añade margen vertical */
+    margin: 10px auto; /* Reduce el margen */
     text-align: center; /* Centra el texto dentro del botón */
+    width: 150px; /* Ajusta el ancho del botón */
+    height: 35px;
+    font-size: 0.8em; /* Ajusta el tamaño de la fuente */
+    font-weight: normal;
+    text-transform: none;
 }
 
-.modal-content .btn-delete:hover {
+.modal-content form .btn-delete:hover{
     background-color: #d32f2f; /* Color de fondo del botón al pasar el ratón */
 }
 
@@ -267,6 +272,7 @@ main section button:hover span {
     text-decoration: none;
     cursor: pointer;
 }
+
 
 footer {
     margin-top: 10px;
