@@ -1,63 +1,33 @@
 package es.uclm.delivery.presentacion;
 
-import es.uclm.delivery.dominio.entidades.*;
+import java.util.List;
+import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import es.uclm.delivery.dominio.entidades.*;
+import es.uclm.delivery.persistencia.PedidoDAO;
+import es.uclm.delivery.persistencia.ServicioEntregaDAO;
+
+@Service
 public class IUPedido {
 
-	/**
-	 * 
-	 * @param pedido
-	 * @param item
-	 */
-	public void añadirItemMenu(Pedido pedido, ItemMenu item) {
-		// TODO - implement IUPedido.a�adirItemMenu
-		throw new UnsupportedOperationException();
-	}
+    @Autowired
+    private PedidoDAO pedidoDAO;
 
-	/**
-	 * 
-	 * @param pedido
-	 * @param item
-	 */
-	public void eliinarItemMenu(Pedido pedido, ItemMenu item) {
-		// TODO - implement IUPedido.eliinarItemMenu
-		throw new UnsupportedOperationException();
-	}
+    @Autowired
+    private ServicioEntregaDAO servicioEntregaDAO;
 
-	/**
-	 * 
-	 * @param idRestaurante
-	 */
-	public Pedido comenzarPedido(String idRestaurante) {
-		// TODO - implement IUPedido.comenzarPedido
-		throw new UnsupportedOperationException();
-	}
+    public List<Pedido> obtenerPedidosEnCurso(Long clienteId) {
+        return pedidoDAO.findPedidosEnCurso(clienteId);
+    }
 
-	/**
-	 * 
-	 * @param pedido
-	 */
-	public boolean finalizarMenu(Pedido pedido) {
-		// TODO - implement IUPedido.finalizarMenu
-		throw new UnsupportedOperationException();
-	}
+	public Optional<Pedido> obtenerPedidoPorId(Long idPedido) {
+        return pedidoDAO.findById(idPedido);
+    }
 
-	/**
-	 * 
-	 * @param pedido
-	 */
-	private boolean realizarPago(Pedido pedido) {
-		// TODO - implement IUPedido.realizarPago
-		throw new UnsupportedOperationException();
-	}
-
-	/**
-	 * 
-	 * @param pedido
-	 */
-	private ServicioEntrega generarServicioEntrega(Pedido pedido) {
-		// TODO - implement IUPedido.generarServicioEntrega
-		throw new UnsupportedOperationException();
-	}
-
+    public Optional<ServicioEntrega> obtenerServicioEntregaPorPedido(Long pedidoId) {
+        return servicioEntregaDAO.findByPedidoId(pedidoId);
+    }
 }

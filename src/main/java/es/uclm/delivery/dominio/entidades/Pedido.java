@@ -1,6 +1,8 @@
 package es.uclm.delivery.dominio.entidades;
 
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -14,6 +16,7 @@ public class Pedido {
 
     @ManyToOne
     @JoinColumn(name = "cliente_id")
+    @JsonBackReference
     private Cliente cliente;
 
     @ManyToOne
@@ -24,8 +27,12 @@ public class Pedido {
     private List<ItemMenu> items;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "estado", nullable = false)
+    @Column(name = "estado")
     private EstadoPedido estado;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "fecha")
+    private Date fecha;
 
     // Getters y setters
 
@@ -67,5 +74,13 @@ public class Pedido {
 
     public void setEstado(EstadoPedido estado) {
         this.estado = estado;
+    }
+
+    public Date getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(Date fecha) {
+        this.fecha = fecha;
     }
 }

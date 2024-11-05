@@ -157,7 +157,7 @@ public ResponseEntity<?> confirmarPedido(@ModelAttribute("carrito") Carrito carr
         servicioEntrega.setPedido(pedido);
         servicioEntrega.setDireccion(direccion);
         servicioEntrega.setRepartidor(repartidor);
-        servicioEntrega.setEstado("En camino");
+        servicioEntrega.setEstado(EstadoPedido.RECOGIDO);
         servicioEntregaDAO.insert(servicioEntrega); // Guarda el servicio de entrega
 
         carrito.vaciar();
