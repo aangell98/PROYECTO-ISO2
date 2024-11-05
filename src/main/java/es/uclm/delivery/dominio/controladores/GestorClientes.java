@@ -56,16 +56,28 @@ public class GestorClientes {
     }
 
     @GetMapping("/listar_pedidos_curso")
-    public ResponseEntity<?> obtenerPedidosEnCurso() {
-        Cliente cliente = IUBusqueda.obtenerClienteActual();
-        List<Pedido> pedidosEnCurso = iuPedido.obtenerPedidosEnCurso(cliente.getId());
+public ResponseEntity<?> obtenerPedidosEnCurso() {
+    Cliente cliente = IUBusqueda.obtenerClienteActual();
+    List<Pedido> pedidosEnCurso = iuPedido.obtenerPedidosEnCurso(cliente.getId());
 
-        if (!pedidosEnCurso.isEmpty()) {
-            return ResponseEntity.ok(pedidosEnCurso);
-        } else {
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("No hay pedidos en curso");
-        }
+    if (!pedidosEnCurso.isEmpty()) {
+        List<Map<String, Object>> pedidosDetalles = pedidosEnCurso.stream().map(pedido -> {
+            Map<String, Object> detalles = new HashMap<>();
+            detalles.put("restaurante", pedido.getRestaurante().getNombre());
+            detalles.put("estado", pedido.getEstado());
+            Optional<ServicioEntrega> servicioEntregaOpt = iuPedido.obtenerServicioEntregaPorPedido(pedido.getId());
+            if (servicioEntregaOpt.isPresent()) {
+                ServicioEntrega servicioEntrega = servicioEntregaOpt.get();
+                detalles.put("repartidor", servicioEntrega.getRepartidor().getNombre() + " " + servicioEntrega.getRepartidor().getApellidos());
+            }
+            return detalles;
+        }).toList();
+
+        return ResponseEntity.ok(pedidosDetalles);
+    } else {
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body("No hay pedidos en curso");
     }
+}
 
     @GetMapping("/detalle_pedido/{idPedido}")
     public ResponseEntity<?> obtenerDetallesPedido(@PathVariable Long idPedido) {
