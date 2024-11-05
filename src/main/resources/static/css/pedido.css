@@ -203,3 +203,192 @@ li{
 .btn-volver:hover {
     background-color: #333; /* Cambio de color al pasar el ratón */
 }
+
+.cta {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    margin: 0;
+    padding: 10px 15px;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    width: 108px;
+    background-color: transparent;
+}
+.cta:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: block;
+    border-radius: 20px;
+    background: rgba(227, 103, 2, 0.945);
+    width: 34px;
+    height: 34px;
+    transition: all 0.3s ease;
+}
+.cta span {
+    position: relative;
+    font-size: 11px;
+    font-weight: 900;
+    text-transform: uppercase;
+    vertical-align: middle;
+    color: #000; /* Texto negro */
+}
+.cta svg {
+    position: relative;
+    top: 0;
+    margin-left: 5px;
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke: #000000;
+    stroke-width: 2;
+    transform: translateX(-3px);
+    transition: all 0.3s ease;
+}
+.cta:hover:before {
+    width: 100%;
+    background: rgba(255, 116, 3, 0.945);
+}
+.cta:hover svg {
+    transform: translateX(0);
+}
+.cta:active {
+    transform: scale(0.96);
+}
+.cta:hover{
+    background-color: transparent;
+}
+
+
+/* Ocultar los modales inicialmente */
+.modal {
+    display: none; /* Oculto por defecto */
+    position: fixed; /* Posición fija para centrar en la pantalla */
+    z-index: 1000; /* Asegura que esté por encima de otros elementos */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto; /* Permite el desplazamiento si el contenido es grande */
+    background-color: rgba(0, 0, 0, 0.5); /* Fondo semi-transparente */
+    animation: fadeIn 0.5s; /* Animación de aparición */
+}
+
+/* Centrar el contenido del modal */
+.modal-content {
+    background-color: #fa9302; /* Fondo naranja */
+    margin: 15% auto; /* Centrado vertical y horizontal */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Ancho del modal */
+    max-width: 600px; /* Ancho máximo del modal */
+    border-radius: 8px; /* Bordes redondeados */
+    animation: slideIn 0.5s; /* Animación de aparición */
+}
+
+.modal-content h2 {
+    text-align: center; /* Centra el título */
+    width: 100%; /* Asegura que el título ocupe todo el ancho */
+}
+
+.modal-content h3 {
+    text-align: center; /* Centra el título */
+    width: 100%; /* Asegura que el título ocupe todo el ancho */
+}
+
+.modal-content form label {
+    display: block; /* Asegura que el label esté en una línea aparte */
+}
+
+.modal-content form input[type="text"], .modal-content form input[type="number"]{
+    width: 95%; /* Asegura que el input/selección ocupe todo el ancho de su columna */
+    padding: 5px; /* Espaciado interno */
+    border-radius: 4px; /* Bordes redondeados */
+    border: 1px solid #ccc; /* Borde gris */
+    margin-left: 10px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.modal-content form select{
+    width: 97%; /* Asegura que el input/selección ocupe todo el ancho de su columna */
+    padding: 5px; /* Espaciado interno */
+    border-radius: 4px; /* Bordes redondeados */
+    border: 1px solid #ccc; /* Borde gris */
+    margin-left: 10px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.modal-content button {
+    background-color: #000; /* Botones negros */
+    color: #fff; /* Texto blanco */
+    border: none; /* Sin borde */
+    padding: 10px 20px; /* Espaciado interno del botón */
+    border-radius: 8px; /* Bordes redondeados */
+    display: block; /* Asegura que el botón esté en una línea aparte */
+    margin: 20px auto; /* Centra el botón horizontalmente y añade margen vertical */
+    text-align: center; /* Centra el texto dentro del botón */
+}
+
+.modal-content ul {
+    list-style-type: none; /* Elimina los puntos de la lista */
+}
+
+.modal-content li{
+    margin-bottom: 10px;
+}
+
+.modal-content li input[type="checkbox"] {
+    transform: scale(1.5); /* Ajusta el valor según el tamaño deseado */
+    align-items: center;
+}
+
+.modal-content form .btn-delete {
+    background-color: #000; /* Botones negros */
+    color: #fff; /* Texto blanco */
+    border: none; /* Sin borde */
+    padding: 5px 10px; /* Reduce el espaciado interno del botón */
+    border-radius: 8px; /* Bordes redondeados */
+    display: block; /* Asegura que el botón esté en una línea aparte */
+    margin: 10px auto; /* Reduce el margen */
+    text-align: center; /* Centra el texto dentro del botón */
+    width: 150px; /* Ajusta el ancho del botón */
+    height: 35px;
+    font-size: 0.8em; /* Ajusta el tamaño de la fuente */
+    font-weight: normal;
+    text-transform: none;
+}
+
+.modal-content form .btn-delete:hover{
+    background-color: #d32f2f; /* Color de fondo del botón al pasar el ratón */
+}
+
+/* Animación de aparición */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Animación de deslizamiento */
+@keyframes slideIn {
+    from { transform: translateY(-50px); }
+    to { transform: translateY(0); }
+}
+
+/* Estilo para el botón de cerrar */
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
