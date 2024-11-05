@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
     <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon">
     <title>Registro Cliente</title>
     <link rel="stylesheet" type="text/css" th:href="@{/css/forms.css}">
 </head>
+
 <body>
+    <button onclick="goBack()" class="btn-volver">Volver</button>
     <div class="container">
         <h1>Registro Cliente</h1>
         <form action="#" th:action="@{/registroCliente}" method="post">
@@ -38,5 +41,14 @@
             </div>
         </form>
     </div>
+
+    <script>
+
+        function goBack() {
+            window.history.back();
+        }
+
+    </script>
 </body>
+
 </html>

@@ -9,6 +9,7 @@
     <link rel="stylesheet" type="text/css" th:href="@{/css/pedido.css}">
 </head>
 <body>
+    <button onclick="goBack()" class="btn-volver">Volver</button>
     <div class="container">
         <main>
             <h1>Realizar Pedido</h1>
@@ -114,6 +115,10 @@
 
         function procederAlPago() {
             window.location.href = '/pago';
+        }
+
+        function goBack() {
+            window.history.back();
         }
     </script>
 </body>
