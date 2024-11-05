@@ -120,3 +120,24 @@ input[type="radio"] {
     margin-right: 10px; /* Espacio entre la casilla y el texto */
     vertical-align: middle;
 }
+
+/* Estilo para el botón Volver */
+.btn-volver {
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    padding: 10px 15px;
+    background-color:#000; /* Color de fondo azul */
+    color: #fff; /* Texto en blanco */
+    border: none;
+    border-radius: 40px;
+    width: 70px;
+    cursor: pointer;
+    font-size: 14px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+    transition: background-color 0.3s ease; /* Transición para el efecto hover */
+}
+
+.btn-volver:hover {
+    background-color: #333; /* Cambio de color al pasar el ratón */
+}
