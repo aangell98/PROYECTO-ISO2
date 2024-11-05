@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,14 +9,21 @@
     <title>Pago</title>
     <link rel="stylesheet" type="text/css" th:href="@{/css/pago.css}">
 </head>
+
 <body>
     <div class="container">
         <main>
             <h1>Confirmar Pedido</h1>
             <form id="formPago">
                 <section>
-                    <label for="direccion">Dirección de Entrega:</label>
-                    <input type="text" id="direccion" name="direccion" required>
+                    <label for="calle">Calle:</label>
+                    <input type="text" id="calle" name="calle" required>
+
+                    <label for="ciudad">Ciudad:</label>
+                    <input type="text" id="ciudad" name="ciudad" required>
+
+                    <label for="codigoPostal">Código Postal:</label>
+                    <input type="text" id="codigoPostal" name="codigoPostal" required>
                 </section>
                 <section>
                     <h3>Método de Pago</h3>
@@ -49,7 +57,7 @@
 
     <script>
         document.querySelectorAll('input[name="metodoPago"]').forEach((input) => {
-            input.addEventListener('change', function() {
+            input.addEventListener('change', function () {
                 if (this.value === 'PAYPAL') {
                     document.getElementById('paypalInfo').style.display = 'block';
                     document.getElementById('creditCardInfo').style.display = 'none';
@@ -61,7 +69,9 @@
         });
 
         function confirmarPedido() {
-            const direccion = document.getElementById('direccion').value;
+            const calle = document.getElementById('calle').value;
+            const ciudad = document.getElementById('ciudad').value;
+            const codigoPostal = document.getElementById('codigoPostal').value;
             const metodoPago = document.querySelector('input[name="metodoPago"]:checked').value;
 
             let pagoInfo = {};
@@ -78,27 +88,28 @@
                 };
             }
 
-            if (direccion && metodoPago && Object.values(pagoInfo).every(value => value)) {
+            if (calle && ciudad && codigoPostal && metodoPago && Object.values(pagoInfo).every(value => value)) {
                 fetch('/confirmar_pedido', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ direccion, metodoPago, pagoInfo })
+                    body: JSON.stringify({ direccion: { calle, ciudad, codigoPostal }, metodoPago, pagoInfo })
                 })
-                .then(response => {
-                    if (response.ok) {
-                        alert("Pedido realizado con éxito!");
-                        window.location.href = "/homeCliente";
-                    } else {
-                        alert("Error al realizar el pedido. Intente nuevamente.");
-                    }
-                })
-                .catch(error => console.error("Error en la confirmación del pedido:", error));
+                    .then(response => {
+                        if (response.ok) {
+                            alert("Pedido realizado con éxito!");
+                            window.location.href = "/homeCliente";
+                        } else {
+                            alert("Error al realizar el pedido. Intente nuevamente.");
+                        }
+                    })
+                    .catch(error => console.error("Error en la confirmación del pedido:", error));
             } else {
                 alert("Por favor, complete todos los campos requeridos.");
             }
         }
     </script>
 </body>
+
 </html>
