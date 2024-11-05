@@ -83,25 +83,31 @@
             });
 
             function cargarFavoritos() {
-                $.ajax({
-                    url: '/listar_favoritos',
-                    type: 'GET',
-                    success: function(data) {
-                        favoritos = data; // Actualizar la lista de favoritos
+            $.ajax({
+                url: '/listar_favoritos',
+                type: 'GET',
+                success: function(data) {
+                    favoritos = data.filter(restaurante => restaurante.nombre && restaurante.direccion); // Filtrar solo restaurantes válidos
+                    
+                    if (favoritos.length > 0) {
+                        $('#favorites').show(); // Mostrar la sección si hay favoritos válidos
                         var favoritosHtml = '';
-                        data.forEach(function(restaurante) {
+                        favoritos.forEach(function(restaurante) {
                             favoritosHtml += '<li id="favorito-' + restaurante.id + '">' + restaurante.nombre + ' - ' + restaurante.direccion + 
                                 ' <button class="btn-eliminar-favorito" onclick="eliminarFavorito(' + restaurante.id + ')">Eliminar de Favoritos</button>' +
                                 ' <button onclick="realizarPedido(' + restaurante.id + ')">Realizar Pedido</button></li>';
                         });
                         $('#listaFavoritos').html(favoritosHtml);
-                    },
-                    error: function() {
-                        console.log("Error al cargar favoritos");
-                        $('#listaFavoritos').html('<p>Error al cargar favoritos.</p>');
+                    } else {
+                        $('#favorites').hide(); // Ocultar la sección si no hay favoritos válidos
                     }
-                });
-            }
+                },
+                error: function() {
+                    console.log("Error al cargar favoritos");
+                    $('#listaFavoritos').html('<p>Error al cargar favoritos.</p>');
+                }
+            });
+        }
 
             window.agregarFavorito = function(idRestaurante) {
                 $.ajax({
@@ -143,7 +149,7 @@
                 window.location.href = '/realizar_pedido?restauranteId=' + idRestaurante;
             };
 
-            // Cargar favoritos al cargar la página
+            $('#favorites').hide();
             cargarFavoritos();
         });
 

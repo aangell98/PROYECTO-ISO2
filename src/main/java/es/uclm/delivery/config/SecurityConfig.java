@@ -42,7 +42,7 @@ public class SecurityConfig {
                 .requestMatchers("/home", "/buscar_restaurantes", "/restaurantes_destacados", "/registroCliente", "/registroRepartidor", "/registroRestaurante", "/css/**", "/js/**", "/images/**").permitAll()
                 .requestMatchers("/homeCliente/**", "/realizarPedido/**", "/realizar_pedido").hasRole("CLIENTE")
                 .requestMatchers("/homeRepartidor/**").hasRole("REPARTIDOR")
-                .requestMatchers("/homeRestaurante/**", "/altaMenu/**").hasRole("RESTAURANTE")
+                .requestMatchers("/homeRestaurante/**", "/eliminarNombreDireccionRestaurante/**").hasRole("RESTAURANTE")
                 .anyRequest().authenticated())
             .formLogin(form -> form
                 .loginPage("/login")

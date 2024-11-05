@@ -1,6 +1,7 @@
 package es.uclm.delivery.presentacion;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -61,6 +62,12 @@ public class IUBusqueda {
         restaurante.getCartasMenu().clear();
         restaurante.getCartasMenu().addAll(cartasMenu);
         return restaurante;
+    }
+
+    public List<Restaurante> obtenerRestaurantesDestacados() {
+        return restauranteDAO.obtenerRestaurantesAleatorios(4).stream()
+                .filter(r -> r.getNombre() != null && r.getDireccion() != null)
+                .collect(Collectors.toList());
     }
 
     public Cliente obtenerClienteActual() {
