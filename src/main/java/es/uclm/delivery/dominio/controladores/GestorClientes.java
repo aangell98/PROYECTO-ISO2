@@ -1,6 +1,7 @@
 package es.uclm.delivery.dominio.controladores;
 
 import es.uclm.delivery.dominio.entidades.*;
+import es.uclm.delivery.persistencia.PedidoDAO;
 import es.uclm.delivery.presentacion.IUBusqueda;
 import es.uclm.delivery.presentacion.IUPedido;
 import es.uclm.delivery.dominio.controladores.GestorPedidos;
@@ -26,6 +27,9 @@ public class GestorClientes {
 
     @Autowired
     private IUPedido iuPedido;
+    
+    @Autowired
+    private PedidoDAO pedidoDAO;
 
     @GetMapping("/buscar_restaurantes")
     public List<Restaurante> buscarRestaurantes(@RequestParam("codigoPostal") String codigoPostal) {
@@ -56,45 +60,38 @@ public class GestorClientes {
     }
 
     @GetMapping("/listar_pedidos_curso")
-public ResponseEntity<?> obtenerPedidosEnCurso() {
-    Cliente cliente = IUBusqueda.obtenerClienteActual();
-    List<Pedido> pedidosEnCurso = iuPedido.obtenerPedidosEnCurso(cliente.getId());
+    public ResponseEntity<?> obtenerPedidosEnCurso() {
+        Cliente cliente = IUBusqueda.obtenerClienteActual();
+        List<Pedido> pedidosEnCurso = iuPedido.obtenerPedidosEnCurso(cliente.getId());
 
-    if (!pedidosEnCurso.isEmpty()) {
-        List<Map<String, Object>> pedidosDetalles = pedidosEnCurso.stream().map(pedido -> {
-            Map<String, Object> detalles = new HashMap<>();
-            detalles.put("restaurante", pedido.getRestaurante().getNombre());
-            detalles.put("estado", pedido.getEstado());
-            Optional<ServicioEntrega> servicioEntregaOpt = iuPedido.obtenerServicioEntregaPorPedido(pedido.getId());
-            if (servicioEntregaOpt.isPresent()) {
-                ServicioEntrega servicioEntrega = servicioEntregaOpt.get();
-                detalles.put("repartidor", servicioEntrega.getRepartidor().getNombre() + " " + servicioEntrega.getRepartidor().getApellidos());
-            }
-            return detalles;
-        }).toList();
+        if (!pedidosEnCurso.isEmpty()) {
+            List<Map<String, Object>> pedidosDetalles = pedidosEnCurso.stream().map(pedido -> {
+                Map<String, Object> detalles = new HashMap<>();
+                detalles.put("id", pedido.getId());
+                detalles.put("restaurante", pedido.getRestaurante().getNombre());
+                detalles.put("estado", pedido.getEstado());
+                Optional<ServicioEntrega> servicioEntregaOpt = iuPedido.obtenerServicioEntregaPorPedido(pedido.getId());
+                if (servicioEntregaOpt.isPresent()) {
+                    ServicioEntrega servicioEntrega = servicioEntregaOpt.get();
+                    detalles.put("repartidor", servicioEntrega.getRepartidor().getNombre() + " " + servicioEntrega.getRepartidor().getApellidos());
+                }
+                return detalles;
+            }).toList();
 
-        return ResponseEntity.ok(pedidosDetalles);
-    } else {
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).body("No hay pedidos en curso");
+            return ResponseEntity.ok(pedidosDetalles);
+        } else {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("No hay pedidos en curso");
+        }
     }
-}
 
-    @GetMapping("/detalle_pedido/{idPedido}")
-    public ResponseEntity<?> obtenerDetallesPedido(@PathVariable Long idPedido) {
+    @PostMapping("/confirmar_recepcion/{idPedido}")
+    public ResponseEntity<?> confirmarRecepcion(@PathVariable Long idPedido) {
         Optional<Pedido> pedidoOpt = iuPedido.obtenerPedidoPorId(idPedido);
         if (pedidoOpt.isPresent()) {
             Pedido pedido = pedidoOpt.get();
-            Optional<ServicioEntrega> servicioEntregaOpt = iuPedido.obtenerServicioEntregaPorPedido(idPedido);
-            if (servicioEntregaOpt.isPresent()) {
-                ServicioEntrega servicioEntrega = servicioEntregaOpt.get();
-                Map<String, Object> detalles = new HashMap<>();
-                detalles.put("estado", pedido.getEstado());
-                detalles.put("direccion", servicioEntrega.getDireccion());
-                detalles.put("repartidor", servicioEntrega.getRepartidor());
-                return ResponseEntity.ok(detalles);
-            } else {
-                return ResponseEntity.status(HttpStatus.NO_CONTENT).body("No hay servicio de entrega asociado a este pedido");
-            }
+            pedido.setEstado(EstadoPedido.ENTREGADO);
+            pedidoDAO.update(pedido);  // Asegúrate de tener un método que actualice el pedido en la base de datos
+            return ResponseEntity.ok("Pedido actualizado a ENTREGADO");
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Pedido no encontrado");
         }
