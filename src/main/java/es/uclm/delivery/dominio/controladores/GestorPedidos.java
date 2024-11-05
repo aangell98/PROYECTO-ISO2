@@ -171,12 +171,13 @@ public ResponseEntity<?> confirmarPedido(@ModelAttribute("carrito") Carrito carr
 }
 
 public Repartidor obtenerRepartidorAleatorio() {
-        List<Repartidor> repartidores = repartidorDAO.findAll();
-        if (repartidores.isEmpty()) {
-            throw new IllegalStateException("No hay repartidores disponibles");
-        }
-        Random random = new Random();
-        int indexAleatorio = random.nextInt(repartidores.size());
-        return repartidores.get(indexAleatorio);
+    List<Long> idsRepartidores = repartidorDAO.findAllIds(); // Recuperar solo los IDs de los repartidores
+    if (idsRepartidores.isEmpty()) {
+        throw new IllegalStateException("No hay repartidores disponibles");
     }
+    Random random = new Random();
+    Long idAleatorio = idsRepartidores.get(random.nextInt(idsRepartidores.size()));
+    return repartidorDAO.findById(idAleatorio)
+                               .orElseThrow(() -> new IllegalStateException("Repartidor no encontrado"));
+}
 }
