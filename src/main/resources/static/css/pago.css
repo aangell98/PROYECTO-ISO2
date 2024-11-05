@@ -1,0 +1,122 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #fab802; /* Fondo amarillo */
+    margin: 0;
+    padding: 20px 0; /* Espacio en la parte superior e inferior */
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Alineación superior */
+    min-height: 100vh; /* Ocupa toda la altura de la pantalla */
+    box-sizing: border-box; /* Incluye el padding en el ancho y alto */
+}
+
+.container {
+    background-color: #fa9302;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    margin-top: 20px; /* Espacio superior */
+}
+
+h1 {
+    text-align: center;
+    color: #000;
+    margin-top: 20px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Alineación a la izquierda */
+    width: 100%; /* Ancho completo del contenedor */
+}
+
+label {
+    color: #000;
+    display: flex;
+    align-items: center;
+    width: 300px; /* Ancho completo */
+}
+
+input {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 100%; /* Ancho completo */
+    box-sizing: border-box; /* Incluye padding y borde en el ancho total */
+    align-items: start; /* Alineación a la izquierda */
+    vertical-align: center;
+}
+
+button {
+    padding: 10px;
+    background-color: black; /* Fondo negro */
+    color: white; /* Texto blanco */
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%; /* Ancho completo */
+    box-sizing: border-box; /* Incluye padding y borde en el ancho total */
+    text-align: center; /* Centrado del texto */
+    margin-top: 20px; /* Espacio superior */
+}
+
+button:hover {
+    background-color: #333; /* Fondo gris oscuro al pasar el ratón */
+}
+
+.error {
+    color: rgb(113, 2, 2);
+    text-align: center;
+    margin-top: 10px;
+}
+
+.message {
+    text-align: center;
+    color: #333;
+}
+
+.btn-logout {
+    background-color: #dc3545; /* Fondo rojo */
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+    margin-top: 20px; /* Espacio superior */
+}
+
+.btn-logout:hover {
+    background-color: #c82333; /* Fondo más oscuro al pasar el ratón */
+}
+
+a {
+    color: #036b20; /* Verde oscuro */
+    text-decoration: underline; /* Subrayado */
+}
+
+a:hover {
+    color: #06bb3c; /* Verde más claro al pasar el ratón */
+}
+
+/* Estilo específico para entradas de texto y contraseñas */
+input[type="text"],
+input[type="password"],
+input[type="email"] {
+    width: 100%; /* Asegura que los inputs ocupen todo el ancho */
+}
+
+#ancho-reducido {
+    width: 60px;
+}
+
+input[type="radio"] {
+    transform: scale(1.5); /* Aumenta el tamaño de la casilla */
+    margin-right: 10px; /* Espacio entre la casilla y el texto */
+    vertical-align: middle;
+}

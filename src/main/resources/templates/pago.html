@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon">
     <title>Pago</title>
-    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/pago.css}">
 </head>
 <body>
     <div class="container">
-        <header>
-            <h1>Confirmar Pedido</h1>
-        </header>
         <main>
+            <h1>Confirmar Pedido</h1>
             <form id="formPago">
                 <section>
                     <label for="direccion">Dirección de Entrega:</label>
@@ -19,10 +19,10 @@
                 </section>
                 <section>
                     <h3>Método de Pago</h3>
-                    <label>
+                    <label id="ancho-reducido">
                         <input type="radio" name="metodoPago" value="PAYPAL" required> PayPal
                     </label>
-                    <label>
+                    <label id="ancho-reducido">
                         <input type="radio" name="metodoPago" value="CREDIT_CARD" required> Tarjeta
                     </label>
                 </section>
