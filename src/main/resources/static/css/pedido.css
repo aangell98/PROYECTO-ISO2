@@ -215,26 +215,7 @@ li{
     width: 108px;
     background-color: transparent;
 }
-.cta:before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    display: block;
-    border-radius: 20px;
-    background: rgba(227, 103, 2, 0.945);
-    width: 34px;
-    height: 34px;
-    transition: all 0.3s ease;
-}
-.cta span {
-    position: relative;
-    font-size: 11px;
-    font-weight: 900;
-    text-transform: uppercase;
-    vertical-align: middle;
-    color: #000; /* Texto negro */
-}
+
 .cta svg {
     position: relative;
     top: 0;

@@ -7,14 +7,12 @@
     <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon">
     <title>Realizar Pedido</title>
     <link rel="stylesheet" type="text/css" th:href="@{/css/pedido.css}">
+    <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
 </head>
 <body>
     <button onclick="goBack()" class="btn-volver">Volver</button>
     <button class="cta" onclick="abrirModal()">
-        <span>Carrito</span>
-        <svg width="13px" height="10px" viewBox="0 0 13 10">
-            <polyline points="8 1 12 5 8 9"></polyline>
-        </svg>
+        <dotlottie-player id="carritoAnimacion" src="https://lottie.host/def13bc9-0fa5-4aae-84ac-1f5cf1d88035/Mr3qveI0Nd.json" background="transparent" speed="1" style="width: 55px; height: 49px;" direction="1" playMode="normal" loop></dotlottie-player>
     </button>
     
     <div class="container">
@@ -141,6 +139,16 @@
         function goBack() {
             window.history.back();
         }
+
+         // Manejo del evento mouseover para reproducir la animación
+         const carritoAnimacion = document.getElementById('carritoAnimacion');
+        carritoAnimacion.addEventListener('mouseover', () => {
+            carritoAnimacion.play();
+        });
+
+        carritoAnimacion.addEventListener('mouseout', () => {
+            carritoAnimacion.stop();
+        });
     </script>
 </body>
 </html>
