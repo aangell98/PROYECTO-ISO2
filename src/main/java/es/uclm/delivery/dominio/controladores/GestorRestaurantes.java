@@ -151,6 +151,7 @@ public class GestorRestaurantes {
                     .map(restaurante -> cartaMenuDAO.findAllByRestaurante(restaurante.getId()))
                     .orElse(List.of());
 
+            List<ItemMenu> items = itemMenuDAO.obtenerItemsPorRestaurante(restauranteOpt.get().getId());
             // Agregar log para verificar los valores de menus
             menus.forEach(menu -> System.out.println("Menu encontrado: " + (menu != null ? menu.getId() : "null")));
 
@@ -161,7 +162,7 @@ public class GestorRestaurantes {
                 Restaurante restaurante = restauranteOpt.get();
                 model.addAttribute("restaurante", restaurante);
                 model.addAttribute("isRestauranteRegistrado", true);
-                model.addAttribute("items", itemMenuDAO.findAll());
+                model.addAttribute("items", items);
                 model.addAttribute("menus", menus);
                 model.addAttribute("cartaMenu", new CartaMenu());
                 model.addAttribute("itemMenu", new ItemMenu());
@@ -188,10 +189,19 @@ public class GestorRestaurantes {
     }
 
     @PostMapping("/crearItemMenu")
-    public String crearItemMenu(@ModelAttribute ItemMenu itemMenu) {
-        itemMenuDAO.insert(itemMenu);
-        return "redirect:/homeRestaurante";
+public String crearItemMenu(@ModelAttribute ItemMenu itemMenu, Principal principal) {
+    Optional<Usuario> usuarioOpt = usuarioDAO.encontrarUser(principal.getName());
+    if (usuarioOpt.isPresent()) {
+        Usuario usuario = usuarioOpt.get();
+        Optional<Restaurante> restauranteOpt = restauranteDAO.findByUsuario(usuario);
+        if (restauranteOpt.isPresent()) {
+            Restaurante restaurante = restauranteOpt.get();
+            itemMenu.setRestaurante(restaurante); // Relacionar el ItemMenu con el restaurante
+            itemMenuDAO.insert(itemMenu);
+        }
     }
+    return "redirect:/homeRestaurante";
+}
 
     @PostMapping("/crearCartaMenu")
     public String crearCartaMenu(@ModelAttribute CartaMenu cartaMenu, @RequestParam List<Long> itemsIds,
