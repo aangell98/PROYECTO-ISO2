@@ -166,10 +166,51 @@
                     success: function() {
                         console.log("Pedido confirmado como recibido:", idPedido);
                         cargarPedidosEnCurso();  // Recargar los pedidos en curso después de actualizar el estado
+                        mostrarVentanaValoracion(idPedido);
                     },
                     error: function() {
                         console.log("Error al actualizar el estado del pedido:", idPedido);
                         alert("Error al actualizar el estado del pedido.");
+                    }
+                });
+            };
+
+            function mostrarVentanaValoracion(idPedido) {
+                const valoracionHtml = `
+                    <div id="valoracionModal" class="modal">
+                        <div class="modal-content">
+                            <span class="close" onclick="cerrarVentanaValoracion()">&times;</span>
+                            <h2>Valorar Pedido</h2>
+                            <p>Por favor, valora el pedido con una nota de 0 a 5:</p>
+                            <input type="number" id="valoracionInput" min="0" max="5" step="1">
+                            <button onclick="enviarValoracion(${idPedido})">Enviar Valoración</button>
+                        </div>
+                    </div>
+                `;
+                $('body').append(valoracionHtml);
+                $('#valoracionModal').show();
+            }
+
+            window.cerrarVentanaValoracion = function() {
+                $('#valoracionModal').remove();
+            };
+
+            window.enviarValoracion = function(idPedido) {
+                const valoracion = $('#valoracionInput').val();
+                console.log("Enviando valoración:", valoracion, "para el pedido:", idPedido);
+                $.ajax({
+                    url: '/valorar_pedido',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ idPedido: idPedido, valoracion: valoracion }),
+                    success: function() {
+                        console.log("Valoración enviada con éxito para el pedido:", idPedido);
+                        cerrarVentanaValoracion();
+                        cargarPedidosAnteriores(); // Recargar los pedidos anteriores después de enviar la valoración
+                    },
+                    error: function() {
+                        console.log("Error al enviar la valoración para el pedido:", idPedido);
+                        alert("Error al enviar la valoración.");
                     }
                 });
             };

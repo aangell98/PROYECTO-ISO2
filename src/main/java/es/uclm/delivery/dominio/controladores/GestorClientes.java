@@ -2,6 +2,7 @@ package es.uclm.delivery.dominio.controladores;
 
 import es.uclm.delivery.dominio.entidades.*;
 import es.uclm.delivery.persistencia.PedidoDAO;
+import es.uclm.delivery.persistencia.RepartidorDAO;
 import es.uclm.delivery.presentacion.IUBusqueda;
 import es.uclm.delivery.presentacion.IUPedido;
 import es.uclm.delivery.dominio.controladores.GestorPedidos;
@@ -35,6 +36,9 @@ public class GestorClientes {
 
     @Autowired
     private PedidoDAO pedidoDAO;
+
+    @Autowired
+    private RepartidorDAO repartidorDAO;
 
     @GetMapping("/buscar_restaurantes")
     public List<Restaurante> buscarRestaurantes(@RequestParam("codigoPostal") String codigoPostal) {
@@ -136,6 +140,38 @@ public class GestorClientes {
         } else {
             logger.info("No hay pedidos anteriores");
             return ResponseEntity.ok(List.of()); // Devolver una lista vacía en lugar de NO_CONTENT
+        }
+    }
+
+    @PostMapping("/valorar_pedido")
+    public ResponseEntity<?> valorarPedido(@RequestBody Map<String, Object> payload) {
+        Long idPedido = Long.valueOf(payload.get("idPedido").toString());
+        int valoracion = Integer.parseInt(payload.get("valoracion").toString());
+        logger.info("Valorando pedido: {} con valoración: {}", idPedido, valoracion);
+
+        Optional<Pedido> pedidoOpt = iuPedido.obtenerPedidoPorId(idPedido);
+        if (pedidoOpt.isPresent()) {
+            Pedido pedido = pedidoOpt.get();
+            Optional<ServicioEntrega> servicioEntregaOpt = iuPedido.obtenerServicioEntregaPorPedido(idPedido);
+            if (servicioEntregaOpt.isPresent()) {
+                ServicioEntrega servicioEntrega = servicioEntregaOpt.get();
+                Repartidor repartidor = servicioEntrega.getRepartidor();
+
+                // Calcular la nueva eficiencia del repartidor
+                double nuevaEficiencia = (repartidor.getEficiencia() + valoracion) / 2;
+
+                repartidor.setEficiencia(nuevaEficiencia);
+                repartidorDAO.update(repartidor);
+
+                logger.info("Repartidor {} valorado con éxito. Nueva eficiencia: {}", repartidor.getId(), nuevaEficiencia);
+                return ResponseEntity.ok("Pedido valorado con éxito");
+            } else {
+                logger.warn("Servicio de entrega no encontrado para el pedido: {}", idPedido);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Servicio de entrega no encontrado");
+            }
+        } else {
+            logger.warn("Pedido no encontrado: {}", idPedido);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Pedido no encontrado");
         }
     }
 
