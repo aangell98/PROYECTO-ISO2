@@ -11,6 +11,7 @@
 </head>
 
 <body>
+    <button onclick="goBack()" class="btn-volver">Volver</button>
     <div class="container">
         <main>
             <h1>Confirmar Pedido</h1>
@@ -67,6 +68,11 @@
                 }
             });
         });
+
+        // Función para regresar a la página anterior
+        function goBack() {
+            window.history.back();
+        }
 
         function confirmarPedido() {
             const calle = document.getElementById('calle').value;
