@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon">
+    <title>Registro Cliente</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/forms.css}">
+</head>
+
+<body>
+    <button onclick="goBack()" class="btn-volver">Volver</button>
+    <div class="container">
+        <h1>Registro Cliente</h1>
+        <form action="#" th:action="@{/registroCliente}" method="post">
+            <div>
+                <label for="username">Usuario:</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div>
+                <label for="password">Contraseña:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <div>
+                <label for="nombre">Nombre:</label>
+                <input type="text" id="nombre" name="nombre" required>
+            </div>
+            <div>
+                <label for="apellidos">Apellidos:</label>
+                <input type="text" id="apellidos" name="apellidos" required>
+            </div>
+            <div>
+                <label for="dni">DNI:</label>
+                <input type="text" id="dni" name="dni" required>
+            </div>
+            <div>
+                <button type="submit">Registrar</button>
+            </div>
+            <div th:if="${error}">
+                <p style="color: red;">El usuario ya existe</p>
+            </div>
+        </form>
+    </div>
+
+    <script>
+
+        function goBack() {
+            window.history.back();
+        }
+
+    </script>
+</body>
+
+</html>
