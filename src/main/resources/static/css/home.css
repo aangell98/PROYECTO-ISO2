@@ -1,0 +1,431 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #fab802; /* Color amarillo mostaza */
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100vh;
+}
+
+.container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 300px;
+}
+
+.home-container {
+    text-align: center;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    width: 100%;
+    margin: 20px;
+}
+
+button {
+    cursor: pointer;
+    background-color: #000; /* Botones negros */
+    color: #fff; /* Texto blanco */
+    border: none;
+    border-radius: 8px; /* Botones redondeados */
+    padding: 10px 20px;
+}
+
+button[onclick="location.href='/login'"] {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
+
+.search-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 60px;
+    width: 100%;
+}
+
+.search-container input {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 20px 0 0 20px; /* Redondeado */
+    outline: none;
+    width: 700px; /* Más largo */
+    margin-right: -1px; /* Elimina el doble borde entre input y botón */
+}
+
+.search-container button {
+    padding: 10px;
+    font-size: 16px;
+    border: none;
+    border-radius: 0 20px 20px 0; /* Redondeado */
+    background-color: #000; /* Botones negros */
+    color: white; /* Texto blanco */
+    cursor: pointer;
+}
+
+.header-section {
+    text-align: center;
+    margin-top: 60px;
+    margin-bottom: 20px;
+}
+
+.header-section img {
+    display: block;
+    margin: 0 auto;
+    max-width: 350px; /* Ajusta el tamaño de la imagen */
+    height: auto; /* Mantiene la proporción de la imagen */
+}
+
+.header-section h1 {
+    font-size: 2.5em; /* Tamaño de letra más grande */
+    font-weight: bold;
+    color: #000;
+    margin-bottom: 40px; /* Más espacio entre el título y el texto de restaurantes destacados */
+}
+
+.featured-restaurants {
+    margin-top: 20px;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.featured-restaurants h2 {
+    width: 100%;
+    text-align: center;
+}
+
+.restaurant {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin: 10px;
+    width: calc(25% - 40px);
+    box-sizing: border-box;
+    text-align: center;
+}
+
+.btn-logout {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background-color: #000; /* Botones negros */
+    color: #fff; /* Texto blanco */
+    border: none; /* Sin borde */
+    padding: 10px 20px; /* Espaciado interno del botón */
+    border-radius: 8px; /* Bordes redondeados */
+    cursor: pointer; /* Cambia el cursor al pasar sobre el botón */
+}
+
+.btn-logout:hover {
+    background-color: #d32f2f; /* Color de fondo del botón al pasar el ratón */
+}
+
+.cta {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    margin: 0;
+    padding: 10px 15px;
+    transition: all 0.2s ease;
+    text-decoration: none;
+}
+.cta:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: block;
+    border-radius: 20px;
+    background: rgba(227, 103, 2, 0.945);
+    width: 40px;
+    height: 40px;
+    transition: all 0.3s ease;
+}
+.cta span {
+    position: relative;
+    font-size: 12px;
+    font-weight: 900;
+    text-transform: uppercase;
+    vertical-align: middle;
+    color: #000; /* Texto negro */
+}
+.cta svg {
+    position: relative;
+    top: 0;
+    margin-left: 5px;
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke: #000000;
+    stroke-width: 2;
+    transform: translateX(-3px);
+    transition: all 0.3s ease;
+}
+.cta:hover:before {
+    width: 100%;
+    background: rgba(255, 116, 3, 0.945);
+}
+.cta:hover svg {
+    transform: translateX(0);
+}
+.cta:active {
+    transform: scale(0.96);
+}
+
+/* Custom styles for restaurant list */
+#listaFavoritos, #resultadosBusqueda ul {
+    list-style-type: none; /* Remove bullet points */
+    padding: 0;
+    text-align: center; /* Center the list items */
+}
+
+#listaFavoritos li, #resultadosBusqueda ul li {
+    font-size: 1.2em; /* Increase font size for restaurant names */
+    margin-bottom: 10px;
+}
+
+#listaFavoritos button, #resultadosBusqueda ul button {
+    background-color: #000000; /* Blue background */
+    color: #fff; /* White text */
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    margin-left: 5px;
+    cursor: pointer;
+}
+
+#listaFavoritos button:hover, #resultadosBusqueda ul button:hover {
+    background-color: #096401; /* Darker blue on hover */
+}
+
+#listaFavoritos .btn-eliminar-favorito:hover {
+    background-color: #d32f2f; /* Rojo al pasar el ratón */
+}
+
+#resultadosBusqueda {
+    display: none;
+    flex-direction: column;
+    align-items: center; /* Center the search results */
+    width: calc(100% -50px);
+    margin-top: 20px;
+    background-color: #fa9302; /* Fondo naranja */
+    border-radius: 8px; /* Esquinas redondeadas */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra */
+    padding: 20px; /* Espaciado interno */
+}
+
+#resultadosBusqueda h2 {
+    text-align: center;
+}
+
+footer{
+    margin-top: 20px;
+}
+
+.featured-restaurants {
+    margin-top: 20px;
+    width: 750px;
+    justify-content: center;
+}
+
+.restaurant {
+    width: 500px;
+    background-color: #fa9302;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin: 20px;
+    margin-left: 70px;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+
+.order-sections, .order-anteriores h2{
+    text-align: center;
+    
+}
+
+.order-anteriores ul{
+    list-style-type: none;
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    margin-right: 20px;
+    
+}
+
+.order-sections li{
+    margin-bottom: 30px;
+    margin-top: 30px;
+    background-color: #fa9302;
+    border-radius: 8px;
+    padding: 10px;
+}
+
+.order-anteriores li{
+    margin-bottom: 30px;
+    margin-top: 30px;
+    background-color: #fa9302;
+    border-radius: 8px;
+    padding: 10px;
+
+}
+
+.order-sections ul{
+    list-style-type: none;
+    margin-right: 20px;
+}
+
+
+
+/* Ocultar los modales inicialmente */
+.modal {
+    display: none; /* Oculto por defecto */
+    position: fixed; /* Posición fija para centrar en la pantalla */
+    z-index: 1000; /* Asegura que esté por encima de otros elementos */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto; /* Permite el desplazamiento si el contenido es grande */
+    background-color: rgba(0, 0, 0, 0.5); /* Fondo semi-transparente */
+    animation: fadeIn 0.5s; /* Animación de aparición */
+}
+
+/* Centrar el contenido del modal */
+.modal-content {
+    background-color: #fa9302; /* Fondo naranja */
+    margin: 15% auto; /* Centrado vertical y horizontal */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Ancho del modal */
+    max-width: 600px; /* Ancho máximo del modal */
+    border-radius: 8px; /* Bordes redondeados */
+    animation: slideIn 0.5s; /* Animación de aparición */
+}
+
+.modal-content h2 {
+    text-align: center; /* Centra el título */
+    width: 100%; /* Asegura que el título ocupe todo el ancho */
+}
+
+.modal-content p{
+    text-align: center;
+    width: 100%;
+}
+
+.modal-content h3 {
+    text-align: center; /* Centra el título */
+    width: 100%; /* Asegura que el título ocupe todo el ancho */
+}
+
+.modal-content form label {
+    display: block; /* Asegura que el label esté en una línea aparte */
+}
+
+.modal-content form input[type="text"], .modal-content form input[type="number"]{
+    width: 95%; /* Asegura que el input/selección ocupe todo el ancho de su columna */
+    padding: 5px; /* Espaciado interno */
+    border-radius: 4px; /* Bordes redondeados */
+    border: 1px solid #ccc; /* Borde gris */
+    margin-left: 10px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.modal-content form select{
+    width: 97%; /* Asegura que el input/selección ocupe todo el ancho de su columna */
+    padding: 5px; /* Espaciado interno */
+    border-radius: 4px; /* Bordes redondeados */
+    border: 1px solid #ccc; /* Borde gris */
+    margin-left: 10px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.modal-content button {
+    background-color: #000; /* Botones negros */
+    color: #fff; /* Texto blanco */
+    border: none; /* Sin borde */
+    padding: 10px 20px; /* Espaciado interno del botón */
+    border-radius: 8px; /* Bordes redondeados */
+    display: block; /* Asegura que el botón esté en una línea aparte */
+    margin: 20px auto; /* Centra el botón horizontalmente y añade margen vertical */
+    text-align: center; /* Centra el texto dentro del botón */
+}
+
+.modal-content ul {
+    list-style-type: none; /* Elimina los puntos de la lista */
+}
+
+.modal-content li{
+    margin-bottom: 10px;
+}
+
+.modal-content li input[type="checkbox"] {
+    transform: scale(1.5); /* Ajusta el valor según el tamaño deseado */
+    align-items: center;
+}
+
+.modal-content form .btn-delete {
+    background-color: #000; /* Botones negros */
+    color: #fff; /* Texto blanco */
+    border: none; /* Sin borde */
+    padding: 5px 10px; /* Reduce el espaciado interno del botón */
+    border-radius: 8px; /* Bordes redondeados */
+    display: block; /* Asegura que el botón esté en una línea aparte */
+    margin: 10px auto; /* Reduce el margen */
+    text-align: center; /* Centra el texto dentro del botón */
+    width: 150px; /* Ajusta el ancho del botón */
+    height: 35px;
+    font-size: 0.8em; /* Ajusta el tamaño de la fuente */
+    font-weight: normal;
+    text-transform: none;
+}
+
+.modal-content form .btn-delete:hover{
+    background-color: #d32f2f; /* Color de fondo del botón al pasar el ratón */
+}
+
+/* Animación de aparición */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Animación de deslizamiento */
+@keyframes slideIn {
+    from { transform: translateY(-50px); }
+    to { transform: translateY(0); }
+}
+
+/* Estilo para el botón de cerrar */
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.modal-content input{
+    display: block; /* Asegura que el input sea un elemento de bloque */
+    margin: 0 auto; /* Centra el input horizontalmente */
+}

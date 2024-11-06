@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Repartidor</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Bienvenido, Repartidor</h1>
+        </header>
+        <nav>
+            <ul>
+                <li><a href="/pedidos">Ver Pedidos</a></li>
+                <li><a href="/perfil">Perfil</a></li>
+                <li>
+                    <form method="post" action="/perform_logout" style="display: inline;">
+                        <button type="submit" class="btn-logout">Cerrar Sesión</button>
+                    </form>
+                </li>
+            </ul>
+        </nav>
+        <main>
+            <!-- Contenido principal aquí -->
+        </main>
+        <footer>
+            <p>&copy; 2024 Delivery. Todos los derechos reservados. Work In Progress</p>
+        </footer>
+    </div>
+</body>
+</html>

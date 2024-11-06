@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon">
+    <title>Página Principal</title>
+    <link rel="stylesheet" href="/css/home.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+
+<body>
+    <main>
+        <a href="/login" class="cta">
+            <span>Iniciar Sesión</span>
+            <svg width="13px" height="10px" viewBox="0 0 13 10">
+                <polyline points="8 1 12 5 8 9"></polyline>
+            </svg>
+        </a>
+        <div class="header-section">
+            <img src="/images/inicio.png" alt="Capricho">
+            <h1>Es el mejor día para darte un capricho. <br> ¿A que esperas para pedir?</h1>
+        </div>
+        <div class="search-container">
+            <section id="search">
+                <form id="searchForm">
+                    <input type="text" id="codigoPostal" placeholder="Buscar restaurantes por código postal"
+                        name="codigoPostal" required>
+                    <button type="submit">Buscar</button>
+                </form>
+                <div id="resultadosBusqueda">
+                    <!-- Aquí se mostrarán los resultados de la búsqueda -->
+                </div>
+            </section>
+        </div>
+        <div class="featured-restaurants"
+            th:if="${restaurantesDestacados != null and !restaurantesDestacados.isEmpty()}">
+            <h2>Restaurantes Destacados</h2>
+            <div id="destacados">
+                <th:block th:each="restaurante : ${restaurantesDestacados}">
+                    <div class="restaurant" th:if="${restaurante.nombre != null and restaurante.direccion != null}">
+                        <h3 th:text="${restaurante.nombre}">Nombre del Restaurante</h3>
+                        <p th:text="${restaurante.direccion}">Dirección del Restaurante</p>
+
+                        <!-- Botón para realizar pedido sin formulario -->
+                        <button th:onclick="'realizarPedido(' + ${restaurante.id} + ')'" type="button">Realizar
+                            Pedido</button>
+                    </div>
+                </th:block>
+            </div>
+        </div>
+
+    </main>
+    <footer>
+        <p>&copy; 2024 Delivery. Todos los derechos reservados. Work In Progress</p>
+    </footer>
+    <script>
+        $(document).ready(function () {
+            $('#searchForm').on('submit', function (event) {
+                event.preventDefault();
+                var codigoPostal = $('#codigoPostal').val();
+                console.log("Formulario enviado con código postal: " + codigoPostal);
+                $.ajax({
+                    url: '/buscar_restaurantes',
+                    type: 'GET',
+                    data: { codigoPostal: codigoPostal },
+                    success: function (data) {
+                        console.log("Respuesta recibida del servidor");
+                        if (data.length > 0) {
+                            var resultadosHtml = '<h2>Restaurantes Encontrados:</h2><ul>';
+                            data.forEach(function (restaurante) {
+                                resultadosHtml += '<li>' + restaurante.nombre + ' - ' + restaurante.direccion +
+                                    ' <button onclick="realizarPedido(' + restaurante.id + ')">Realizar Pedido</button></li>';
+                            });
+                            resultadosHtml += '</ul>';
+                            $('#resultadosBusqueda').html(resultadosHtml);
+                            $('#resultadosBusqueda').show(); // Mostrar resultados de búsqueda
+                        } else {
+                            $('#resultadosBusqueda').html('<p>No se encontraron restaurantes.</p>');
+                            $('#resultadosBusqueda').show(); // Mostrar mensaje de no resultados
+                        }
+                    },
+                    error: function () {
+                        console.log("Error al buscar restaurantes");
+                        $('#resultadosBusqueda').html('<p>Error al buscar restaurantes.</p>');
+                        $('#resultadosBusqueda').show(); // Mostrar mensaje de error
+                    }
+                });
+            });
+
+            function cargarRestaurantesDestacados() {
+                $.ajax({
+                    url: '/restaurantes_destacados',
+                    type: 'GET',
+                    success: function (data) {
+                        console.log("Restaurantes destacados recibidos del servidor", data);
+                        var destacadosHtml = '';
+                        data.forEach(function (restaurante, index) {
+                            destacadosHtml += '<div class="restaurant" id="restaurant' + (index + 1) + '">';
+                            destacadosHtml += '<h3>' + restaurante.nombre + '</h3>';
+                            destacadosHtml += '<p>' + restaurante.direccion + '</p>';
+                            destacadosHtml += '</div>';
+                        });
+                        for (var i = data.length; i < 4; i++) {
+                            destacadosHtml += '<div class="restaurant" id="restaurant' + (i + 1) + '">';
+                            destacadosHtml += '<h3>&nbsp;</h3>';
+                            destacadosHtml += '<p>&nbsp;</p>';
+                            destacadosHtml += '</div>';
+                        }
+                        $('#restaurantesDestacados').html(destacadosHtml);
+                    },
+                    error: function () {
+                        console.log("Error al cargar restaurantes destacados");
+                        $('#restaurantesDestacados').html('<p>Error al cargar restaurantes destacados.</p>');
+                    }
+                });
+            }
+
+            // Define la función realizarPedido para redirigir al usuario al realizar el pedido
+            window.realizarPedido = function (idRestaurante) {
+                window.location.href = '/realizar_pedido?restauranteId=' + idRestaurante;
+            };
+        });
+    </script>
+
+</body>
+
+</html>

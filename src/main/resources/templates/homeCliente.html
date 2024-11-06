@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Cliente</title>
+    <link rel="stylesheet" href="/css/home.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <header>
+        <form method="post" action="/perform_logout" style="display: inline;">
+            <button type="submit" class="btn-logout">Cerrar Sesión</button>
+        </form>
+    </header>
+    <main>
+        <div class="header-section">
+            <img src="/images/inicio.png" alt="Capricho">
+            <h1>Es el mejor día para darte un capricho. <br> ¿A que esperas para pedir?</h1>
+        </div>
+        <div class="search-container">
+            <section id="search">
+                <form id="searchForm">
+                    <input type="text" id="codigoPostal" placeholder="Buscar restaurantes por código postal" name="codigoPostal" required>
+                    <button type="submit">Buscar</button>
+                </form>
+                <div id="resultadosBusqueda">
+                    <!-- Aquí se mostrarán los resultados de la búsqueda -->
+                </div>
+            </section>
+        </div>
+        <div class="featured-restaurants">
+            <h2>Tus Restaurantes Favoritos</h2>
+            <section id="favorites">
+                <ul id="listaFavoritos">
+                    <!-- Aquí se mostrarán los restaurantes favoritos -->
+                </ul>
+            </section>
+        </div>
+        <div class="order-sections">
+            <h2>Pedidos en Curso</h2>
+            <section id="pedidoencurso">
+                <ul id="currentOrders">
+                    <!-- Se llenará dinámicamente con pedidos en curso -->
+                </ul>
+            </section>
+        </div>
+        <div class="order-anteriores">
+            <h2>Pedidos Anteriores</h2>
+            <section id="pastOrders">
+                <ul id="previousOrders">
+                    <!-- Se llenará dinámicamente con pedidos anteriores -->
+                </ul>
+            </section>
+        </div>
+    </main>
+    <footer>
+        <p>&copy; 2024 Delivery. Todos los derechos reservados. Work In Progress</p>
+    </footer>
+    <script>
+        $(document).ready(function() {
+            let favoritos = [];
+
+            $('#searchForm').on('submit', function(event) {
+                event.preventDefault();
+                var codigoPostal = $('#codigoPostal').val();
+                console.log("Formulario enviado con código postal: " + codigoPostal);
+                $.ajax({
+                    url: '/buscar_restaurantes',
+                    type: 'GET',
+                    data: { codigoPostal: codigoPostal },
+                    success: function(data) {
+                        console.log("Respuesta recibida del servidor:", data);
+                        if (data && data.length > 0) {
+                            var resultadosHtml = '<h2>Restaurantes Encontrados:</h2><ul>';
+                            data.forEach(function(restaurante) {
+                                resultadosHtml += '<li id="restaurante-' + restaurante.id + '">' + restaurante.nombre + ' - ' + restaurante.direccion;
+                                if (!favoritos.some(fav => fav.id === restaurante.id)) {
+                                    resultadosHtml += ' <button onclick="agregarFavorito(' + restaurante.id + ')">Agregar a Favoritos</button>';
+                                }
+                                resultadosHtml += ' <button onclick="realizarPedido(' + restaurante.id + ')">Realizar Pedido</button></li>';
+                            });
+                            resultadosHtml += '</ul>';
+                            $('#resultadosBusqueda').html(resultadosHtml);
+                            $('#resultadosBusqueda').show(); // Mostrar resultados de búsqueda
+                        } else {
+                            $('#resultadosBusqueda').html('<p>No se encontraron restaurantes.</p>');
+                            $('#resultadosBusqueda').show(); // Mostrar mensaje de no resultados
+                        }
+                    },
+                    error: function() {
+                        console.log("Error al buscar restaurantes");
+                        $('#resultadosBusqueda').html('<p>Error al buscar restaurantes. Intente nuevamente más tarde.</p>');
+                    }
+                });
+            });
+
+            function cargarPedidosEnCurso() {
+                console.log("Cargando pedidos en curso...");
+                $.ajax({
+                    url: '/listar_pedidos_curso',
+                    type: 'GET',
+                    success: function(data) {
+                        console.log("Pedidos en curso recibidos:", data);
+                        if (data && data.length > 0) {
+                            var pedidosHtml = '';
+                            data.forEach(function(pedido) {
+                                pedidosHtml += `
+                                    <li id="pedido-${pedido.id}">
+                                        <p><strong>Restaurante:</strong> ${pedido.restaurante}</p>
+                                        <p><strong>Estado:</strong> ${pedido.estado}</p>
+                                        <p><strong>Repartidor:</strong> ${pedido.repartidor}</p>
+                                        <button onclick="confirmarRecepcion(${pedido.id})">¿Has recibido el pedido?</button>
+                                    </li>`;
+                            });
+                            $('#currentOrders').html(pedidosHtml);
+                        } else {
+                            $('#currentOrders').html('<p>No tienes pedidos en curso.</p>');
+                        }
+                    },
+                    error: function() {
+                        console.log("Error al cargar los pedidos en curso");
+                        $('#currentOrders').html('<p>Error al cargar los pedidos en curso.</p>');
+                    }
+                });
+            }
+
+            function cargarPedidosAnteriores() {
+                console.log("Cargando pedidos anteriores...");
+                $.ajax({
+                    url: '/listar_pedidos_anteriores',
+                    type: 'GET',
+                    success: function(data) {
+                        console.log("Pedidos anteriores recibidos:", data);
+                        if (data && data.length > 0) {
+                            var pedidosHtml = '';
+                            data.forEach(function(pedido) {
+                                pedidosHtml += `
+                                    <li id="pedido-${pedido.id}">
+                                        <p><strong>Restaurante:</strong> ${pedido.restaurante}</p>
+                                        <p><strong>Estado:</strong> ${pedido.estado}</p>
+                                        <p><strong>Repartidor:</strong> ${pedido.repartidor}</p>
+                                    </li>`;
+                            });
+                            $('#previousOrders').html(pedidosHtml);
+                        } else {
+                            $('#previousOrders').html('<p>No tienes pedidos anteriores.</p>');
+                        }
+                    },
+                    error: function() {
+                        console.log("Error al cargar los pedidos anteriores");
+                        $('#previousOrders').html('<p>Error al cargar los pedidos anteriores.</p>');
+                    }
+                });
+            }
+
+            window.confirmarRecepcion = function(idPedido) {
+                console.log("Confirmando recepción del pedido:", idPedido);
+                $.ajax({
+                    url: '/confirmar_recepcion',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ idPedido: idPedido }),
+                    success: function() {
+                        console.log("Pedido confirmado como recibido:", idPedido);
+                        cargarPedidosEnCurso();  // Recargar los pedidos en curso después de actualizar el estado
+                        mostrarVentanaValoracion(idPedido);
+                    },
+                    error: function() {
+                        console.log("Error al actualizar el estado del pedido:", idPedido);
+                        alert("Error al actualizar el estado del pedido.");
+                    }
+                });
+            };
+
+            function mostrarVentanaValoracion(idPedido) {
+                const valoracionHtml = `
+                    <div id="valoracionModal" class="modal">
+                        <div class="modal-content">
+                            <span class="close" onclick="cerrarVentanaValoracion()">&times;</span>
+                            <h2>Valorar Pedido</h2>
+                            <p>Por favor, valora el pedido con una nota de 0 a 5:</p>
+                            <input type="number" id="valoracionInput" min="0" max="5" step="1">
+                            <button onclick="enviarValoracion(${idPedido})">Enviar Valoración</button>
+                        </div>
+                    </div>
+                `;
+                $('body').append(valoracionHtml);
+                $('#valoracionModal').show();
+            }
+
+            window.cerrarVentanaValoracion = function() {
+                $('#valoracionModal').remove();
+            };
+
+            window.enviarValoracion = function(idPedido) {
+                const valoracion = $('#valoracionInput').val();
+                console.log("Enviando valoración:", valoracion, "para el pedido:", idPedido);
+                $.ajax({
+                    url: '/valorar_pedido',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ idPedido: idPedido, valoracion: valoracion }),
+                    success: function() {
+                        console.log("Valoración enviada con éxito para el pedido:", idPedido);
+                        cerrarVentanaValoracion();
+                        cargarPedidosAnteriores(); // Recargar los pedidos anteriores después de enviar la valoración
+                    },
+                    error: function() {
+                        console.log("Error al enviar la valoración para el pedido:", idPedido);
+                        alert("Error al enviar la valoración.");
+                    }
+                });
+            };
+
+            cargarPedidosEnCurso();
+            cargarPedidosAnteriores();
+
+            function cargarFavoritos() {
+                console.log("Cargando favoritos...");
+                $.ajax({
+                    url: '/listar_favoritos',
+                    type: 'GET',
+                    success: function(data) {
+                        console.log("Favoritos recibidos:", data);
+                        favoritos = data.filter(restaurante => restaurante.nombre && restaurante.direccion); // Filtrar solo restaurantes válidos
+
+                        if (favoritos.length > 0) {
+                            $('#favorites').show(); // Mostrar la sección si hay favoritos válidos
+                            var favoritosHtml = '';
+                            favoritos.forEach(function(restaurante) {
+                                favoritosHtml += '<li id="favorito-' + restaurante.id + '">' + restaurante.nombre + ' - ' + restaurante.direccion +
+                                    ' <button class="btn-eliminar-favorito" onclick="eliminarFavorito(' + restaurante.id + ')">Eliminar de Favoritos</button>' +
+                                    ' <button onclick="realizarPedido(' + restaurante.id + ')">Realizar Pedido</button></li>';
+                            });
+                            $('#listaFavoritos').html(favoritosHtml);
+                        } else {
+                            $('#favorites').hide(); // Ocultar la sección si no hay favoritos válidos
+                        }
+                    },
+                    error: function() {
+                        console.log("Error al cargar favoritos");
+                        $('#listaFavoritos').html('<p>Error al cargar favoritos. Intente nuevamente más tarde.</p>');
+                    }
+                });
+            }
+
+            window.agregarFavorito = function(idRestaurante) {
+                console.log("Agregando favorito:", idRestaurante);
+                $.ajax({
+                    url: '/agregar_favorito',
+                    type: 'POST',
+                    data: { idRestaurante: idRestaurante },
+                    success: function() {
+                        console.log("Restaurante agregado a favoritos:", idRestaurante);
+                        cargarFavoritos();
+                        $('#restaurante-' + idRestaurante + ' button').first().remove();
+                    },
+                    error: function() {
+                        console.log("Error al agregar a favoritos:", idRestaurante);
+                    }
+                });
+            };
+
+            window.eliminarFavorito = function(idRestaurante) {
+                console.log("Eliminando favorito:", idRestaurante);
+                $.ajax({
+                    url: '/eliminar_favorito',
+                    type: 'POST',
+                    data: { idRestaurante: idRestaurante },
+                    success: function() {
+                        console.log("Restaurante eliminado de favoritos:", idRestaurante);
+                        cargarFavoritos();
+                        if ($('#restaurante-' + idRestaurante).length) {
+                            $('#restaurante-' + idRestaurante).append(' <button onclick="agregarFavorito(' + idRestaurante + ')">Agregar a Favoritos</button>');
+                        }
+                    },
+                    error: function() {
+                        console.log("Error al eliminar de favoritos:", idRestaurante);
+                    }
+                });
+            };
+
+            window.realizarPedido = function(idRestaurante) {
+                console.log("Realizando pedido para el restaurante:", idRestaurante);
+                window.location.href = '/realizar_pedido?restauranteId=' + idRestaurante;
+            };
+
+            $('#favorites').hide();
+            cargarFavoritos();
+        });
+
+        function searchRestaurants() {
+            const query = document.getElementById('search').value;
+            console.log('Buscando restaurantes para:', query);
+        }
+
+        $(document).ready(function() {
+            cargarPedidosEnCurso();
+            cargarPedidosAnteriores();
+        });
+    </script>
+</body>
+</html>
