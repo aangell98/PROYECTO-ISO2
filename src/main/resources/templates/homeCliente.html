@@ -127,6 +127,35 @@
                 });
             }
 
+            function cargarPedidosAnteriores() {
+                console.log("Cargando pedidos anteriores...");
+                $.ajax({
+                    url: '/listar_pedidos_anteriores',
+                    type: 'GET',
+                    success: function(data) {
+                        console.log("Pedidos anteriores recibidos:", data);
+                        if (data && data.length > 0) {
+                            var pedidosHtml = '';
+                            data.forEach(function(pedido) {
+                                pedidosHtml += `
+                                    <li id="pedido-${pedido.id}">
+                                        <p><strong>Restaurante:</strong> ${pedido.restaurante}</p>
+                                        <p><strong>Estado:</strong> ${pedido.estado}</p>
+                                        <p><strong>Repartidor:</strong> ${pedido.repartidor}</p>
+                                    </li>`;
+                            });
+                            $('#previousOrders').html(pedidosHtml);
+                        } else {
+                            $('#previousOrders').html('<p>No tienes pedidos anteriores.</p>');
+                        }
+                    },
+                    error: function() {
+                        console.log("Error al cargar los pedidos anteriores");
+                        $('#previousOrders').html('<p>Error al cargar los pedidos anteriores.</p>');
+                    }
+                });
+            }
+
             window.confirmarRecepcion = function(idPedido) {
                 console.log("Confirmando recepción del pedido:", idPedido);
                 $.ajax({
@@ -146,6 +175,7 @@
             };
 
             cargarPedidosEnCurso();
+            cargarPedidosAnteriores();
 
             function cargarFavoritos() {
                 console.log("Cargando favoritos...");
@@ -228,6 +258,7 @@
 
         $(document).ready(function() {
             cargarPedidosEnCurso();
+            cargarPedidosAnteriores();
         });
     </script>
 </body>

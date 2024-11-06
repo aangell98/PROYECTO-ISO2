@@ -111,4 +111,33 @@ public class GestorClientes {
         }
     }
 
+    @GetMapping("/listar_pedidos_anteriores")
+    public ResponseEntity<?> obtenerPedidosAnteriores() {
+        Cliente cliente = IUBusqueda.obtenerClienteActual();
+        logger.info("Obteniendo pedidos anteriores para el cliente: {}", cliente.getId());
+        List<Pedido> pedidosAnteriores = iuPedido.obtenerPedidosEntregados(cliente.getId());
+
+        if (!pedidosAnteriores.isEmpty()) {
+            List<Map<String, Object>> pedidosDetalles = pedidosAnteriores.stream().map(pedido -> {
+                Map<String, Object> detalles = new HashMap<>();
+                detalles.put("id", pedido.getId());
+                detalles.put("restaurante", pedido.getRestaurante().getNombre());
+                detalles.put("estado", pedido.getEstado());
+                Optional<ServicioEntrega> servicioEntregaOpt = iuPedido.obtenerServicioEntregaPorPedido(pedido.getId());
+                if (servicioEntregaOpt.isPresent()) {
+                    ServicioEntrega servicioEntrega = servicioEntregaOpt.get();
+                    detalles.put("repartidor", servicioEntrega.getRepartidor().getNombre() + " " + servicioEntrega.getRepartidor().getApellidos());
+                }
+                return detalles;
+            }).toList();
+
+            logger.info("Pedidos anteriores encontrados: {}", pedidosDetalles.size());
+            return ResponseEntity.ok(pedidosDetalles);
+        } else {
+            logger.info("No hay pedidos anteriores");
+            return ResponseEntity.ok(List.of()); // Devolver una lista vacía en lugar de NO_CONTENT
+        }
+    }
+
+
 }

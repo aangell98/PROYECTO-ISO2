@@ -40,5 +40,15 @@ public class PedidoDAO extends EntidadDAO<Pedido> {
         Pedido pedido = entityManager.find(Pedido.class, id);
         return Optional.ofNullable(pedido);
 
+    }
 
-}}
+    public List<Pedido> findPedidosEntregados(Long clienteId) {
+        return entityManager.createQuery(
+            "SELECT p FROM Pedido p WHERE p.cliente.id = :clienteId AND p.estado = :estadoEntregado",
+            Pedido.class)
+            .setParameter("clienteId", clienteId)
+            .setParameter("estadoEntregado", EstadoPedido.ENTREGADO)
+            .getResultList();
+    }
+
+}

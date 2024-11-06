@@ -37,4 +37,8 @@ public class IUPedido {
 		pedido.setEstado(EstadoPedido.ENTREGADO);
 		pedidoDAO.update(pedido);
 	}
+
+	public List<Pedido> obtenerPedidosEntregados(Long clienteId) {
+		return pedidoDAO.findPedidosEntregados(clienteId);
+	}
 }
