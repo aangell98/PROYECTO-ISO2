@@ -1,6 +1,7 @@
 package es.uclm.delivery.dominio.entidades;
 
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import java.util.Collection;
 
 @Entity
@@ -26,12 +27,15 @@ public class Cliente {
     private Usuario usuario;
 
     @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private Collection<ClienteFavoritos> favoritos;
 
     @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private Collection<Pedido> pedidos;
 
     @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private Collection<Direccion> direcciones;
 
     // Getters y setters

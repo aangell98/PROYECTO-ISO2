@@ -213,12 +213,16 @@
         <div class="modal-content">
             <span class="close" onclick="closeModal('modalEditarRestaurante')">&times;</span>
             <h2>Editar Restaurante</h2>
-            <form method="post" action="/editarRestaurante">
+            <form method="post" action="/crearRestaurante">
                 <label for="nombreRestaurante">Nuevo Nombre:</label>
                 <input type="text" id="nombreRestaurante" name="nombre" required>
                 <label for="direccionRestaurante">Nueva Dirección:</label>
                 <input type="text" id="direccionRestaurante" name="direccion" required>
                 <button type="submit">Actualizar Restaurante</button>
+            </form>
+            <form method="post" action="/eliminarNombreDireccionRestaurante">
+                <input type="hidden" name="restauranteId" th:value="${restaurante.id}">
+                <button type="submit" class="btn-delete">Eliminar Restaurante</button>
             </form>
         </div>
     </div>

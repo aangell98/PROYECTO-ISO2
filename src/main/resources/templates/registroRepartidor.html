@@ -7,6 +7,7 @@
     <link rel="stylesheet" type="text/css" th:href="@{/css/forms.css}">
 </head>
 <body>
+    <button onclick="goBack()" class="btn-volver">Volver</button>
     <div class="container">
         <h1>Registro Repartidor</h1>
         <form action="#" th:action="@{/registroRepartidor}" method="post">
@@ -38,5 +39,12 @@
             </div>
         </form>
     </div>
+    <script>
+
+        function goBack() {
+            window.history.back();
+        }
+
+    </script>
 </body>
 </html>

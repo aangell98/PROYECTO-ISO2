@@ -175,8 +175,14 @@ public class GestorRestaurantes {
         Optional<Usuario> usuarioOpt = usuarioDAO.encontrarUser(principal.getName());
         if (usuarioOpt.isPresent()) {
             Usuario usuario = usuarioOpt.get();
-            restaurante.setUsuario(usuario);
-            restauranteDAO.insert(restaurante);
+            Optional<Restaurante> restauranteOpt = restauranteDAO.findByUsuario(usuario);
+            if (restauranteOpt.isPresent()) {
+                Restaurante existingRestaurante = restauranteOpt.get();
+                existingRestaurante.setDireccion(restaurante.getDireccion());
+                existingRestaurante.setNombre(restaurante.getNombre());
+                existingRestaurante.setUsuario(usuario);
+                restauranteDAO.update(existingRestaurante);
+            }
         }
         return "redirect:/homeRestaurante";
     }

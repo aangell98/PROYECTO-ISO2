@@ -3,29 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon">
     <title>Realizar Pedido</title>
-    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/pedido.css}">
+    <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
 </head>
 <body>
+    <button onclick="goBack()" class="btn-volver">Volver</button>
+    <button class="cta" onclick="abrirModal()">
+        <dotlottie-player id="carritoAnimacion" src="https://lottie.host/def13bc9-0fa5-4aae-84ac-1f5cf1d88035/Mr3qveI0Nd.json" background="transparent" speed="1" style="width: 55px; height: 49px;" direction="1" playMode="normal" loop></dotlottie-player>
+    </button>
+    
     <div class="container">
-        <header>
-            <h1>Realizar Pedido</h1>
-        </header>
         <main>
+            <h1>Realizar Pedido</h1>
             <section id="restauranteInfo">
                 <h2>Información del Restaurante</h2>
                 <p>Nombre: <span th:text="${restaurante.nombre}"></span></p>
                 <p>Dirección: <span th:text="${restaurante.direccion}"></span></p>
             </section>
+            
             <section id="menus">
-                <h2>Cartas de Menú Disponibles</h2>
+                <h2>Menús Disponibles</h2>
                 <ul>
                     <li th:each="cartaMenu : ${restaurante.cartasMenu}">
                         <h3 th:text="${cartaMenu.nombre}"></h3>
                         <p th:text="${cartaMenu.descripcion}"></p>
                         <p><strong>Precio Total:</strong> <span th:text="${cartaMenu.precioTotal} + ' €'"></span></p>
 
-                        <!-- Lista de items del menú -->
+                        <h4><strong>Platos del menú:</strong></h4>
                         <ul>
                             <li th:each="item : ${cartaMenu.items}">
                                 <p><strong>Nombre:</strong> <span th:text="${item.nombre}"></span></p>
@@ -35,33 +42,41 @@
                         </ul>
 
                         <button th:onclick="'agregarAlCarrito(' + ${cartaMenu.id} + ')'">Añadir al Carrito</button>
-                        <hr> <!-- Separador entre menús -->
+                        <br>
                     </li>
                 </ul>
             </section>
-            <section id="carrito">
-                <div class="carrito-container">
-                    <h3>Carrito</h3>
-                    <ul id="carritoItems"></ul> <!-- Aquí se mostrarán los ítems añadidos al carrito -->
-                    <p>Total: <span id="precioTotal">0</span> €</p>
-
-                    <!-- Botón para limpiar el carrito completo -->
-                    <button onclick="limpiarCarrito()">Vaciar Carrito</button>
-                    <!-- Botón para realizar el pedido -->
-                    <button onclick="procederAlPago()">Proceder al pago</button>
-                </div>
-            </section>
-
-            <section id="contact">
-                <h2>Contacto</h2>
-                <p>Información de contacto y formulario.</p>
-            </section>
         </main>
+
         <footer>
-            <p>&copy; 2024 Delivery. Todos los derechos reservados. Work In Progress</p>
+            <p>&copy; 2024 Delivery. Todos los derechos reservados.</p>
         </footer>
     </div>
+
+    <!-- Modal del Carrito -->
+    <div id="modalCarrito" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="cerrarModal()">&times;</span>
+            <h3>Carrito</h3>
+            <ul id="carritoItems"></ul> <!-- Aquí se mostrarán los ítems añadidos al carrito -->
+            <p id="precioTotalParagraph">Total: <span id="precioTotal">0</span> €</p>
+            <button onclick="limpiarCarrito()">Vaciar Carrito</button>
+            <button onclick="procederAlPago()">Proceder al pago</button>
+        </div>
+    </div>
+
     <script>
+        // Función para abrir el modal del carrito
+        function abrirModal() {
+            document.getElementById('modalCarrito').style.display = 'flex';
+        }
+
+        // Función para cerrar el modal del carrito
+        function cerrarModal() {
+            document.getElementById('modalCarrito').style.display = 'none';
+        }
+
+        // Función para agregar un menú al carrito
         function agregarAlCarrito(cartaMenuId) {
             fetch('/agregar_al_carrito', {
                 method: 'POST',
@@ -70,11 +85,11 @@
                 },
                 body: JSON.stringify({ id: cartaMenuId })
             })
-                .then(response => response.json())
-                .then(carrito => {
-                    actualizarVistaCarrito(carrito);
-                })
-                .catch(error => console.error("Error al agregar al carrito:", error));
+            .then(response => response.json())
+            .then(carrito => {
+                actualizarVistaCarrito(carrito);
+            })
+            .catch(error => console.error("Error al agregar al carrito:", error));
         }
 
         // Función para eliminar un menú específico del carrito
@@ -82,11 +97,11 @@
             fetch(`/eliminar_del_carrito/${cartaMenuId}`, {
                 method: 'DELETE'
             })
-                .then(response => response.json())
-                .then(carrito => {
-                    actualizarVistaCarrito(carrito);
-                })
-                .catch(error => console.error("Error al eliminar del carrito:", error));
+            .then(response => response.json())
+            .then(carrito => {
+                actualizarVistaCarrito(carrito);
+            })
+            .catch(error => console.error("Error al eliminar del carrito:", error));
         }
 
         // Función para limpiar todo el carrito
@@ -94,11 +109,11 @@
             fetch('/limpiar_carrito', {
                 method: 'DELETE'
             })
-                .then(response => response.json())
-                .then(carrito => {
-                    actualizarVistaCarrito(carrito);
-                })
-                .catch(error => console.error("Error al limpiar el carrito:", error));
+            .then(response => response.json())
+            .then(carrito => {
+                actualizarVistaCarrito(carrito);
+            })
+            .catch(error => console.error("Error al limpiar el carrito:", error));
         }
 
         // Función para actualizar la vista del carrito
@@ -115,9 +130,25 @@
             document.getElementById('precioTotal').innerText = carrito.precioTotal;
         }
 
+        // Función para proceder al pago
         function procederAlPago() {
             window.location.href = '/pago';
         }
+
+        // Función para regresar a la página anterior
+        function goBack() {
+            window.history.back();
+        }
+
+         // Manejo del evento mouseover para reproducir la animación
+         const carritoAnimacion = document.getElementById('carritoAnimacion');
+        carritoAnimacion.addEventListener('mouseover', () => {
+            carritoAnimacion.play();
+        });
+
+        carritoAnimacion.addEventListener('mouseout', () => {
+            carritoAnimacion.stop();
+        });
     </script>
 </body>
 </html>

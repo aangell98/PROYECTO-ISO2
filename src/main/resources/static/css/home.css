@@ -47,6 +47,7 @@ button[onclick="location.href='/login'"] {
     display: flex;
     justify-content: center;
     margin-top: 60px;
+    width: 100%;
 }
 
 .search-container input {
@@ -55,7 +56,8 @@ button[onclick="location.href='/login'"] {
     border: 1px solid #ccc;
     border-radius: 20px 0 0 20px; /* Redondeado */
     outline: none;
-    width: 300px; /* Más largo */
+    width: 700px; /* Más largo */
+    margin-right: -1px; /* Elimina el doble borde entre input y botón */
 }
 
 .search-container button {
@@ -70,20 +72,21 @@ button[onclick="location.href='/login'"] {
 
 .header-section {
     text-align: center;
-    margin-top: 20px;
+    margin-top: 60px;
+    margin-bottom: 20px;
 }
 
 .header-section img {
     display: block;
     margin: 0 auto;
-    max-width: 30%; /* Ajusta el tamaño de la imagen */
+    max-width: 350px; /* Ajusta el tamaño de la imagen */
     height: auto; /* Mantiene la proporción de la imagen */
 }
 
 .header-section h1 {
     font-size: 2.5em; /* Tamaño de letra más grande */
     font-weight: bold;
-    color: #333;
+    color: #000;
     margin-bottom: 40px; /* Más espacio entre el título y el texto de restaurantes destacados */
 }
 
@@ -177,4 +180,72 @@ button[onclick="location.href='/login'"] {
 }
 .cta:active {
     transform: scale(0.96);
+}
+
+/* Custom styles for restaurant list */
+#listaFavoritos, #resultadosBusqueda ul {
+    list-style-type: none; /* Remove bullet points */
+    padding: 0;
+    text-align: center; /* Center the list items */
+}
+
+#listaFavoritos li, #resultadosBusqueda ul li {
+    font-size: 1.2em; /* Increase font size for restaurant names */
+    margin-bottom: 10px;
+}
+
+#listaFavoritos button, #resultadosBusqueda ul button {
+    background-color: #000000; /* Blue background */
+    color: #fff; /* White text */
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    margin-left: 5px;
+    cursor: pointer;
+}
+
+#listaFavoritos button:hover, #resultadosBusqueda ul button:hover {
+    background-color: #096401; /* Darker blue on hover */
+}
+
+#listaFavoritos .btn-eliminar-favorito:hover {
+    background-color: #d32f2f; /* Rojo al pasar el ratón */
+}
+
+#resultadosBusqueda {
+    display: none;
+    flex-direction: column;
+    align-items: center; /* Center the search results */
+    width: calc(100% -50px);
+    margin-top: 20px;
+    background-color: #fa9302; /* Fondo naranja */
+    border-radius: 8px; /* Esquinas redondeadas */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra */
+    padding: 20px; /* Espaciado interno */
+}
+
+#resultadosBusqueda h2 {
+    text-align: center;
+}
+
+footer{
+    margin-top: 20px;
+}
+
+.featured-restaurants {
+    margin-top: 20px;
+    width: 750px;
+    justify-content: center;
+}
+
+.restaurant {
+    width: 500px;
+    background-color: #fa9302;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin: 20px;
+    margin-left: 70px;
+    box-sizing: border-box;
+    text-align: center;
 }

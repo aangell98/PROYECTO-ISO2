@@ -23,7 +23,7 @@ public class ServicioEntrega {
     private Direccion direccion;
 
     @Column(name = "estado", nullable = false)
-    private String estado;
+    private EstadoPedido estado;
 
     // Getters y setters
 
@@ -59,11 +59,11 @@ public class ServicioEntrega {
         this.direccion = direccion;
     }
 
-    public String getEstado() {
+    public EstadoPedido getEstado() {
         return estado;
     }
 
-    public void setEstado(String estado) {
-        this.estado = estado;
+    public void setEstado(EstadoPedido recogido) {
+        this.estado = recogido;
     }
 }

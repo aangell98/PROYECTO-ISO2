@@ -1,6 +1,7 @@
 package es.uclm.delivery.dominio.entidades;
 
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "direccion")
@@ -17,11 +18,12 @@ public class Direccion {
     @Column(name = "ciudad", nullable = false)
     private String ciudad;
 
-    @Column(name = "codigo_postal", nullable = false)
+    @Column(name = "codigoPostal", nullable = false)
     private String codigoPostal;
 
     @ManyToOne
     @JoinColumn(name = "cliente_id")
+    @JsonBackReference
     private Cliente cliente;
 
     // Getters y setters
