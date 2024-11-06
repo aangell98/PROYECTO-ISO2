@@ -18,6 +18,9 @@ public class CartaMenu {
     @Column(name = "descripcion", nullable = false)
     private String descripcion;
 
+    @Column(name = "precio_total", nullable = false)
+    private double precioTotal;
+
     @ManyToOne
     @JoinColumn(name = "restaurante_id")
     private Restaurante restaurante;
@@ -31,6 +34,14 @@ public class CartaMenu {
     private Collection<ItemMenu> items;
 
     // Getters y setters
+
+    public double getPrecioTotal() {
+        return precioTotal;
+    }
+
+    public void setPrecioTotal(double precioTotal) {
+        this.precioTotal = precioTotal;
+    }
 
     public Long getId() {
         return id;

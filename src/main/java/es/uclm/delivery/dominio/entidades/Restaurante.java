@@ -1,6 +1,7 @@
 package es.uclm.delivery.dominio.entidades;
 
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Collection;
 
 @Entity
@@ -19,16 +20,20 @@ public class Restaurante {
     private String direccion;
 
     @OneToMany(mappedBy = "restaurante", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private Collection<CartaMenu> cartasMenu;
 
     @OneToMany(mappedBy = "restaurante", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private Collection<ItemMenu> itemMenu;
 
     @OneToMany(mappedBy = "restaurante", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private Collection<ClienteFavoritos> favoritos;
 
     @OneToOne
     @JoinColumn(name = "username", referencedColumnName = "username")
+    @JsonIgnore
     private Usuario usuario;
 
     // Getters y setters
@@ -88,5 +93,4 @@ public class Restaurante {
     public void setItemMenu(Collection<ItemMenu> itemMenu) {
         this.itemMenu = itemMenu;
     }
-
 }

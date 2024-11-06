@@ -36,7 +36,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/home", "/registroCliente", "/registroRepartidor", "/registroRestaurante", "/css/**", "/js/**", "/images/**").permitAll() // Permitir acceso
                                                                                                  // público a /home
-                        .requestMatchers("/homeCliente/**").hasRole("CLIENTE")
+                        .requestMatchers("/homeCliente/**", "/realizarPedido/**", "/realizar_pedido").hasRole("CLIENTE")
                         .requestMatchers("/homeRepartidor/**").hasRole("REPARTIDOR")
                         .requestMatchers("/homeRestaurante/**", "/altaMenu/**").hasRole("RESTAURANTE")
                         .anyRequest().authenticated())

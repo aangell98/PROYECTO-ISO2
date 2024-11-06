@@ -1,11 +1,6 @@
 package es.uclm.delivery.dominio.entidades;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Id;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "servicio_entrega")
@@ -16,11 +11,22 @@ public class ServicioEntrega {
     private Long id;
 
     @ManyToOne
+    @JoinColumn(name = "repartidor_id")
     private Repartidor repartidor;
 
-    // Otros campos y métodos
+    @ManyToOne
+    @JoinColumn(name = "pedido_id")
+    private Pedido pedido;
+
+    @ManyToOne
+    @JoinColumn(name = "direccion_id")
+    private Direccion direccion;
+
+    @Column(name = "estado", nullable = false)
+    private String estado;
 
     // Getters y setters
+
     public Long getId() {
         return id;
     }
@@ -35,5 +41,29 @@ public class ServicioEntrega {
 
     public void setRepartidor(Repartidor repartidor) {
         this.repartidor = repartidor;
+    }
+
+    public Pedido getPedido() {
+        return pedido;
+    }
+
+    public void setPedido(Pedido pedido) {
+        this.pedido = pedido;
+    }
+
+    public Direccion getDireccion() {
+        return direccion;
+    }
+
+    public void setDireccion(Direccion direccion) {
+        this.direccion = direccion;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
     }
 }

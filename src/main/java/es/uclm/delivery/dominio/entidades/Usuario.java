@@ -1,11 +1,8 @@
 package es.uclm.delivery.dominio.entidades;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Inheritance;
-import jakarta.persistence.Column;
-import jakarta.persistence.Table;
-import jakarta.persistence.InheritanceType;
+import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.Collection;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -20,6 +17,10 @@ public class Usuario {
 
     @Column(name = "role", nullable = false)
     private String role;
+
+    @OneToMany(mappedBy = "usuario")
+    @JsonIgnore
+    private Collection<Restaurante> restaurantes;
 
     // Getters y setters
     public String getUsername() {
@@ -49,5 +50,12 @@ public class Usuario {
             this.role = role;
         }
     }
-    
+
+    public Collection<Restaurante> getRestaurantes() {
+        return restaurantes;
+    }
+
+    public void setRestaurantes(Collection<Restaurante> restaurantes) {
+        this.restaurantes = restaurantes;
+    }
 }
