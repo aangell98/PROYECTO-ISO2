@@ -36,5 +36,9 @@ public class PedidoDAO extends EntidadDAO<Pedido> {
             .getResultList();
     }
 
+    public Optional<Pedido> buscarporid(Long id) {
+        Pedido pedido = entityManager.find(Pedido.class, id);
+        return Optional.ofNullable(pedido);
 
-}
+
+}}

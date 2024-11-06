@@ -5,6 +5,9 @@ import es.uclm.delivery.persistencia.PedidoDAO;
 import es.uclm.delivery.presentacion.IUBusqueda;
 import es.uclm.delivery.presentacion.IUPedido;
 import es.uclm.delivery.dominio.controladores.GestorPedidos;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +22,8 @@ import java.util.Optional;
 @RestController
 public class GestorClientes {
 
+    private static final Logger logger = LoggerFactory.getLogger(GestorLogin.class);
+
     @Autowired
     private IUBusqueda IUBusqueda;
 
@@ -27,7 +32,7 @@ public class GestorClientes {
 
     @Autowired
     private IUPedido iuPedido;
-    
+
     @Autowired
     private PedidoDAO pedidoDAO;
 
@@ -62,6 +67,7 @@ public class GestorClientes {
     @GetMapping("/listar_pedidos_curso")
     public ResponseEntity<?> obtenerPedidosEnCurso() {
         Cliente cliente = IUBusqueda.obtenerClienteActual();
+        logger.info("Obteniendo pedidos en curso para el cliente: {}", cliente.getId());
         List<Pedido> pedidosEnCurso = iuPedido.obtenerPedidosEnCurso(cliente.getId());
 
         if (!pedidosEnCurso.isEmpty()) {
@@ -78,22 +84,31 @@ public class GestorClientes {
                 return detalles;
             }).toList();
 
+            logger.info("Pedidos en curso encontrados: {}", pedidosDetalles.size());
             return ResponseEntity.ok(pedidosDetalles);
         } else {
+            logger.info("No hay pedidos en curso");
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body("No hay pedidos en curso");
         }
     }
 
-    @PostMapping("/confirmar_recepcion/{idPedido}")
-    public ResponseEntity<?> confirmarRecepcion(@PathVariable Long idPedido) {
+
+
+    @PostMapping("/confirmar_recepcion")
+    public ResponseEntity<?> confirmarRecepcion(@RequestBody Map<String, Long> payload) {
+        Long idPedido = payload.get("idPedido");
+        logger.info("Confirmando recepción del pedido: {}", idPedido);
         Optional<Pedido> pedidoOpt = iuPedido.obtenerPedidoPorId(idPedido);
         if (pedidoOpt.isPresent()) {
             Pedido pedido = pedidoOpt.get();
             pedido.setEstado(EstadoPedido.ENTREGADO);
             pedidoDAO.update(pedido);  // Asegúrate de tener un método que actualice el pedido en la base de datos
+            logger.info("Pedido actualizado a ENTREGADO: {}", idPedido);
             return ResponseEntity.ok("Pedido actualizado a ENTREGADO");
         } else {
+            logger.warn("Pedido no encontrado: {}", idPedido);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Pedido no encontrado");
         }
     }
+
 }

@@ -24,10 +24,17 @@ public class IUPedido {
     }
 
 	public Optional<Pedido> obtenerPedidoPorId(Long idPedido) {
-        return pedidoDAO.findById(idPedido);
+        return pedidoDAO.buscarporid(idPedido);
     }
 
     public Optional<ServicioEntrega> obtenerServicioEntregaPorPedido(Long pedidoId) {
         return servicioEntregaDAO.findByPedidoId(pedidoId);
     }
+
+	public void marcarPedidoComoEntregado(Long pedidoId) {
+		Pedido pedido = pedidoDAO.findById(pedidoId)
+				.orElseThrow(() -> new IllegalArgumentException("Pedido no encontrado: " + pedidoId));
+		pedido.setEstado(EstadoPedido.ENTREGADO);
+		pedidoDAO.update(pedido);
+	}
 }
