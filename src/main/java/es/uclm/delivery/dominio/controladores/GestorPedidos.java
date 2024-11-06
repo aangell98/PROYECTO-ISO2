@@ -142,6 +142,7 @@ public ResponseEntity<?> confirmarPedido(@ModelAttribute("carrito") Carrito carr
         pedido.setCliente(IUBusqueda.obtenerClienteActual());
         pedido.setRestaurante(IUBusqueda.obtenerRestaurante(carrito.getRestauranteId()));
         pedido.setEstado(EstadoPedido.PEDIDO);
+        pedido.setFecha(new Date()); // Establecer la fecha actual
         pedidoDAO.insert(pedido);
 
         // Crear y guardar el pago

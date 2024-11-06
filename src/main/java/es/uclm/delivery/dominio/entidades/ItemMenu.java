@@ -29,7 +29,7 @@ public class ItemMenu {
     private double precio;
 
     @ManyToOne
-    @JoinColumn(name = "restaurante_id")
+    @JoinColumn(name = "restaurante_id", nullable = false)
     private Restaurante restaurante;
 
     // Getters y setters
