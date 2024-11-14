@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - Configuracion-SonarCloud
+      - develop
   pull_request:
     types: [opened, synchronize, reopened]
 jobs:
