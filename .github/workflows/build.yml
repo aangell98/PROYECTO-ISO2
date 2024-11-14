@@ -2,10 +2,7 @@ name: SonarQube Cloud
 on:
   push:
     branches:
-      - develop
-      - master
       - Configuracion-SonarCloud
-      - Quality
   pull_request:
     types: [opened, synchronize, reopened]
 jobs:
