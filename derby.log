@@ -1,11 +1,11 @@
 ----------------------------------------------------------------
-Wed Nov 06 09:35:28 CET 2024:
-Booting Derby version The Apache Software Foundation - Apache Derby - 10.17.1.0 - (1913217): instance a816c00e-0193-009d-4904-000002d13010 
-on database directory C:\Users\ferna\Desktop\Uni\PROYECTO-ISO2\database with class loader jdk.internal.loader.ClassLoaders$AppClassLoader@33909752 
-Loaded from file:/C:/Users/ferna/.m2/repository/org/apache/derby/derby/10.17.1.0/derby-10.17.1.0.jar
+Thu Nov 14 11:15:24 CET 2024:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.17.1.0 - (1913217): instance a816c00e-0193-2a2b-a5dd-000001a22350 
+on database directory C:\Users\angel\Documents\GitHub\PROYECTO-ISO2\database with class loader jdk.internal.loader.ClassLoaders$AppClassLoader@70dea4e 
+Loaded from file:/C:/Users/angel/.m2/repository/org/apache/derby/derby/10.17.1.0/derby-10.17.1.0.jar
 java.vendor=Oracle Corporation
-java.runtime.version=22.0.2+9-70
-user.dir=C:\Users\ferna\Desktop\Uni\PROYECTO-ISO2
+java.runtime.version=23+37-2369
+user.dir=C:\Users\angel\Documents\GitHub\PROYECTO-ISO2
 os.name=Windows 11
 os.arch=amd64
 os.version=10.0
