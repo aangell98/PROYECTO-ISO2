@@ -28,7 +28,10 @@
 		<url/>
 	</scm>
 	<properties>
-		<java.version>17</java.version>
+		<java.version>19</java.version>
+		<sonar.projectKey>aangell98_PROYECTO-ISO2</sonar.projectKey>
+		<sonar.organization>proyectodelivery-iso2-uclm</sonar.organization>
+		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -112,6 +115,11 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+			<plugin>
+				<groupId>org.sonarsource.scanner.maven</groupId>
+				<artifactId>sonar-maven-plugin</artifactId>
+            	<version>4.0.0.4121</version>
+        </plugin>
 		</plugins>
 	</build>
 
