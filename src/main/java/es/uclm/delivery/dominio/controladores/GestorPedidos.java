@@ -117,59 +117,50 @@ public class GestorPedidos {
     }
 
     @PostMapping("/confirmar_pedido")
-public ResponseEntity<?> confirmarPedido(@ModelAttribute("carrito") Carrito carrito,
-                                         @RequestBody Map<String, Object> requestData) {
-    Map<String, String> direccionData = (Map<String, String>) requestData.get("direccion");
-    String metodoPago = (String) requestData.get("metodoPago");
-    Map<String, String> pagoInfo = (Map<String, String>) requestData.get("pagoInfo");
+    public ResponseEntity<?> confirmarPedido(@ModelAttribute("carrito") Carrito carrito,
+                                             @RequestBody Map<String, Object> requestData) {
+        Map<String, String> direccionData = (Map<String, String>) requestData.get("direccion");
+        String metodoPago = (String) requestData.get("metodoPago");
+        Map<String, String> pagoInfo = (Map<String, String>) requestData.get("pagoInfo");
 
-    if (direccionData == null || metodoPago == null || pagoInfo == null) {
-        logger.error("Dirección, método de pago y datos de pago son requeridos");
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Dirección, método de pago y datos de pago son requeridos");
+        if (direccionData == null || metodoPago == null || pagoInfo == null) {
+            logger.error("Dirección, método de pago y datos de pago son requeridos");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Dirección, método de pago y datos de pago son requeridos");
+        }
+
+        try {
+            // Crear y guardar la dirección en la base de datos
+            Direccion direccion = new Direccion();
+            direccion.setCalle(direccionData.get("calle"));
+            direccion.setCiudad(direccionData.get("ciudad"));
+            direccion.setCodigoPostal(direccionData.get("codigoPostal"));
+            direccion.setCliente(IUBusqueda.obtenerClienteActual()); // Asociar la dirección al cliente actual
+            direccionDAO.insert(direccion); // Guarda la dirección en la base de datos
+
+            // Crear y guardar el pedido
+            Pedido pedido = new Pedido();
+            pedido.setCliente(IUBusqueda.obtenerClienteActual());
+            pedido.setRestaurante(IUBusqueda.obtenerRestaurante(carrito.getRestauranteId()));
+            pedido.setEstado(EstadoPedido.PAGADO); // Establecer el estado como PAGADO
+            pedido.setFecha(new Date()); // Establecer la fecha actual
+            pedidoDAO.insert(pedido);
+
+            // Crear y guardar el pago
+            Pago pago = new Pago();
+            pago.setPedido(pedido);
+            pago.setTipo(MetodoPago.valueOf(metodoPago));
+            pago.setFechaTransaccion(new Date());
+            pagoDAO.insert(pago);
+
+            carrito.vaciar();
+
+            logger.info("Pedido confirmado con éxito");
+            return ResponseEntity.ok("Pedido confirmado");
+        } catch (Exception e) {
+            logger.error("Error al confirmar el pedido", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al confirmar el pedido");
+        }
     }
-
-    try {
-        // Crear y guardar la dirección en la base de datos
-        Direccion direccion = new Direccion();
-        direccion.setCalle(direccionData.get("calle"));
-        direccion.setCiudad(direccionData.get("ciudad"));
-        direccion.setCodigoPostal(direccionData.get("codigoPostal"));
-        direccion.setCliente(IUBusqueda.obtenerClienteActual()); // Asociar la dirección al cliente actual
-        direccionDAO.insert(direccion); // Guarda la dirección en la base de datos
-
-        // Crear y guardar el pedido
-        Pedido pedido = new Pedido();
-        pedido.setCliente(IUBusqueda.obtenerClienteActual());
-        pedido.setRestaurante(IUBusqueda.obtenerRestaurante(carrito.getRestauranteId()));
-        pedido.setEstado(EstadoPedido.PEDIDO);
-        pedido.setFecha(new Date()); // Establecer la fecha actual
-        pedidoDAO.insert(pedido);
-
-        // Crear y guardar el pago
-        Pago pago = new Pago();
-        pago.setPedido(pedido);
-        pago.setTipo(MetodoPago.valueOf(metodoPago));
-        pago.setFechaTransaccion(new Date());
-        pagoDAO.insert(pago);
-
-        // Asignar un repartidor y crear el servicio de entrega
-        Repartidor repartidor = obtenerRepartidorAleatorio();
-        ServicioEntrega servicioEntrega = new ServicioEntrega();
-        servicioEntrega.setPedido(pedido);
-        servicioEntrega.setDireccion(direccion);
-        servicioEntrega.setRepartidor(repartidor);
-        servicioEntrega.setEstado(EstadoPedido.RECOGIDO);
-        servicioEntregaDAO.insert(servicioEntrega); // Guarda el servicio de entrega
-
-        carrito.vaciar();
-
-        logger.info("Pedido confirmado con éxito");
-        return ResponseEntity.ok("Pedido confirmado");
-    } catch (Exception e) {
-        logger.error("Error al confirmar el pedido", e);
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al confirmar el pedido");
-    }
-}
 
 public Repartidor obtenerRepartidorAleatorio() {
     List<Long> idsRepartidores = repartidorDAO.findAllIds(); // Recuperar solo los IDs de los repartidores
@@ -180,5 +171,13 @@ public Repartidor obtenerRepartidorAleatorio() {
     Long idAleatorio = idsRepartidores.get(random.nextInt(idsRepartidores.size()));
     return repartidorDAO.findById(idAleatorio)
                                .orElseThrow(() -> new IllegalStateException("Repartidor no encontrado"));
+}
+
+@GetMapping("/pedidos_pagados")
+public ResponseEntity<List<Pedido>> obtenerPedidosPagados() {
+    logger.info("Obteniendo pedidos en estado PAGADO");
+    List<Pedido> pedidosPagados = pedidoDAO.findPedidosPagados();
+    logger.info("Pedidos en estado PAGADO obtenidos: {}", pedidosPagados.size());
+    return ResponseEntity.ok(pedidosPagados);
 }
 }

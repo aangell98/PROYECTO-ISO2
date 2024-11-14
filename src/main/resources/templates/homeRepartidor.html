@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home Repartidor</title>
     <link rel="stylesheet" href="/css/styles.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
     <div class="container">
@@ -25,11 +26,72 @@
             </ul>
         </nav>
         <main>
-            <!-- Contenido principal aquí -->
+            <h2>Pedidos Pagados</h2>
+            <ul id="pedidosPagados">
+                <!-- Aquí se mostrarán los pedidos pagados -->
+            </ul>
+            <input type="hidden" id="repartidorId" th:value="${repartidorId}">
         </main>
         <footer>
             <p>&copy; 2024 Delivery. Todos los derechos reservados. Work In Progress</p>
         </footer>
     </div>
+    <script>
+        $(document).ready(function() {
+            function cargarPedidosPagados() {
+                console.log("Cargando pedidos pagados...");
+                $.ajax({
+                    url: '/pedidos_pagados',
+                    type: 'GET',
+                    success: function(data) {
+                        console.log("Pedidos pagados recibidos:", data);
+                        var pedidosHtml = '';
+                        data.forEach(function(pedido) {
+                            var clienteNombre = pedido.cliente ? pedido.cliente.nombre : 'Desconocido';
+                            var clienteApellidos = pedido.cliente ? pedido.cliente.apellidos : '';
+                            var restauranteNombre = pedido.restaurante ? pedido.restaurante.nombre : 'Desconocido';
+                            pedidosHtml += `
+                                <li>
+                                    <p><strong>Pedido ID:</strong> ${pedido.id}</p>
+                                    <p><strong>Cliente:</strong> ${clienteNombre} ${clienteApellidos}</p>
+                                    <p><strong>Restaurante:</strong> ${restauranteNombre}</p>
+                                    <button onclick="autoasignarPedido(${pedido.id})">Autoasignar Pedido</button>
+                                </li>`;
+                        });
+                        $('#pedidosPagados').html(pedidosHtml);
+                    },
+                    error: function() {
+                        console.error("Error al cargar los pedidos pagados");
+                        alert("Error al cargar los pedidos pagados");
+                    }
+                });
+            }
+
+            function autoasignarPedido(pedidoId) {
+                var repartidorId = $('#repartidorId').val();
+                console.log("Autoasignando pedido ID:", pedidoId, "al repartidor ID:", repartidorId);
+                $.ajax({
+                    url: '/autoasignar_pedido',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        pedidoId: pedidoId,
+                        repartidorId: repartidorId
+                    }),
+                    success: function() {
+                        console.log("Pedido autoasignado con éxito");
+                        alert("Pedido autoasignado con éxito");
+                        cargarPedidosPagados(); // Recargar la lista de pedidos pagados
+                    },
+                    error: function() {
+                        console.error("Error al autoasignar el pedido");
+                        alert("Error al autoasignar el pedido");
+                    }
+                });
+            }
+
+            cargarPedidosPagados();
+        });
+    </script>
 </body>
 </html>

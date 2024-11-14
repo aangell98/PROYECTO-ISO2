@@ -7,9 +7,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +21,7 @@ import es.uclm.delivery.dominio.entidades.Repartidor;
 import es.uclm.delivery.dominio.entidades.Restaurante;
 import es.uclm.delivery.dominio.entidades.Usuario;
 import es.uclm.delivery.persistencia.UsuarioDAO;
+import es.uclm.delivery.persistencia.RepartidorDAO;
 import es.uclm.delivery.persistencia.RestauranteDAO;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -28,6 +31,9 @@ import es.uclm.delivery.dominio.controladores.GestorLogin;
 public class IULogin {
 
     private static final Logger log = LoggerFactory.getLogger(IULogin.class);
+
+    @Autowired
+    private RepartidorDAO repartidorDAO;
 
     @Autowired
     private GestorLogin gestorLogin;
@@ -160,9 +166,15 @@ public String mostrarHome(Model model) {
         return "homeCliente"; 
     }
 
-    @GetMapping("/homeRepartidor")
-    public String homeRepartidor() {
-        return "homeRepartidor"; 
+   @GetMapping("/homeRepartidor")
+    public String homeRepartidor(Principal principal, Model model) {
+        String username = principal.getName();
+        Optional<Repartidor> repartidorOpt = repartidorDAO.findByUsername(username);
+        if (repartidorOpt.isPresent()) {
+            Repartidor repartidor = repartidorOpt.get();
+            model.addAttribute("repartidorId", repartidor.getId());
+        }
+        return "homeRepartidor";
     }
 
 }
