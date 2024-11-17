@@ -23,6 +23,7 @@ public class Pedido {
 
     @ManyToOne
     @JoinColumn(name = "restaurante_id")
+    @JsonManagedReference
     private Restaurante restaurante;
 
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
