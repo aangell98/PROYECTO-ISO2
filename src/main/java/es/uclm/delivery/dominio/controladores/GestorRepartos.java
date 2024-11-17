@@ -12,11 +12,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -34,7 +33,10 @@ public class GestorRepartos {
     private ServicioEntregaDAO servicioEntregaDAO;
 
     @PostMapping("/autoasignar_pedido")
-    public ResponseEntity<String> autoasignarPedido(@RequestParam Long pedidoId, @RequestParam Long repartidorId) {
+    public ResponseEntity<String> autoasignarPedido(@RequestBody Map<String, Long> payload) {
+        Long pedidoId = payload.get("pedidoId");
+        Long repartidorId = payload.get("repartidorId");
+
         logger.info("Intentando autoasignar pedido con ID: {} al repartidor con ID: {}", pedidoId, repartidorId);
         Optional<Pedido> pedidoOpt = pedidoDAO.findById(pedidoId);
         Optional<Repartidor> repartidorOpt = repartidorDAO.findById(repartidorId);
