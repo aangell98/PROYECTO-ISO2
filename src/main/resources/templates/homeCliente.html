@@ -107,11 +107,12 @@
                         if (data && data.length > 0) {
                             var pedidosHtml = '';
                             data.forEach(function(pedido) {
+                                var repartidorNombre = pedido.repartidor ? pedido.repartidor : 'Buscando repartidor...';
                                 pedidosHtml += `
                                     <li id="pedido-${pedido.id}">
                                         <p><strong>Restaurante:</strong> ${pedido.restaurante}</p>
                                         <p><strong>Estado:</strong> ${pedido.estado}</p>
-                                        <p><strong>Repartidor:</strong> ${pedido.repartidor}</p>
+                                        <p><strong>Repartidor:</strong> ${repartidorNombre}</p>
                                         <button onclick="confirmarRecepcion(${pedido.id})">¿Has recibido el pedido?</button>
                                     </li>`;
                             });
@@ -137,11 +138,12 @@
                         if (data && data.length > 0) {
                             var pedidosHtml = '';
                             data.forEach(function(pedido) {
+                                var repartidorNombre = pedido.repartidor ? pedido.repartidor : 'Buscando repartidor...';
                                 pedidosHtml += `
                                     <li id="pedido-${pedido.id}">
                                         <p><strong>Restaurante:</strong> ${pedido.restaurante}</p>
                                         <p><strong>Estado:</strong> ${pedido.estado}</p>
-                                        <p><strong>Repartidor:</strong> ${pedido.repartidor}</p>
+                                        <p><strong>Repartidor:</strong> ${repartidorNombre}</p>
                                     </li>`;
                             });
                             $('#previousOrders').html(pedidosHtml);

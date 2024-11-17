@@ -67,7 +67,7 @@
                 });
             }
 
-            function autoasignarPedido(pedidoId) {
+            window.autoasignarPedido = function(pedidoId) {
                 var repartidorId = $('#repartidorId').val();
                 console.log("Autoasignando pedido ID:", pedidoId, "al repartidor ID:", repartidorId);
                 $.ajax({
