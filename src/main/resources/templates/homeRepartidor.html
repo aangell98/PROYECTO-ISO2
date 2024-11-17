@@ -49,12 +49,16 @@
                         data.forEach(function(pedido) {
                             var clienteNombre = pedido.cliente ? pedido.cliente.nombre : 'Desconocido';
                             var clienteApellidos = pedido.cliente ? pedido.cliente.apellidos : '';
+                            var clienteDireccion = pedido.cliente ? pedido.cliente.direccion : 'Desconocida';
                             var restauranteNombre = pedido.restaurante ? pedido.restaurante.nombre : 'Desconocido';
+                            var restauranteDireccion = pedido.restaurante ? pedido.restaurante.direccion : 'Desconocida';
                             pedidosHtml += `
                                 <li>
                                     <p><strong>Pedido ID:</strong> ${pedido.id}</p>
                                     <p><strong>Cliente:</strong> ${clienteNombre} ${clienteApellidos}</p>
+                                    <p><strong>Dirección del Cliente:</strong> ${clienteDireccion}</p>
                                     <p><strong>Restaurante:</strong> ${restauranteNombre}</p>
+                                    <p><strong>Dirección del Restaurante:</strong> ${restauranteDireccion}</p>
                                     <button onclick="autoasignarPedido(${pedido.id})">Autoasignar Pedido</button>
                                 </li>`;
                         });
