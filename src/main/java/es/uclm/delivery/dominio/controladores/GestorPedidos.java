@@ -64,6 +64,9 @@ public class GestorPedidos {
     @Autowired
     private RepartidorDAO repartidorDAO;
 
+    @Autowired
+    private ClienteDAO clienteDAO;
+
     @GetMapping("/realizar_pedido")
     public String realizarPedido(@RequestParam("restauranteId") Long restauranteId, Model model, @ModelAttribute("carrito") Carrito carrito) {
         Restaurante restaurante = IUBusqueda.obtenerRestaurante(restauranteId);
@@ -117,68 +120,79 @@ public class GestorPedidos {
     }
 
     @PostMapping("/confirmar_pedido")
-public ResponseEntity<?> confirmarPedido(@ModelAttribute("carrito") Carrito carrito,
-                                         @RequestBody Map<String, Object> requestData) {
-    Map<String, String> direccionData = (Map<String, String>) requestData.get("direccion");
-    String metodoPago = (String) requestData.get("metodoPago");
-    Map<String, String> pagoInfo = (Map<String, String>) requestData.get("pagoInfo");
+    public ResponseEntity<?> confirmarPedido(@ModelAttribute("carrito") Carrito carrito,
+                                             @RequestBody Map<String, Object> requestData) {
+        Long direccionId;
+        try {
+            direccionId = Long.parseLong((String) requestData.get("direccionId"));
+        } catch (NumberFormatException e) {
+            logger.error("Error al convertir direccionId a Long", e);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ID de dirección inválido");
+        }
+        String metodoPago = (String) requestData.get("metodoPago");
+        Map<String, String> pagoInfo = (Map<String, String>) requestData.get("pagoInfo");
 
-    if (direccionData == null || metodoPago == null || pagoInfo == null) {
-        logger.error("Dirección, método de pago y datos de pago son requeridos");
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Dirección, método de pago y datos de pago son requeridos");
+        if (direccionId == null || metodoPago == null || pagoInfo == null) {
+            logger.error("Dirección, método de pago y datos de pago son requeridos");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Dirección, método de pago y datos de pago son requeridos");
+        }
+
+        try {
+            String username = IUBusqueda.obtenerClienteActual().getUsuario().getUsername();
+            Optional<Cliente> clienteOpt = clienteDAO.findByUsername(username);
+
+            if (clienteOpt.isPresent()) {
+                Cliente cliente = clienteOpt.get();
+                Optional<Direccion> direccionOpt = direccionDAO.findById(direccionId);
+
+                if (direccionOpt.isPresent()) {
+                    Direccion direccion = direccionOpt.get();
+
+                    Pedido pedido = new Pedido();
+                    pedido.setCliente(cliente);
+                    pedido.setRestaurante(IUBusqueda.obtenerRestaurante(carrito.getRestauranteId()));
+                    pedido.setEstado(EstadoPedido.PEDIDO);
+                    pedido.setFecha(new Date());
+                    pedidoDAO.insert(pedido);
+
+                    Pago pago = new Pago();
+                    pago.setPedido(pedido);
+                    pago.setTipo(MetodoPago.valueOf(metodoPago));
+                    pago.setFechaTransaccion(new Date());
+                    pagoDAO.insert(pago);
+
+                    Repartidor repartidor = obtenerRepartidorAleatorio();
+                    ServicioEntrega servicioEntrega = new ServicioEntrega();
+                    servicioEntrega.setPedido(pedido);
+                    servicioEntrega.setDireccion(direccion);
+                    servicioEntrega.setRepartidor(repartidor);
+                    servicioEntrega.setEstado(EstadoPedido.RECOGIDO);
+                    servicioEntregaDAO.insert(servicioEntrega);
+
+                    carrito.vaciar();
+
+                    logger.info("Pedido confirmado con éxito");
+                    return ResponseEntity.ok("Pedido confirmado");
+                } else {
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Dirección no encontrada");
+                }
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cliente no encontrado");
+            }
+        } catch (Exception e) {
+            logger.error("Error al confirmar el pedido", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al confirmar el pedido");
+        }
     }
 
-    try {
-        // Crear y guardar la dirección en la base de datos
-        Direccion direccion = new Direccion();
-        direccion.setCalle(direccionData.get("calle"));
-        direccion.setCiudad(direccionData.get("ciudad"));
-        direccion.setCodigoPostal(direccionData.get("codigoPostal"));
-        direccion.setCliente(IUBusqueda.obtenerClienteActual()); // Asociar la dirección al cliente actual
-        direccionDAO.insert(direccion); // Guarda la dirección en la base de datos
-
-        // Crear y guardar el pedido
-        Pedido pedido = new Pedido();
-        pedido.setCliente(IUBusqueda.obtenerClienteActual());
-        pedido.setRestaurante(IUBusqueda.obtenerRestaurante(carrito.getRestauranteId()));
-        pedido.setEstado(EstadoPedido.PEDIDO);
-        pedido.setFecha(new Date()); // Establecer la fecha actual
-        pedidoDAO.insert(pedido);
-
-        // Crear y guardar el pago
-        Pago pago = new Pago();
-        pago.setPedido(pedido);
-        pago.setTipo(MetodoPago.valueOf(metodoPago));
-        pago.setFechaTransaccion(new Date());
-        pagoDAO.insert(pago);
-
-        // Asignar un repartidor y crear el servicio de entrega
-        Repartidor repartidor = obtenerRepartidorAleatorio();
-        ServicioEntrega servicioEntrega = new ServicioEntrega();
-        servicioEntrega.setPedido(pedido);
-        servicioEntrega.setDireccion(direccion);
-        servicioEntrega.setRepartidor(repartidor);
-        servicioEntrega.setEstado(EstadoPedido.RECOGIDO);
-        servicioEntregaDAO.insert(servicioEntrega); // Guarda el servicio de entrega
-
-        carrito.vaciar();
-
-        logger.info("Pedido confirmado con éxito");
-        return ResponseEntity.ok("Pedido confirmado");
-    } catch (Exception e) {
-        logger.error("Error al confirmar el pedido", e);
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al confirmar el pedido");
+    private Repartidor obtenerRepartidorAleatorio() {
+        List<Long> idsRepartidores = repartidorDAO.findAllIds();
+        if (idsRepartidores.isEmpty()) {
+            throw new IllegalStateException("No hay repartidores disponibles");
+        }
+        Random random = new Random();
+        Long idAleatorio = idsRepartidores.get(random.nextInt(idsRepartidores.size()));
+        return repartidorDAO.findById(idAleatorio)
+                .orElseThrow(() -> new IllegalStateException("Repartidor no encontrado"));
     }
-}
-
-public Repartidor obtenerRepartidorAleatorio() {
-    List<Long> idsRepartidores = repartidorDAO.findAllIds(); // Recuperar solo los IDs de los repartidores
-    if (idsRepartidores.isEmpty()) {
-        throw new IllegalStateException("No hay repartidores disponibles");
-    }
-    Random random = new Random();
-    Long idAleatorio = idsRepartidores.get(random.nextInt(idsRepartidores.size()));
-    return repartidorDAO.findById(idAleatorio)
-                               .orElseThrow(() -> new IllegalStateException("Repartidor no encontrado"));
-}
 }
