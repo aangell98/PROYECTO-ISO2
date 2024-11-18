@@ -1,8 +1,11 @@
 package es.uclm.delivery.dominio.entidades;
 
 import jakarta.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Collection;
+import java.util.List;
 
 @Entity
 @Table(name = "restaurante")
@@ -30,6 +33,11 @@ public class Restaurante {
     @OneToMany(mappedBy = "restaurante", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private Collection<ClienteFavoritos> favoritos;
+
+    @OneToMany(mappedBy = "restaurante", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonBackReference
+    private List<Pedido> pedidos;
+
 
     @OneToOne
     @JoinColumn(name = "username", referencedColumnName = "username")

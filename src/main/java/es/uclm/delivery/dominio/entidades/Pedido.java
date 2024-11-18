@@ -2,6 +2,8 @@ package es.uclm.delivery.dominio.entidades;
 
 import jakarta.persistence.*;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import java.util.Date;
 import java.util.List;
 
@@ -16,11 +18,12 @@ public class Pedido {
 
     @ManyToOne
     @JoinColumn(name = "cliente_id")
-    @JsonBackReference
+    @JsonManagedReference
     private Cliente cliente;
 
     @ManyToOne
     @JoinColumn(name = "restaurante_id")
+    @JsonManagedReference
     private Restaurante restaurante;
 
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
