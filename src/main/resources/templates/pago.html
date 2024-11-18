@@ -125,11 +125,21 @@
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify(nuevaDireccion),
-                success: function() {
-                    console.log("Nueva dirección guardada con éxito");
+                success: function(data) {
+                    console.log("Nueva dirección guardada con éxito:", data);
+
+                    // Añade directamente la nueva dirección al desplegable
+                    var direccionTexto = `${data.calle}, ${data.ciudad}, ${data.codigoPostal}`;
+                    var option = $('<option>').val(data.id).text(direccionTexto);
+                    $('#direccionSelect').append(option);
+
                     alert("Nueva dirección guardada con éxito");
-                    cargarDireccionesCliente(); // Recargar las direcciones del cliente
                     $('#nuevaDireccionForm').hide();
+
+                    // Limpia los campos del formulario
+                    $('#calle').val('');
+                    $('#ciudad').val('');
+                    $('#codigoPostal').val('');
                 },
                 error: function() {
                     console.error("Error al guardar la nueva dirección");
