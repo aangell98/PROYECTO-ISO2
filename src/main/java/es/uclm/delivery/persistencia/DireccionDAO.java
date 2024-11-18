@@ -28,5 +28,4 @@ public class DireccionDAO extends EntidadDAO<Direccion> {
                 .setParameter("pedidoId", pedidoId)
                 .getSingleResult();
     }
-    
 }

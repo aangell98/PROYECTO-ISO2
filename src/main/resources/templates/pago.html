@@ -6,8 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
     <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon">
-    <title>Pago</title>
+    <title>Pagar Pedido</title>
     <link rel="stylesheet" type="text/css" th:href="@{/css/pago.css}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 
 <body>
@@ -17,15 +18,24 @@
             <h1>Confirmar Pedido</h1>
             <form id="formPago">
                 <section>
-                    <label for="calle">Calle:</label>
-                    <input type="text" id="calle" name="calle" required>
-
-                    <label for="ciudad">Ciudad:</label>
-                    <input type="text" id="ciudad" name="ciudad" required>
-
-                    <label for="codigoPostal">Código Postal:</label>
-                    <input type="text" id="codigoPostal" name="codigoPostal" required>
+                    <h3>Seleccionar Dirección</h3>
+                    <select id="direccionSelect">
+                        <!-- Aquí se llenarán las direcciones del cliente -->
+                    </select>
+                    <button type="button" onclick="mostrarFormularioNuevaDireccion()">Añadir Nueva Dirección</button>
                 </section>
+                <div id="nuevaDireccionForm" style="display: none;">
+                    <h3>Nueva Dirección</h3>
+                    <form id="nuevaDireccion">
+                        <label for="calle">Calle:</label>
+                        <input type="text" id="calle" name="calle" required>
+                        <label for="ciudad">Ciudad:</label>
+                        <input type="text" id="ciudad" name="ciudad" required>
+                        <label for="codigoPostal">Código Postal:</label>
+                        <input type="text" id="codigoPostal" name="codigoPostal" required>
+                        <button type="button" onclick="guardarNuevaDireccion()">Guardar Dirección</button>
+                    </form>
+                </div>
                 <section>
                     <h3>Método de Pago</h3>
                     <label id="ancho-reducido">
@@ -72,12 +82,64 @@
         // Función para regresar a la página anterior
         function goBack() {
             window.history.back();
-        }
+        }
+
+        function cargarDireccionesCliente() {
+            console.log("Cargando direcciones del cliente...");
+            $.ajax({
+                url: '/listar_direcciones',
+                type: 'GET',
+                success: function(data) {
+                    console.log("Direcciones del cliente recibidas:", data);
+                    var direccionSelect = $('#direccionSelect');
+                    direccionSelect.empty();
+                    data.forEach(function(direccion, index) {
+                        var direccionTexto = direccion.calle + ', ' + direccion.ciudad + ', ' + direccion.codigoPostal;
+                        var option = $('<option>').val(direccion.id).text(direccionTexto);
+                        if (index === 0) {
+                            option.prop('selected', true); // Seleccionar la primera dirección por defecto
+                        }
+                        direccionSelect.append(option);
+                    });
+                },
+                error: function() {
+                    console.error("Error al cargar las direcciones del cliente");
+                    alert("Error al cargar las direcciones del cliente");
+                }
+            });
+        }
+
+        function mostrarFormularioNuevaDireccion() {
+            $('#nuevaDireccionForm').show();
+        }
+
+        function guardarNuevaDireccion() {
+            var nuevaDireccion = {
+                calle: $('#calle').val(),
+                ciudad: $('#ciudad').val(),
+                codigoPostal: $('#codigoPostal').val()
+            };
+            console.log("Guardando nueva dirección:", nuevaDireccion);
+            $.ajax({
+                url: '/guardar_direccion',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(nuevaDireccion),
+                success: function() {
+                    console.log("Nueva dirección guardada con éxito");
+                    alert("Nueva dirección guardada con éxito");
+                    cargarDireccionesCliente(); // Recargar las direcciones del cliente
+                    $('#nuevaDireccionForm').hide();
+                },
+                error: function() {
+                    console.error("Error al guardar la nueva dirección");
+                    alert("Error al guardar la nueva dirección");
+                }
+            });
+        }
 
         function confirmarPedido() {
-            const calle = document.getElementById('calle').value;
-            const ciudad = document.getElementById('ciudad').value;
-            const codigoPostal = document.getElementById('codigoPostal').value;
+            const direccionId = $('#direccionSelect').val();
             const metodoPago = document.querySelector('input[name="metodoPago"]:checked').value;
 
             let pagoInfo = {};
@@ -94,13 +156,13 @@
                 };
             }
 
-            if (calle && ciudad && codigoPostal && metodoPago && Object.values(pagoInfo).every(value => value)) {
+            if (direccionId && metodoPago && Object.values(pagoInfo).every(value => value)) {
                 fetch('/confirmar_pedido', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ direccion: { calle, ciudad, codigoPostal }, metodoPago, pagoInfo })
+                    body: JSON.stringify({ direccionId, metodoPago, pagoInfo })
                 })
                     .then(response => {
                         if (response.ok) {
@@ -115,6 +177,10 @@
                 alert("Por favor, complete todos los campos requeridos.");
             }
         }
+
+        $(document).ready(function() {
+            cargarDireccionesCliente();
+        });
     </script>
 </body>
 

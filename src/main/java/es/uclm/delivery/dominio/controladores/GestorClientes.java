@@ -1,6 +1,7 @@
 package es.uclm.delivery.dominio.controladores;
 
 import es.uclm.delivery.dominio.entidades.*;
+import es.uclm.delivery.persistencia.DireccionDAO;
 import es.uclm.delivery.persistencia.PedidoDAO;
 import es.uclm.delivery.persistencia.RepartidorDAO;
 import es.uclm.delivery.presentacion.IUBusqueda;
@@ -39,6 +40,9 @@ public class GestorClientes {
 
     @Autowired
     private RepartidorDAO repartidorDAO;
+
+    @Autowired
+    private DireccionDAO direccionDAO;
 
     @GetMapping("/buscar_restaurantes")
     public List<Restaurante> buscarRestaurantes(@RequestParam("codigoPostal") String codigoPostal) {
@@ -175,5 +179,21 @@ public class GestorClientes {
         }
     }
 
+    @PostMapping("/guardar_direccion")
+    public ResponseEntity<?> guardarDireccion(@RequestBody Direccion direccion) {
+        Cliente cliente = IUBusqueda.obtenerClienteActual();
+        direccion.setCliente(cliente);
+        direccionDAO.save(direccion);
+        logger.info("Dirección guardada: {}", direccion);
+        return ResponseEntity.ok("Dirección guardada con éxito");
+    }
+    
+    @GetMapping("/listar_direcciones")
+public ResponseEntity<List<Direccion>> listarDirecciones() {
+    Cliente cliente = IUBusqueda.obtenerClienteActual();
+    List<Direccion> direcciones = cliente.getDirecciones().stream().toList();
+    logger.info("Direcciones encontradas: {}", direcciones.size());
+    return ResponseEntity.ok(direcciones);
+}
 
 }
