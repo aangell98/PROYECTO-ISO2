@@ -5,11 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
     <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon">
-    <title>Pago</title>
+    <title>Pagar Pedido</title>
     <link rel="stylesheet" type="text/css" th:href="@{/css/pago.css}">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
-
 <body>
     <button onclick="goBack()" class="btn-volver">Volver</button>
     <div class="container">
@@ -80,7 +79,6 @@
         function goBack() {
             window.history.back();
         }
-
         function cargarDireccionesCliente() {
             console.log("Cargando direcciones del cliente...");
             $.ajax({
@@ -105,11 +103,9 @@
                 }
             });
         }
-
         function mostrarFormularioNuevaDireccion() {
             $('#nuevaDireccionForm').show();
         }
-
         function guardarNuevaDireccion() {
             var nuevaDireccion = {
                 calle: $('#calle').val(),
@@ -122,11 +118,21 @@
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify(nuevaDireccion),
-                success: function() {
-                    console.log("Nueva dirección guardada con éxito");
+                success: function(data) {
+                    console.log("Nueva dirección guardada con éxito:", data);
+
+                    // Añade directamente la nueva dirección al desplegable
+                    var direccionTexto = `${data.calle}, ${data.ciudad}, ${data.codigoPostal}`;
+                    var option = $('<option>').val(data.id).text(direccionTexto);
+                    $('#direccionSelect').append(option);
+
                     alert("Nueva dirección guardada con éxito");
-                    cargarDireccionesCliente(); // Recargar las direcciones del cliente
                     $('#nuevaDireccionForm').hide();
+
+                    // Limpia los campos del formulario
+                    $('#calle').val('');
+                    $('#ciudad').val('');
+                    $('#codigoPostal').val('');
                 },
                 error: function() {
                     console.error("Error al guardar la nueva dirección");
@@ -134,11 +140,9 @@
                 }
             });
         }
-
         function confirmarPedido() {
             const direccionId = $('#direccionSelect').val();
             const metodoPago = document.querySelector('input[name="metodoPago"]:checked').value;
-
             let pagoInfo = {};
             if (metodoPago === 'PAYPAL') {
                 pagoInfo = {
@@ -152,7 +156,6 @@
                     csv: document.getElementById('cardCSV').value
                 };
             }
-
             if (direccionId && metodoPago && Object.values(pagoInfo).every(value => value)) {
                 fetch('/confirmar_pedido', {
                     method: 'POST',
@@ -174,11 +177,9 @@
                 alert("Por favor, complete todos los campos requeridos.");
             }
         }
-
         $(document).ready(function() {
             cargarDireccionesCliente();
         });
     </script>
 </body>
-
 </html>
