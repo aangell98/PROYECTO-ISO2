@@ -77,8 +77,15 @@ public class GestorClientes {
                 Optional<ServicioEntrega> servicioEntregaOpt = iuPedido.obtenerServicioEntregaPorPedido(pedido.getId());
                 if (servicioEntregaOpt.isPresent()) {
                     ServicioEntrega servicioEntrega = servicioEntregaOpt.get();
-                    detalles.put("repartidor", servicioEntrega.getRepartidor().getNombre() + " " + servicioEntrega.getRepartidor().getApellidos());
+                    Repartidor repartidor = servicioEntrega.getRepartidor();
+                if (repartidor != null) {
+                    detalles.put("repartidor", repartidor.getNombre() + " " + repartidor.getApellidos());
+                } else {
+                    detalles.put("repartidor", "Buscando repartidor...");
                 }
+            } else {
+                detalles.put("repartidor", "Buscando repartidor...");
+            }
                 return detalles;
             }).toList();
             logger.info("Pedidos en curso encontrados: {}", pedidosDetalles.size());

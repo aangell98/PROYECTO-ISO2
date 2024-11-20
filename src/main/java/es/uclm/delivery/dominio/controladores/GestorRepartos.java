@@ -3,8 +3,10 @@ package es.uclm.delivery.dominio.controladores;
 import es.uclm.delivery.dominio.entidades.ServicioEntrega;
 import es.uclm.delivery.persistencia.RepartidorDAO;
 import es.uclm.delivery.persistencia.ServicioEntregaDAO;
+import es.uclm.delivery.persistencia.PedidoDAO;
 import es.uclm.delivery.dominio.entidades.CodigoPostal;
 import es.uclm.delivery.dominio.entidades.EstadoPedido;
+import es.uclm.delivery.dominio.entidades.Pedido;
 import es.uclm.delivery.dominio.entidades.Repartidor;
 
 import java.util.List;
@@ -31,6 +33,9 @@ public class GestorRepartos {
     @Autowired
     private RepartidorDAO repartidorDAO;
 
+    @Autowired
+    private PedidoDAO pedidoDAO;
+
 
     @PostMapping("/autoasignar/{pedidoId}")
     public ResponseEntity<?> autoasignarPedido(@PathVariable Long pedidoId) {
@@ -48,6 +53,15 @@ public class GestorRepartos {
                         servicioEntrega.setRepartidor(repartidor);
                         servicioEntrega.setEstado(EstadoPedido.RECOGIDO);
                         servicioEntregaDAO.update(servicioEntrega);
+
+                        Optional<Pedido> pedidoOpt = pedidoDAO.findById(pedidoId);
+                        if (pedidoOpt.isPresent() && repartidorOpt.isPresent()) {
+                            Pedido pedido = pedidoOpt.get();
+                        
+                            pedido.setEstado(EstadoPedido.RECOGIDO);
+                            pedidoDAO.update(pedido);
+                        }
+                        
                         return ResponseEntity.ok("Pedido autoasignado con éxito");
                     } else {
                         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("El pedido no está disponible para autoasignación");

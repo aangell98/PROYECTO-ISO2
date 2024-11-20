@@ -172,15 +172,4 @@ public class GestorPedidos {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al confirmar el pedido");
         }
     }
-
-    private Repartidor obtenerRepartidorAleatorio() {
-        List<Long> idsRepartidores = repartidorDAO.findAllIds();
-        if (idsRepartidores.isEmpty()) {
-            throw new IllegalStateException("No hay repartidores disponibles");
-        }
-        Random random = new Random();
-        Long idAleatorio = idsRepartidores.get(random.nextInt(idsRepartidores.size()));
-        return repartidorDAO.findById(idAleatorio)
-                .orElseThrow(() -> new IllegalStateException("Repartidor no encontrado"));
-    }
 }
