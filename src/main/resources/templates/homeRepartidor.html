@@ -28,49 +28,23 @@
         <main>
             <section>
                 <h2>Pedidos Disponibles</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>ID Pedido</th>
-                            <th>Dirección</th>
-                            <th>Estado</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody id="pedidosPendientes">
-                        <!-- Aquí se mostrarán los pedidos pendientes -->
-                    </tbody>
-                </table>
+                <ul id="pedidosPendientes">
+                    <!-- Aquí se mostrarán los pedidos pendientes -->
+                </ul>
             </section>
+            <hr>
             <section>
                 <h2>Pedidos en Curso</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>ID Pedido</th>
-                            <th>Dirección</th>
-                            <th>Estado</th>
-                        </tr>
-                    </thead>
-                    <tbody id="pedidosAsignados">
-                        <!-- Aquí se mostrarán los pedidos asignados -->
-                    </tbody>
-                </table>
+                <ul id="pedidosAsignados">
+                    <!-- Aquí se mostrarán los pedidos asignados -->
+                </ul>
             </section>
+            <hr>
             <section>
                 <h2>Pedidos Entregados</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>ID Pedido</th>
-                            <th>Dirección</th>
-                            <th>Estado</th>
-                        </tr>
-                    </thead>
-                    <tbody id="pedidosEntregados">
-                        <!-- Aquí se mostrarán los pedidos entregados -->
-                    </tbody>
-                </table>
+                <ul id="pedidosEntregados">
+                    <!-- Aquí se mostrarán los pedidos entregados -->
+                </ul>
             </section>
         </main>        
         <footer>
@@ -87,14 +61,12 @@
                         var pedidosHtml = '';
                         data.forEach(function(pedido) {
                             pedidosHtml += `
-                                <tr>
-                                    <td>${pedido.id}</td>
-                                    <td>${pedido.direccion}</td>
-                                    <td>${pedido.estado}</td>
-                                    <td>
-                                        <button onclick="autoasignarPedido(${pedido.id})">Autoasignar</button>
-                                    </td>
-                                </tr>`;
+                                <li>
+                                    <p><strong>ID Pedido:</strong> ${pedido.id}</p>
+                                    <p><strong>Dirección:</strong> ${pedido.direccion}</p>
+                                    <p><strong>Estado:</strong> ${pedido.estado}</p>
+                                    <button onclick="autoasignarPedido(${pedido.id})">Autoasignar</button>
+                                </li>`;
                         });
                         $('#pedidosPendientes').html(pedidosHtml);
                     },
@@ -113,11 +85,11 @@
                         var pedidosEntregadosHtml = '';
                         data.forEach(function(pedido) {
                             var pedidoHtml = `
-                                <tr>
-                                    <td>${pedido.id}</td>
-                                    <td>${pedido.direccion}</td>
-                                    <td>${pedido.estado}</td>
-                                </tr>`;
+                                <li>
+                                    <p><strong>ID Pedido:</strong> ${pedido.id}</p>
+                                    <p><strong>Dirección:</strong> ${pedido.direccion}</p>
+                                    <p><strong>Estado:</strong> ${pedido.estado}</p>
+                                </li>`;
                             if (pedido.estado === 'RECOGIDO') {
                                 pedidosAsignadosHtml += pedidoHtml;
                             } else if (pedido.estado === 'ENTREGADO') {
