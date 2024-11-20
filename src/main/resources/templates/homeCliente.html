@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
     <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon">
@@ -8,9 +7,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home Cliente</title>
     <link rel="stylesheet" href="/css/home.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
-
 <body>
     <header>
         <form method="post" action="/perform_logout" style="display: inline;">
@@ -63,7 +62,6 @@
         <p>&copy; 2024 Delivery. Todos los derechos reservados. Work In Progress</p>
     </footer>
     <script>
-
         $(document).ready(function () {
             let favoritos = [];
 
@@ -115,8 +113,11 @@
                                     <li id="pedido-${pedido.id}">
                                         <p><strong>Restaurante:</strong> ${pedido.restaurante}</p>
                                         <p><strong>Estado:</strong> ${pedido.estado}</p>
-                                        <p><strong>Repartidor:</strong> ${pedido.repartidor}</p>
-                                        <button onclick="confirmarRecepcion(${pedido.id})">¿Has recibido el pedido?</button>
+                                        <p><strong>Repartidor:</strong> ${pedido.repartidor}</p>`;
+                                if (pedido.repartidor !== "Buscando repartidor...") {
+                                    pedidosHtml += `<p><strong>Valoración del Repartidor:</strong> <span class="valoracion">${generarEstrellas(pedido.valoracionRepartidor)}</span></p>`;
+                                }
+                                pedidosHtml += `<button onclick="confirmarRecepcion(${pedido.id})">¿Has recibido el pedido?</button>
                                     </li>`;
                             });
                             $('#currentOrders').html(pedidosHtml);
@@ -158,6 +159,24 @@
                         $('#previousOrders').html('<p>Error al cargar los pedidos anteriores.</p>');
                     }
                 });
+            }
+
+            function generarEstrellas(valoracion) {
+                var estrellasHtml = '';
+                var estrellasCompletas = Math.floor(valoracion);
+                var mediaEstrella = valoracion % 1 >= 0.5 ? 1 : 0;
+                var estrellasVacias = 5 - estrellasCompletas - mediaEstrella;
+
+                for (var i = 0; i < estrellasCompletas; i++) {
+                    estrellasHtml += '<i class="fas fa-star"></i>';
+                }
+                if (mediaEstrella) {
+                    estrellasHtml += '<i class="fas fa-star-half-alt"></i>';
+                }
+                for (var i = 0; i < estrellasVacias; i++) {
+                    estrellasHtml += '<i class="far fa-star"></i>';
+                }
+                return estrellasHtml;
             }
 
             window.confirmarRecepcion = function (idPedido) {
@@ -307,5 +326,4 @@
         });
     </script>
 </body>
-
 </html>

@@ -64,37 +64,40 @@ public class GestorClientes {
         return IUBusqueda.obtenerRestaurante(restauranteId);
     }
     @GetMapping("/listar_pedidos_curso")
-    public ResponseEntity<?> obtenerPedidosEnCurso() {
-        Cliente cliente = IUBusqueda.obtenerClienteActual();
-        logger.info("Obteniendo pedidos en curso para el cliente: {}", cliente.getId());
-        List<Pedido> pedidosEnCurso = iuPedido.obtenerPedidosEnCurso(cliente.getId());
-        if (!pedidosEnCurso.isEmpty()) {
-            List<Map<String, Object>> pedidosDetalles = pedidosEnCurso.stream().map(pedido -> {
-                Map<String, Object> detalles = new HashMap<>();
-                detalles.put("id", pedido.getId());
-                detalles.put("restaurante", pedido.getRestaurante().getNombre());
-                detalles.put("estado", pedido.getEstado());
-                Optional<ServicioEntrega> servicioEntregaOpt = iuPedido.obtenerServicioEntregaPorPedido(pedido.getId());
-                if (servicioEntregaOpt.isPresent()) {
-                    ServicioEntrega servicioEntrega = servicioEntregaOpt.get();
-                    Repartidor repartidor = servicioEntrega.getRepartidor();
+public ResponseEntity<?> obtenerPedidosEnCurso() {
+    Cliente cliente = IUBusqueda.obtenerClienteActual();
+    logger.info("Obteniendo pedidos en curso para el cliente: {}", cliente.getId());
+    List<Pedido> pedidosEnCurso = iuPedido.obtenerPedidosEnCurso(cliente.getId());
+    if (!pedidosEnCurso.isEmpty()) {
+        List<Map<String, Object>> pedidosDetalles = pedidosEnCurso.stream().map(pedido -> {
+            Map<String, Object> detalles = new HashMap<>();
+            detalles.put("id", pedido.getId());
+            detalles.put("restaurante", pedido.getRestaurante().getNombre());
+            detalles.put("estado", pedido.getEstado());
+            Optional<ServicioEntrega> servicioEntregaOpt = iuPedido.obtenerServicioEntregaPorPedido(pedido.getId());
+            if (servicioEntregaOpt.isPresent()) {
+                ServicioEntrega servicioEntrega = servicioEntregaOpt.get();
+                Repartidor repartidor = servicioEntrega.getRepartidor();
                 if (repartidor != null) {
                     detalles.put("repartidor", repartidor.getNombre() + " " + repartidor.getApellidos());
+                    detalles.put("valoracionRepartidor", repartidor.getEficiencia());
                 } else {
                     detalles.put("repartidor", "Buscando repartidor...");
+                    detalles.put("valoracionRepartidor", 0);
                 }
             } else {
                 detalles.put("repartidor", "Buscando repartidor...");
+                detalles.put("valoracionRepartidor", 0);
             }
-                return detalles;
-            }).toList();
-            logger.info("Pedidos en curso encontrados: {}", pedidosDetalles.size());
-            return ResponseEntity.ok(pedidosDetalles);
-        } else {
-            logger.info("No hay pedidos en curso");
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("No hay pedidos en curso");
-        }
+            return detalles;
+        }).toList();
+        logger.info("Pedidos en curso encontrados: {}", pedidosDetalles.size());
+        return ResponseEntity.ok(pedidosDetalles);
+    } else {
+        logger.info("No hay pedidos en curso");
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body("No hay pedidos en curso");
     }
+}
     @PostMapping("/confirmar_recepcion")
     public ResponseEntity<?> confirmarRecepcion(@RequestBody Map<String, Long> payload) {
         Long idPedido = payload.get("idPedido");
