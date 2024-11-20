@@ -1,4 +1,5 @@
 package es.uclm.delivery.dominio.controladores;
+
 import es.uclm.delivery.persistencia.*;
 import es.uclm.delivery.presentacion.IUBusqueda;
 import java.util.ArrayList;
@@ -23,14 +24,17 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import es.uclm.delivery.dominio.entidades.*;
+
 @SessionAttributes("carrito")
 @Controller
 public class GestorPedidos {
     private static final Logger logger = LoggerFactory.getLogger(GestorPedidos.class);
+
     @ModelAttribute("carrito")
     public Carrito crearCarrito() {
         return new Carrito(); // Crea un nuevo carrito si no existe en la sesión
     }
+
     @Autowired
     private IUBusqueda IUBusqueda;
     @Autowired
@@ -39,7 +43,7 @@ public class GestorPedidos {
     private CartaMenuDAO cartaMenuDAO;
     @Autowired
     private PedidoDAO pedidoDAO;
-    
+
     @Autowired
     private PagoDAO pagoDAO;
     @Autowired
@@ -53,7 +57,8 @@ public class GestorPedidos {
     private ClienteDAO clienteDAO;
 
     @GetMapping("/realizar_pedido")
-    public String realizarPedido(@RequestParam("restauranteId") Long restauranteId, Model model, @ModelAttribute("carrito") Carrito carrito) {
+    public String realizarPedido(@RequestParam("restauranteId") Long restauranteId, Model model,
+            @ModelAttribute("carrito") Carrito carrito) {
         Restaurante restaurante = IUBusqueda.obtenerRestaurante(restauranteId);
         // Calcular el precio total de cada carta de menú
         restaurante.getCartasMenu().forEach(cartaMenu -> {
@@ -66,6 +71,7 @@ public class GestorPedidos {
         model.addAttribute("restaurante", restaurante);
         return "realizarPedido";
     }
+
     @PostMapping("/agregar_al_carrito")
     public ResponseEntity<?> agregarAlCarrito(@ModelAttribute("carrito") Carrito carrito,
             @RequestBody Map<String, Long> requestData) {
@@ -80,16 +86,20 @@ public class GestorPedidos {
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Menú no encontrado");
     }
+
     @DeleteMapping("/eliminar_del_carrito/{cartaMenuId}")
-    public ResponseEntity<?> eliminarDelCarrito(@ModelAttribute("carrito") Carrito carrito, @PathVariable Long cartaMenuId) {
-        carrito.eliminarItem(cartaMenuId);  // Método que elimina el item por ID en el carrito
+    public ResponseEntity<?> eliminarDelCarrito(@ModelAttribute("carrito") Carrito carrito,
+            @PathVariable Long cartaMenuId) {
+        carrito.eliminarItem(cartaMenuId); // Método que elimina el item por ID en el carrito
         return ResponseEntity.ok(carrito); // Devuelve el carrito actualizado al frontend
     }
+
     @DeleteMapping("/limpiar_carrito")
     public ResponseEntity<?> limpiarCarrito(@ModelAttribute("carrito") Carrito carrito) {
         carrito.vaciar(); // Método que elimina todos los ítems del carrito
         return ResponseEntity.ok(carrito); // Devuelve el carrito vacío
     }
+
     @GetMapping("/pago")
     public String mostrarPago() {
         return "pago";
@@ -97,7 +107,7 @@ public class GestorPedidos {
 
     @PostMapping("/confirmar_pedido")
     public ResponseEntity<?> confirmarPedido(@ModelAttribute("carrito") Carrito carrito,
-                                             @RequestBody Map<String, Object> requestData) {
+            @RequestBody Map<String, Object> requestData) {
         Long direccionId;
         try {
             direccionId = Long.parseLong((String) requestData.get("direccionId"));
@@ -110,7 +120,8 @@ public class GestorPedidos {
 
         if (direccionId == null || metodoPago == null || pagoInfo == null) {
             logger.error("Dirección, método de pago y datos de pago son requeridos");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Dirección, método de pago y datos de pago son requeridos");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Dirección, método de pago y datos de pago son requeridos");
         }
 
         try {
@@ -124,31 +135,32 @@ public class GestorPedidos {
                 if (direccionOpt.isPresent()) {
                     Direccion direccion = direccionOpt.get();
 
+                    // Crear el pedido
                     Pedido pedido = new Pedido();
                     pedido.setCliente(cliente);
                     pedido.setRestaurante(IUBusqueda.obtenerRestaurante(carrito.getRestauranteId()));
-                    pedido.setEstado(EstadoPedido.PEDIDO);
+                    pedido.setEstado(EstadoPedido.PAGADO); // Estado inicial del pedido
                     pedido.setFecha(new Date());
                     pedidoDAO.insert(pedido);
 
+                    // Registrar el pago
                     Pago pago = new Pago();
                     pago.setPedido(pedido);
                     pago.setTipo(MetodoPago.valueOf(metodoPago));
                     pago.setFechaTransaccion(new Date());
                     pagoDAO.insert(pago);
 
-                    Repartidor repartidor = obtenerRepartidorAleatorio();
+                    // Crear servicio de entrega sin asignar repartidor y con estado "PAGADO"
                     ServicioEntrega servicioEntrega = new ServicioEntrega();
                     servicioEntrega.setPedido(pedido);
                     servicioEntrega.setDireccion(direccion);
-                    servicioEntrega.setRepartidor(repartidor);
-                    servicioEntrega.setEstado(EstadoPedido.RECOGIDO);
+                    servicioEntrega.setEstado(EstadoPedido.PAGADO); // Estado inicial del servicio
                     servicioEntregaDAO.insert(servicioEntrega);
 
                     carrito.vaciar();
 
-                    logger.info("Pedido confirmado con éxito");
-                    return ResponseEntity.ok("Pedido confirmado");
+                    logger.info("Pedido confirmado con éxito y servicio de entrega creado en estado PAGADO");
+                    return ResponseEntity.ok("Pedido confirmado y servicio de entrega en proceso");
                 } else {
                     return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Dirección no encontrada");
                 }
@@ -160,6 +172,7 @@ public class GestorPedidos {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al confirmar el pedido");
         }
     }
+
     private Repartidor obtenerRepartidorAleatorio() {
         List<Long> idsRepartidores = repartidorDAO.findAllIds();
         if (idsRepartidores.isEmpty()) {

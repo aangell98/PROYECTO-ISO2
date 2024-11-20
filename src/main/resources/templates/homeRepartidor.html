@@ -25,8 +25,30 @@
             </ul>
         </nav>
         <main>
-            <!-- Contenido principal aquí -->
-        </main>
+            <h2>Pedidos Pendientes</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID Pedido</th>
+                        <th>Dirección</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="pedido : ${pedidosPendientes}">
+                        <td th:text="${pedido.pedido.id}"></td>
+                        <td th:text="${pedido.direccion.calle}"></td>
+                        <td th:text="${pedido.estado}"></td>
+                        <td>
+                            <form th:action="@{/repartidor/autoasignar/{id}(id=${pedido.pedido.id})}" method="post">
+                                <button type="submit">Autoasignar</button>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </main>        
         <footer>
             <p>&copy; 2024 Delivery. Todos los derechos reservados. Work In Progress</p>
         </footer>
