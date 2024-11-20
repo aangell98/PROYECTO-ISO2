@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home Repartidor</title>
     <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <style>
         /* Estilo básico para verificar que los datos sean visibles */
@@ -52,6 +53,14 @@
             </ul>
         </nav>
         <main>
+            <section id="perfilRepartidor">
+                <h2>Mi Perfil</h2>
+                <p><strong>Nombre:</strong> <span id="nombreRepartidor"></span></p>
+                <p><strong>Apellidos:</strong> <span id="apellidosRepartidor"></span></p>
+                <p><strong>DNI:</strong> <span id="dniRepartidor"></span></p>
+                <p><strong>Valoración Media:</strong> <span id="valoracionMediaRepartidor"></span></p>
+            </section>
+            <hr>
             <section>
                 <h2>Pedidos Disponibles</h2>
                 <ul id="pedidosPendientes">
@@ -79,6 +88,40 @@
     </div>
     <script>
         $(document).ready(function() {
+            function cargarPerfilRepartidor() {
+                $.ajax({
+                    url: '/repartidor/perfil_repartidor',
+                    type: 'GET',
+                    success: function(data) {
+                        $('#nombreRepartidor').text(data.nombre);
+                        $('#apellidosRepartidor').text(data.apellidos);
+                        $('#dniRepartidor').text(data.dni);
+                        $('#valoracionMediaRepartidor').html(generarEstrellas(data.valoracionMedia));
+                    },
+                    error: function() {
+                        alert("Error al cargar el perfil del repartidor");
+                    }
+                });
+            }
+
+            function generarEstrellas(valoracion) {
+                var estrellasHtml = '';
+                var estrellasCompletas = Math.floor(valoracion);
+                var mediaEstrella = valoracion % 1 >= 0.5 ? 1 : 0;
+                var estrellasVacias = 5 - estrellasCompletas - mediaEstrella;
+
+                for (var i = 0; i < estrellasCompletas; i++) {
+                    estrellasHtml += '<i class="fas fa-star"></i>';
+                }
+                if (mediaEstrella) {
+                    estrellasHtml += '<i class="fas fa-star-half-alt"></i>';
+                }
+                for (var i = 0; i < estrellasVacias; i++) {
+                    estrellasHtml += '<i class="far fa-star"></i>';
+                }
+                return estrellasHtml;
+            }
+
             function cargarPedidosPendientes() {
                 $.ajax({
                     url: '/pedidos_pagados',
@@ -106,7 +149,7 @@
 
             function cargarPedidosAsignados() {
                 $.ajax({
-                    url: '/pedidos_asignados',
+                    url: '/repartidor/pedidos_asignados',
                     type: 'GET',
                     success: function(data) {
                         console.log("Pedidos Asignados:", data); // Verificar datos en consola
@@ -150,6 +193,7 @@
                 });
             }
 
+            cargarPerfilRepartidor();
             cargarPedidosPendientes();
             cargarPedidosAsignados();
         });

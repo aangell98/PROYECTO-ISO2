@@ -107,5 +107,23 @@ public class GestorRepartos {
             return ResponseEntity.status(404).body(null);
         }
     }
+
+    @GetMapping("/perfil_repartidor")
+    public ResponseEntity<Map<String, Object>> obtenerPerfilRepartidor() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Optional<Repartidor> repartidorOpt = repartidorDAO.findByUsername(username);
+
+        if (repartidorOpt.isPresent()) {
+            Repartidor repartidor = repartidorOpt.get();
+            Map<String, Object> perfil = new HashMap<>();
+            perfil.put("nombre", repartidor.getNombre());
+            perfil.put("apellidos", repartidor.getApellidos());
+            perfil.put("dni", repartidor.getDni());
+            perfil.put("valoracionMedia", repartidor.getEficiencia());
+            return ResponseEntity.ok(perfil);
+        } else {
+            return ResponseEntity.status(404).body(null);
+        }
+    }
     
 }
