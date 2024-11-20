@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -201,4 +202,30 @@ public class GestorPedidos {
         return ResponseEntity.ok(pedidosDetalles);
     }
     
+    @GetMapping("/pedidos_asignados")
+    public ResponseEntity<List<Map<String, Object>>> obtenerPedidosAsignados() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Optional<Repartidor> repartidorOpt = repartidorDAO.findByUsername(username);
+
+        if (repartidorOpt.isPresent()) {
+            Repartidor repartidor = repartidorOpt.get();
+            List<ServicioEntrega> serviciosEntrega = servicioEntregaDAO.findByRepartidorId(repartidor.getId());
+            List<Map<String, Object>> pedidosDetalles = serviciosEntrega.stream().map(servicioEntrega -> {
+                Map<String, Object> detalles = new HashMap<>();
+                Pedido pedido = servicioEntrega.getPedido();
+                detalles.put("id", pedido.getId());
+                detalles.put("estado", pedido.getEstado().toString());
+                Direccion direccion = servicioEntrega.getDireccion();
+                if (direccion != null) {
+                    detalles.put("direccion", direccion.getCalle() + ", " + direccion.getCiudad() + ", " + direccion.getCodigoPostal());
+                } else {
+                    detalles.put("direccion", "Dirección no disponible");
+                }
+                return detalles;
+            }).collect(Collectors.toList());
+            return ResponseEntity.ok(pedidosDetalles);
+        } else {
+            return ResponseEntity.status(404).body(null);
+        }
+    }
 }

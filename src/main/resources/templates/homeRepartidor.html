@@ -26,33 +26,52 @@
             </ul>
         </nav>
         <main>
-            <h2>Pedidos Pendientes</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID Pedido</th>
-                        <th>Dirección</th>
-                        <th>Estado</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody id="pedidosPendientes">
-                    <!-- Aquí se mostrarán los pedidos pendientes -->
-                </tbody>
-            </table>
-            <h2>Mis Pedidos Asignados</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID Pedido</th>
-                        <th>Dirección</th>
-                        <th>Estado</th>
-                    </tr>
-                </thead>
-                <tbody id="pedidosAsignados">
-                    <!-- Aquí se mostrarán los pedidos asignados -->
-                </tbody>
-            </table>
+            <section>
+                <h2>Pedidos Disponibles</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID Pedido</th>
+                            <th>Dirección</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pedidosPendientes">
+                        <!-- Aquí se mostrarán los pedidos pendientes -->
+                    </tbody>
+                </table>
+            </section>
+            <section>
+                <h2>Pedidos en Curso</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID Pedido</th>
+                            <th>Dirección</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pedidosAsignados">
+                        <!-- Aquí se mostrarán los pedidos asignados -->
+                    </tbody>
+                </table>
+            </section>
+            <section>
+                <h2>Pedidos Entregados</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID Pedido</th>
+                            <th>Dirección</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pedidosEntregados">
+                        <!-- Aquí se mostrarán los pedidos entregados -->
+                    </tbody>
+                </table>
+            </section>
         </main>        
         <footer>
             <p>&copy; 2024 Delivery. Todos los derechos reservados. Work In Progress</p>
@@ -90,16 +109,23 @@
                     url: '/repartidor/pedidos_asignados',
                     type: 'GET',
                     success: function(data) {
-                        var pedidosHtml = '';
+                        var pedidosAsignadosHtml = '';
+                        var pedidosEntregadosHtml = '';
                         data.forEach(function(pedido) {
-                            pedidosHtml += `
+                            var pedidoHtml = `
                                 <tr>
                                     <td>${pedido.id}</td>
                                     <td>${pedido.direccion}</td>
                                     <td>${pedido.estado}</td>
                                 </tr>`;
+                            if (pedido.estado === 'RECOGIDO') {
+                                pedidosAsignadosHtml += pedidoHtml;
+                            } else if (pedido.estado === 'ENTREGADO') {
+                                pedidosEntregadosHtml += pedidoHtml;
+                            }
                         });
-                        $('#pedidosAsignados').html(pedidosHtml);
+                        $('#pedidosAsignados').html(pedidosAsignadosHtml);
+                        $('#pedidosEntregados').html(pedidosEntregadosHtml);
                     },
                     error: function() {
                         alert("Error al cargar los pedidos asignados");
