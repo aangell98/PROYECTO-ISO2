@@ -8,6 +8,32 @@
     <title>Home Repartidor</title>
     <link rel="stylesheet" href="/css/styles.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        /* Estilo básico para verificar que los datos sean visibles */
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #ccc;
+            background-color: #f9f9f9;
+        }
+        li p {
+            margin: 5px 0;
+        }
+        button {
+            padding: 5px 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -58,12 +84,14 @@
                     url: '/pedidos_pagados',
                     type: 'GET',
                     success: function(data) {
+                        console.log("Pedidos Pagados:", data); // Verificar datos en consola
                         var pedidosHtml = '';
                         data.forEach(function(pedido) {
                             pedidosHtml += `
                                 <li>
-                                    <p><strong>ID Pedido:</strong> ${pedido.id}</p>
-                                    <p><strong>Dirección:</strong> ${pedido.direccion}</p>
+                                    <p><strong>Cliente:</strong> ${pedido.cliente || 'No especificado'}</p>
+                                    <p><strong>Dirección de Entrega:</strong> ${pedido.direccion || 'No especificada'}</p>
+                                    <p><strong>Restaurante:</strong> ${pedido.restaurante || 'No especificado'}</p>
                                     <p><strong>Estado:</strong> ${pedido.estado}</p>
                                     <button onclick="autoasignarPedido(${pedido.id})">Autoasignar</button>
                                 </li>`;
@@ -81,13 +109,15 @@
                     url: '/repartidor/pedidos_asignados',
                     type: 'GET',
                     success: function(data) {
+                        console.log("Pedidos Asignados:", data); // Verificar datos en consola
                         var pedidosAsignadosHtml = '';
                         var pedidosEntregadosHtml = '';
                         data.forEach(function(pedido) {
                             var pedidoHtml = `
                                 <li>
-                                    <p><strong>ID Pedido:</strong> ${pedido.id}</p>
-                                    <p><strong>Dirección:</strong> ${pedido.direccion}</p>
+                                    <p><strong>Cliente:</strong> ${pedido.cliente || 'No especificado'}</p>
+                                    <p><strong>Dirección de Entrega:</strong> ${pedido.direccion || 'No especificada'}</p>
+                                    <p><strong>Restaurante:</strong> ${pedido.restaurante || 'No especificado'}</p>
                                     <p><strong>Estado:</strong> ${pedido.estado}</p>
                                 </li>`;
                             if (pedido.estado === 'RECOGIDO') {

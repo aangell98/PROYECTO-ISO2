@@ -188,6 +188,12 @@ public class GestorPedidos {
             Optional<ServicioEntrega> servicioEntregaOpt = servicioEntregaDAO.findByPedidoId(pedido.getId());
             if (servicioEntregaOpt.isPresent()) {
                 ServicioEntrega servicioEntrega = servicioEntregaOpt.get();
+                String nombre = servicioEntrega.getPedido().getCliente().getNombre();
+                String apellidos = servicioEntrega.getPedido().getCliente().getApellidos();
+                detalles.put("cliente", nombre + " " + apellidos);
+                String nombreRestaurante = servicioEntrega.getPedido().getRestaurante().getNombre();
+                String direccionRestaurante = servicioEntrega.getPedido().getRestaurante().getDireccion();
+                detalles.put("restaurante", nombreRestaurante + " (" + direccionRestaurante + ")");
                 Direccion direccion = servicioEntrega.getDireccion();
                 if (direccion != null) {
                     detalles.put("direccion", direccion.getCalle() + ", " + direccion.getCiudad() + ", " + direccion.getCodigoPostal());
@@ -203,29 +209,35 @@ public class GestorPedidos {
     }
     
     @GetMapping("/pedidos_asignados")
-    public ResponseEntity<List<Map<String, Object>>> obtenerPedidosAsignados() {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        Optional<Repartidor> repartidorOpt = repartidorDAO.findByUsername(username);
+public ResponseEntity<List<Map<String, Object>>> obtenerPedidosAsignados() {
+    String username = SecurityContextHolder.getContext().getAuthentication().getName();
+    Optional<Repartidor> repartidorOpt = repartidorDAO.findByUsername(username);
 
-        if (repartidorOpt.isPresent()) {
-            Repartidor repartidor = repartidorOpt.get();
-            List<ServicioEntrega> serviciosEntrega = servicioEntregaDAO.findByRepartidorId(repartidor.getId());
-            List<Map<String, Object>> pedidosDetalles = serviciosEntrega.stream().map(servicioEntrega -> {
-                Map<String, Object> detalles = new HashMap<>();
-                Pedido pedido = servicioEntrega.getPedido();
-                detalles.put("id", pedido.getId());
-                detalles.put("estado", pedido.getEstado().toString());
-                Direccion direccion = servicioEntrega.getDireccion();
-                if (direccion != null) {
-                    detalles.put("direccion", direccion.getCalle() + ", " + direccion.getCiudad() + ", " + direccion.getCodigoPostal());
-                } else {
-                    detalles.put("direccion", "Dirección no disponible");
-                }
-                return detalles;
-            }).collect(Collectors.toList());
-            return ResponseEntity.ok(pedidosDetalles);
-        } else {
-            return ResponseEntity.status(404).body(null);
-        }
+    if (repartidorOpt.isPresent()) {
+        Repartidor repartidor = repartidorOpt.get();
+        List<ServicioEntrega> serviciosEntrega = servicioEntregaDAO.findByRepartidorId(repartidor.getId());
+        List<Map<String, Object>> pedidosDetalles = serviciosEntrega.stream().map(servicioEntrega -> {
+            Map<String, Object> detalles = new HashMap<>();
+            Pedido pedido = servicioEntrega.getPedido();
+            detalles.put("id", pedido.getId());
+            detalles.put("estado", pedido.getEstado().toString());
+            String nombre = servicioEntrega.getPedido().getCliente().getNombre();
+            String apellidos = servicioEntrega.getPedido().getCliente().getApellidos();
+            detalles.put("cliente", nombre + " " + apellidos);
+            String nombreRestaurante = servicioEntrega.getPedido().getRestaurante().getNombre();
+            String direccionRestaurante = servicioEntrega.getPedido().getRestaurante().getDireccion();
+            detalles.put("restaurante", nombreRestaurante + " (" + direccionRestaurante + ")");
+            Direccion direccion = servicioEntrega.getDireccion();
+            if (direccion != null) {
+                detalles.put("direccion", direccion.getCalle() + ", " + direccion.getCiudad() + ", " + direccion.getCodigoPostal());
+            } else {
+                detalles.put("direccion", "Dirección no disponible");
+            }
+            return detalles;
+        }).collect(Collectors.toList());
+        return ResponseEntity.ok(pedidosDetalles);
+    } else {
+        return ResponseEntity.status(404).body(null);
     }
+}
 }
