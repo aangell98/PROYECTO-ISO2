@@ -51,4 +51,12 @@ public class PedidoDAO extends EntidadDAO<Pedido> {
             .getResultList();
     }
 
+    public List<Pedido> findPedidosPagados() {
+        return entityManager.createQuery(
+            "SELECT p FROM Pedido p WHERE p.estado = :estadoPagado",
+            Pedido.class)
+            .setParameter("estadoPagado", EstadoPedido.PAGADO)
+            .getResultList();
+    }
+
 }

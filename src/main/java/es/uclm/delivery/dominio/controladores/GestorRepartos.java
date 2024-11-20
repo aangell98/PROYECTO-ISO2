@@ -55,13 +55,12 @@ public class GestorRepartos {
                         servicioEntregaDAO.update(servicioEntrega);
 
                         Optional<Pedido> pedidoOpt = pedidoDAO.findById(pedidoId);
-                        if (pedidoOpt.isPresent() && repartidorOpt.isPresent()) {
+                        if (pedidoOpt.isPresent()) {
                             Pedido pedido = pedidoOpt.get();
-                        
                             pedido.setEstado(EstadoPedido.RECOGIDO);
                             pedidoDAO.update(pedido);
                         }
-                        
+
                         return ResponseEntity.ok("Pedido autoasignado con éxito");
                     } else {
                         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("El pedido no está disponible para autoasignación");

@@ -4,10 +4,13 @@ import es.uclm.delivery.persistencia.*;
 import es.uclm.delivery.presentacion.IUBusqueda;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
+import java.util.stream.Collectors;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -172,4 +175,30 @@ public class GestorPedidos {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al confirmar el pedido");
         }
     }
+
+    @GetMapping("/pedidos_pagados")
+    public ResponseEntity<List<Map<String, Object>>> obtenerPedidosPagados() {
+        List<Pedido> pedidosPagados = pedidoDAO.findPedidosPagados();
+        List<Map<String, Object>> pedidosDetalles = pedidosPagados.stream().map(pedido -> {
+            Map<String, Object> detalles = new HashMap<>();
+            detalles.put("id", pedido.getId());
+            detalles.put("estado", pedido.getEstado().toString());
+
+            Optional<ServicioEntrega> servicioEntregaOpt = servicioEntregaDAO.findByPedidoId(pedido.getId());
+            if (servicioEntregaOpt.isPresent()) {
+                ServicioEntrega servicioEntrega = servicioEntregaOpt.get();
+                Direccion direccion = servicioEntrega.getDireccion();
+                if (direccion != null) {
+                    detalles.put("direccion", direccion.getCalle() + ", " + direccion.getCiudad() + ", " + direccion.getCodigoPostal());
+                } else {
+                    detalles.put("direccion", "Dirección no disponible");
+                }
+            } else {
+                detalles.put("direccion", "Dirección no disponible");
+            }
+            return detalles;
+        }).collect(Collectors.toList());
+        return ResponseEntity.ok(pedidosDetalles);
+    }
+    
 }

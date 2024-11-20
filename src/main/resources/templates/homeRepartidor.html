@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home Repartidor</title>
     <link rel="stylesheet" href="/css/styles.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
     <div class="container">
@@ -35,17 +36,8 @@
                         <th>Acciones</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr th:each="pedido : ${pedidosPendientes}">
-                        <td th:text="${pedido.pedido.id}"></td>
-                        <td th:text="${pedido.direccion.calle}"></td>
-                        <td th:text="${pedido.estado}"></td>
-                        <td>
-                            <form th:action="@{/repartidor/autoasignar/{id}(id=${pedido.pedido.id})}" method="post">
-                                <button type="submit">Autoasignar</button>
-                            </form>
-                        </td>
-                    </tr>
+                <tbody id="pedidosPendientes">
+                    <!-- Aquí se mostrarán los pedidos pendientes -->
                 </tbody>
             </table>
         </main>        
@@ -53,5 +45,49 @@
             <p>&copy; 2024 Delivery. Todos los derechos reservados. Work In Progress</p>
         </footer>
     </div>
+    <script>
+        $(document).ready(function() {
+            function cargarPedidosPendientes() {
+                $.ajax({
+                    url: '/pedidos_pagados',
+                    type: 'GET',
+                    success: function(data) {
+                        var pedidosHtml = '';
+                        data.forEach(function(pedido) {
+                            pedidosHtml += `
+                                <tr>
+                                    <td>${pedido.id}</td>
+                                    <td>${pedido.direccion}</td>
+                                    <td>${pedido.estado}</td>
+                                    <td>
+                                        <button onclick="autoasignarPedido(${pedido.id})">Autoasignar</button>
+                                    </td>
+                                </tr>`;
+                        });
+                        $('#pedidosPendientes').html(pedidosHtml);
+                    },
+                    error: function() {
+                        alert("Error al cargar los pedidos pendientes");
+                    }
+                });
+            }
+
+            window.autoasignarPedido = function(pedidoId) {
+                $.ajax({
+                    url: '/repartidor/autoasignar/' + pedidoId,
+                    type: 'POST',
+                    success: function() {
+                        alert("Pedido autoasignado con éxito");
+                        cargarPedidosPendientes(); // Recargar la lista de pedidos pendientes
+                    },
+                    error: function() {
+                        alert("Error al autoasignar el pedido");
+                    }
+                });
+            }
+
+            cargarPedidosPendientes();
+        });
+    </script>
 </body>
 </html>
