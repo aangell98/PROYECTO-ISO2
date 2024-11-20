@@ -40,6 +40,19 @@
                     <!-- Aquí se mostrarán los pedidos pendientes -->
                 </tbody>
             </table>
+            <h2>Mis Pedidos Asignados</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID Pedido</th>
+                        <th>Dirección</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody id="pedidosAsignados">
+                    <!-- Aquí se mostrarán los pedidos asignados -->
+                </tbody>
+            </table>
         </main>        
         <footer>
             <p>&copy; 2024 Delivery. Todos los derechos reservados. Work In Progress</p>
@@ -72,6 +85,28 @@
                 });
             }
 
+            function cargarPedidosAsignados() {
+                $.ajax({
+                    url: '/repartidor/pedidos_asignados',
+                    type: 'GET',
+                    success: function(data) {
+                        var pedidosHtml = '';
+                        data.forEach(function(pedido) {
+                            pedidosHtml += `
+                                <tr>
+                                    <td>${pedido.id}</td>
+                                    <td>${pedido.direccion}</td>
+                                    <td>${pedido.estado}</td>
+                                </tr>`;
+                        });
+                        $('#pedidosAsignados').html(pedidosHtml);
+                    },
+                    error: function() {
+                        alert("Error al cargar los pedidos asignados");
+                    }
+                });
+            }
+
             window.autoasignarPedido = function(pedidoId) {
                 $.ajax({
                     url: '/repartidor/autoasignar/' + pedidoId,
@@ -79,6 +114,7 @@
                     success: function() {
                         alert("Pedido autoasignado con éxito");
                         cargarPedidosPendientes(); // Recargar la lista de pedidos pendientes
+                        cargarPedidosAsignados(); // Recargar la lista de pedidos asignados
                     },
                     error: function() {
                         alert("Error al autoasignar el pedido");
@@ -87,6 +123,7 @@
             }
 
             cargarPedidosPendientes();
+            cargarPedidosAsignados();
         });
     </script>
 </body>

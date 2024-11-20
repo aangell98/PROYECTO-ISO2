@@ -5,12 +5,16 @@ import es.uclm.delivery.persistencia.RepartidorDAO;
 import es.uclm.delivery.persistencia.ServicioEntregaDAO;
 import es.uclm.delivery.persistencia.PedidoDAO;
 import es.uclm.delivery.dominio.entidades.CodigoPostal;
+import es.uclm.delivery.dominio.entidades.Direccion;
 import es.uclm.delivery.dominio.entidades.EstadoPedido;
 import es.uclm.delivery.dominio.entidades.Pedido;
 import es.uclm.delivery.dominio.entidades.Repartidor;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -76,4 +80,32 @@ public class GestorRepartos {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al autoasignar el pedido");
         }
     }
+
+    @GetMapping("/pedidos_asignados")
+    public ResponseEntity<List<Map<String, Object>>> obtenerPedidosAsignados() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Optional<Repartidor> repartidorOpt = repartidorDAO.findByUsername(username);
+
+        if (repartidorOpt.isPresent()) {
+            Repartidor repartidor = repartidorOpt.get();
+            List<ServicioEntrega> serviciosEntrega = servicioEntregaDAO.findByRepartidorId(repartidor.getId());
+            List<Map<String, Object>> pedidosDetalles = serviciosEntrega.stream().map(servicioEntrega -> {
+                Map<String, Object> detalles = new HashMap<>();
+                Pedido pedido = servicioEntrega.getPedido();
+                detalles.put("id", pedido.getId());
+                detalles.put("estado", pedido.getEstado().toString());
+                Direccion direccion = servicioEntrega.getDireccion();
+                if (direccion != null) {
+                    detalles.put("direccion", direccion.getCalle() + ", " + direccion.getCiudad() + ", " + direccion.getCodigoPostal());
+                } else {
+                    detalles.put("direccion", "Dirección no disponible");
+                }
+                return detalles;
+            }).collect(Collectors.toList());
+            return ResponseEntity.ok(pedidosDetalles);
+        } else {
+            return ResponseEntity.status(404).body(null);
+        }
+    }
+    
 }
