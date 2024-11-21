@@ -141,3 +141,18 @@ input[type="radio"] {
 .btn-volver:hover {
     background-color: #333; /* Cambio de color al pasar el ratón */
 }
+
+/* Estilo para la caja de selección */
+select {
+    width: 100%; /* Ancho completo */
+    padding: 10px; /* Espaciado interno */
+    border: 1px solid #ccc; /* Borde */
+    border-radius: 4px; /* Bordes redondeados */
+    box-sizing: border-box; /* Incluye padding y borde en el ancho total */
+    margin-top: 10px; /* Espacio superior */
+    margin-bottom: 10px; /* Espacio inferior */
+    cursor: pointer; /* Cambia el cursor al pasar sobre la caja de selección */
+    background-color: #fff; /* Fondo blanco */
+    color: #000; /* Texto negro */
+    height: 40px; /* Altura para igualar a los botones */
+}
