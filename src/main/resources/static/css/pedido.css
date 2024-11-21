@@ -401,3 +401,41 @@ li{
 #menus ul li:last-child {
     border-bottom: none; /* Quitar la línea del último elemento para un aspecto más limpio */
 }
+
+
+/* Estilo para los ítems del carrito */
+#carritoItems li {
+    display: flex;
+    justify-content: space-between; /* Distribuye el espacio entre el texto y el botón */
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #ccc; /* Línea de separación entre ítems */
+}
+
+#carritoItems li:last-child {
+    border-bottom: none; /* Quitar la línea del último elemento para un aspecto más limpio */
+}
+
+#carritoItems li span {
+    flex-grow: 1; /* Esto hace que el texto ocupe todo el espacio disponible a la izquierda */
+}
+
+#carritoItems li button {
+    background-color: #000000;
+    color: #fff; /* Texto blanco */
+    border: none;
+    border-radius: 4px; /* Bordes redondeados */
+    padding: 5px 10px; /* Espaciado interno */
+    cursor: pointer; /* Cambia el cursor al pasar sobre el botón */
+    width: fit-content; /* Ajusta el ancho al contenido */
+}
+
+
+#carritoItems li button:hover {
+    background-color: #c82333; /* Fondo rojo oscuro al pasar el ratón */
+}
+
+#precioTotalParagraph {
+    text-align: right; /* Alinea el texto a la derecha */
+    margin-top: 20px; /* Espacio superior */
+}
