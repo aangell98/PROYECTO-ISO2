@@ -429,3 +429,25 @@ footer{
     display: block; /* Asegura que el input sea un elemento de bloque */
     margin: 0 auto; /* Centra el input horizontalmente */
 }
+
+.order-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px; /* Espacio entre las secciones */
+    flex-wrap: wrap; /* Para manejar el caso en dispositivos pequeños */
+}
+
+.order-sections, .order-anteriores {
+    flex: 1; /* Las dos secciones compartirán el mismo ancho */
+    min-width: 300px; /* Ancho mínimo para que se vean bien en pantallas pequeñas */
+}
+
+.order-sections h2, .order-anteriores h2 {
+    text-align: center;
+}
+
+@media (max-width: 768px) {
+    .order-container {
+        flex-direction: column; /* Cambia a disposición vertical en pantallas pequeñas */
+    }
+}
