@@ -1,6 +1,6 @@
 body {
     font-family: Arial, sans-serif;
-    background-color: #fab802; /* Color amarillo mostaza */
+    background-color: #ffc244;
     margin: 0;
     padding: 0;
     display: flex;
@@ -216,8 +216,9 @@ button[onclick="location.href='/login'"] {
     display: none;
     flex-direction: column;
     align-items: center; /* Center the search results */
-    width: calc(100% -50px);
+    width: 700px;
     margin-top: 20px;
+    margin-left: 35px;
     background-color: #fa9302; /* Fondo naranja */
     border-radius: 8px; /* Esquinas redondeadas */
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra */
@@ -279,6 +280,8 @@ footer{
     background-color: #fa9302;
     border-radius: 8px;
     padding: 10px;
+    height: 161px;
+    padding-top: 40px;
 
 }
 
@@ -450,4 +453,13 @@ footer{
     .order-container {
         flex-direction: column; /* Cambia a disposición vertical en pantallas pequeñas */
     }
+}
+
+#listaFavoritos li {
+    background-color: #fa9302; /* Fondo naranja */
+    border-radius: 8px;
+    height: 50px;
+    width: 740px;
+    margin-left: 60px;
+    padding-top: 22px;
 }

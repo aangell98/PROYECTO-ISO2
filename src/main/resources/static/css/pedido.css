@@ -9,7 +9,7 @@ body {
 }
 
 .container {
-    background-color: #fa9302;
+    background-color: #ffc244;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -112,9 +112,6 @@ button:hover {
     background-color: #c82333;
 }
 
-body {
-    background-color: #fab802; /* Fondo amarillo */
-}
 
 button, .btn-logout {
     background-color: black; /* Fondo de los botones en negro */
@@ -258,7 +255,7 @@ li{
 
 /* Centrar el contenido del modal */
 .modal-content {
-    background-color: #fa9302; /* Fondo naranja */
+    background-color:#ffc244; /* Fondo naranja */
     margin: 3% auto; /* Centrado vertical y horizontal */
     padding: 20px;
     border: 1px solid #888;
@@ -378,4 +375,29 @@ li{
 
 #precioTotalParagraph {
     margin-top: 150px;
+}
+
+#restauranteInfo {
+    background-color: #fa9302;
+    border-radius: 8px; /* Ajusta este valor para redondear más o menos las esquinas */
+    padding: 8px; /* Opcional: añade un poco de espacio interior */
+    margin-left: 40px;
+    margin-right: 40px;
+}
+
+#menus li {
+    background-color: #fa9302;
+    border-radius: 8px; /* Ajusta este valor para redondear más o menos las esquinas */
+    padding: 8px; /* Opcional: añade un poco de espacio interior */
+    margin-right: 40px;
+}
+
+#menus ul li ul li{
+    border-bottom: 1px solid #000000; /* Línea debajo de cada plato */
+    padding-bottom: 10px; /* Espacio entre el contenido y la línea */
+    margin-bottom: 10px; /* Espaciado entre elementos */
+}
+
+#menus ul li:last-child {
+    border-bottom: none; /* Quitar la línea del último elemento para un aspecto más limpio */
 }

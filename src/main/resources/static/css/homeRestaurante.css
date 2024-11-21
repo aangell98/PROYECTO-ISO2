@@ -1,5 +1,5 @@
 body {
-    background-color: #fab802;
+    background-color: #ffffff;
     font-family: Arial, sans-serif;
 }
 
@@ -158,7 +158,7 @@ main section button:hover span {
 
 /* Centrar el contenido del modal */
 .modal-content {
-    background-color: #fa9302; /* Fondo naranja */
+    background-color: #ffc244; /* Fondo naranja */
     margin: 15% auto; /* Centrado vertical y horizontal */
     padding: 20px;
     border: 1px solid #888;
@@ -279,10 +279,35 @@ footer {
     text-align: center;
     bottom: 0;
     width: 100%;
-    background-color: #fab802;
+    background-color: #ffc244;
     padding: 10px 0;
 }
 #restaurante {
     margin: 0 auto; /* Centra horizontalmente */
     text-align: center; /* Centra el texto dentro de la sección */
+}
+
+.container {
+    background-color: #ffc244;
+    padding: 20px;
+    padding-right: 70px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 600px;
+    margin-left: 280px;
+
+}
+
+span {
+    font-size: 22px; /* Cambia a tu tamaño deseado */
+}
+
+ul li{
+    border-bottom: 1px solid #000000; /* Línea debajo de cada plato */
+    padding-bottom: 10px; /* Espacio entre el contenido y la línea */
+    margin-bottom: 10px; /* Espaciado entre elementos */
+}
+
+ul li:last-child {
+    border-bottom: none; /* Quitar la línea del último elemento para un aspecto más limpio */
 }

@@ -1,6 +1,6 @@
 body {
     font-family: Arial, sans-serif;
-    background-color: #fab802; /* Fondo amarillo */
+    background-color: #ffffff; /* Fondo amarillo */
     margin: 0;
     padding: 20px 0; /* Espacio en la parte superior e inferior */
     display: flex;
@@ -11,7 +11,7 @@ body {
 }
 
 .container {
-    background-color: #fa9302;
+    background-color: #ffc244;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
