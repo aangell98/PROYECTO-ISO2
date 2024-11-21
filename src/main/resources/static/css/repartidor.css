@@ -74,10 +74,43 @@ footer {
 .container {
     background-color: #ffc244;
     padding: 20px;
-    padding-right: 70px;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     width: 600px;
     margin-left: 280px;
 
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+li {
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 8px;
+    background-color: #fa9302;
+    margin-right: 10px;
+}
+li p {
+    margin: 5px 0;
+}
+
+#datos{
+    margin-left: 20px;
+}
+
+li button{
+    background-color: #000; /* Botones negros */
+    color: #fff; /* Texto blanco */
+    border: none; /* Sin borde */
+    padding: 10px 20px; /* Espaciado interno del botón */
+    border-radius: 8px; /* Bordes redondeados */
+    display: block; /* Asegura que el botón esté en una línea aparte */
+    margin: 5px auto; /* Centra el botón horizontalmente y añade margen vertical */
+    text-align: center; /* Centra el texto dentro del botón */
+}
+
+li button:hover {
+    background-color: #232323;
 }

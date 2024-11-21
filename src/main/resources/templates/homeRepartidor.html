@@ -9,56 +9,22 @@
     <link rel="stylesheet" href="/css/repartidor.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <style>
-        /* Estilo básico para verificar que los datos sean visibles */
-        ul {
-            list-style-type: none;
-            padding: 0;
-        }
-        li {
-            margin: 10px 0;
-            padding: 10px;
-            border: 1px solid #ccc;
-            background-color: #f9f9f9;
-        }
-        li p {
-            margin: 5px 0;
-        }
-        button {
-            padding: 5px 10px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
-    </style>
 </head>
 <body>
     <div class="container">
         <header>
             <h1>Bienvenido, Repartidor</h1>
         </header>
-        <nav>
-            <ul>
-                <li><a href="/pedidos">Ver Pedidos</a></li>
-                <li><a href="/perfil">Perfil</a></li>
-                <li>
-                    <form method="post" action="/perform_logout" style="display: inline;">
-                        <button type="submit" class="btn-logout">Cerrar Sesión</button>
-                    </form>
-                </li>
-            </ul>
-        </nav>
+            <form method="post" action="/perform_logout" style="display: inline;">
+                <button type="submit" class="btn-logout">Cerrar Sesión</button>
+            </form>
         <main>
             <section id="perfilRepartidor">
-                <h2>Mi Perfil</h2>
-                <p><strong>Nombre:</strong> <span id="nombreRepartidor"></span></p>
-                <p><strong>Apellidos:</strong> <span id="apellidosRepartidor"></span></p>
-                <p><strong>DNI:</strong> <span id="dniRepartidor"></span></p>
-                <p><strong>Valoración Media:</strong> <span id="valoracionMediaRepartidor"></span></p>
+                <h2>Mi Datos</h2>
+                <p><strong id="datos">Nombre:</strong> <span id="nombreRepartidor"></span></p>
+                <p><strong id="datos">Apellidos:</strong> <span id="apellidosRepartidor"></span></p>
+                <p><strong id="datos">DNI:</strong> <span id="dniRepartidor"></span></p>
+                <p><strong id="datos">Valoración Media:</strong> <span id="valoracionMediaRepartidor"></span></p>
             </section>
             <hr>
             <section>
@@ -83,7 +49,7 @@
             </section>
         </main>        
         <footer>
-            <p>&copy; 2024 Delivery. Todos los derechos reservados. Work In Progress</p>
+            <p>&copy; 2024 Delivery. Todos los derechos reservados.</p>
         </footer>
     </div>
     <script>
