@@ -123,7 +123,7 @@
             carrito.items.forEach(item => {
                 carritoItems.innerHTML += `
                 <li>
-                    ${item.nombre} - ${item.precio} €
+                    <span>${item.nombre} - ${item.precio} €</span>
                     <button onclick="eliminarDelCarrito(${item.id})">Eliminar</button>
                 </li>`;
             });

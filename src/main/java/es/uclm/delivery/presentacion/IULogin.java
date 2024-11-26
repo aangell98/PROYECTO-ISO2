@@ -15,11 +15,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import es.uclm.delivery.dominio.entidades.Cliente;
+import es.uclm.delivery.dominio.entidades.EstadoPedido;
 import es.uclm.delivery.dominio.entidades.Repartidor;
 import es.uclm.delivery.dominio.entidades.Restaurante;
+import es.uclm.delivery.dominio.entidades.ServicioEntrega;
 import es.uclm.delivery.dominio.entidades.Usuario;
 import es.uclm.delivery.persistencia.UsuarioDAO;
 import es.uclm.delivery.persistencia.RestauranteDAO;
+import es.uclm.delivery.persistencia.ServicioEntregaDAO;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import es.uclm.delivery.dominio.controladores.GestorLogin;
@@ -154,6 +157,8 @@ public String mostrarHome(Model model) {
     model.addAttribute("restaurantesDestacados", restaurantesDestacados);
     return "home";
 }
+    @Autowired
+    private ServicioEntregaDAO servicioEntregaDAO;
 
     @GetMapping("/homeCliente")
     public String homeCliente() {
@@ -161,8 +166,9 @@ public String mostrarHome(Model model) {
     }
 
     @GetMapping("/homeRepartidor")
-    public String homeRepartidor() {
-        return "homeRepartidor"; 
+    public String homeRepartidor(Model model) {
+        List<ServicioEntrega> pedidosPendientes = servicioEntregaDAO.findByEstado(EstadoPedido.PAGADO);
+        model.addAttribute("pedidosPendientes", pedidosPendientes);
+        return "homeRepartidor";
     }
-
 }

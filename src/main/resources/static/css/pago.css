@@ -1,6 +1,6 @@
 body {
     font-family: Arial, sans-serif;
-    background-color: #fab802; /* Fondo amarillo */
+    background-color: #ffffff; /* Fondo amarillo */
     margin: 0;
     padding: 20px 0; /* Espacio en la parte superior e inferior */
     display: flex;
@@ -11,7 +11,7 @@ body {
 }
 
 .container {
-    background-color: #fa9302;
+    background-color: #ffc244;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -140,4 +140,19 @@ input[type="radio"] {
 
 .btn-volver:hover {
     background-color: #333; /* Cambio de color al pasar el ratón */
+}
+
+/* Estilo para la caja de selección */
+select {
+    width: 100%; /* Ancho completo */
+    padding: 10px; /* Espaciado interno */
+    border: 1px solid #ccc; /* Borde */
+    border-radius: 4px; /* Bordes redondeados */
+    box-sizing: border-box; /* Incluye padding y borde en el ancho total */
+    margin-top: 10px; /* Espacio superior */
+    margin-bottom: 10px; /* Espacio inferior */
+    cursor: pointer; /* Cambia el cursor al pasar sobre la caja de selección */
+    background-color: #fff; /* Fondo blanco */
+    color: #000; /* Texto negro */
+    height: 40px; /* Altura para igualar a los botones */
 }
