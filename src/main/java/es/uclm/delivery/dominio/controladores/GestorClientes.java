@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.Optional;
 @RestController
 public class GestorClientes {
-    private static final Logger logger = LoggerFactory.getLogger(GestorLogin.class);
+    private static final Logger logger = LoggerFactory.getLogger(GestorClientes.class);
     @Autowired
     private IUBusqueda IUBusqueda;
     @Autowired
