@@ -98,7 +98,7 @@ public class SecurityConfig {
     @Bean
     public LogoutSuccessHandler customLogoutSuccessHandler() {
         return new LogoutSuccessHandler() {
-            private final Logger log = LoggerFactory.getLogger(LogoutSuccessHandler.class);
+            private final Logger log = LoggerFactory.getLogger(this.getClass());
 
             @Override
             public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response,
