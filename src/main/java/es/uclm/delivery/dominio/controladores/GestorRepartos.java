@@ -4,7 +4,7 @@ import es.uclm.delivery.dominio.entidades.ServicioEntrega;
 import es.uclm.delivery.persistencia.RepartidorDAO;
 import es.uclm.delivery.persistencia.ServicioEntregaDAO;
 import es.uclm.delivery.persistencia.PedidoDAO;
-import es.uclm.delivery.dominio.entidades.CodigoPostal;
+
 import es.uclm.delivery.dominio.entidades.Direccion;
 import es.uclm.delivery.dominio.entidades.EstadoPedido;
 import es.uclm.delivery.dominio.entidades.Pedido;
