@@ -17,6 +17,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -75,10 +76,19 @@ public class GestorRepartos {
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Repartidor no encontrado");
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al autoasignar el pedido");
-        }
+        } catch (NullPointerException e) {
+    // Maneja la excepción específica si ocurre
+    e.printStackTrace();
+    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error de datos nulos");
+} catch (DataAccessException e) {
+    // Maneja excepciones relacionadas con el acceso a datos
+    e.printStackTrace();
+    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error de acceso a la base de datos");
+} catch (Exception e) {
+    // Captura cualquier otra excepción no especificada
+    e.printStackTrace();
+    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al autoasignar el pedido");
+}
     }
 
     @GetMapping("/pedidos_asignados")
