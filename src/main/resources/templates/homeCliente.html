@@ -80,7 +80,7 @@
                         if (data && data.length > 0) {
                             var resultadosHtml = '<h2>Restaurantes Encontrados:</h2><ul>';
                             data.forEach(function (restaurante) {
-                                resultadosHtml += '<li id="restaurante-' + restaurante.id + '">' + restaurante.nombre + ' - ' + restaurante.direccion;
+                                resultadosHtml += '<li id="restaurante-' + restaurante.id + '">' + restaurante.nombre + ' - ' + restaurante.direccion + '<br>';
                                 if (!favoritos.some(fav => fav.id === restaurante.id)) {
                                     resultadosHtml += ' <button onclick="agregarFavorito(' + restaurante.id + ')">Agregar a Favoritos</button>';
                                 }
@@ -275,7 +275,7 @@
                             $('#favorites').show(); // Mostrar la sección si hay favoritos válidos
                             var favoritosHtml = '';
                             favoritos.forEach(function (restaurante) {
-                                favoritosHtml += '<li id="favorito-' + restaurante.id + '">' + restaurante.nombre + ' - ' + restaurante.direccion +
+                                favoritosHtml += '<li id="favorito-' + restaurante.id + '">' + restaurante.nombre + ' - ' + restaurante.direccion + '<br>' +
                                     ' <button class="btn-eliminar-favorito" onclick="eliminarFavorito(' + restaurante.id + ')">Eliminar de Favoritos</button>' +
                                     ' <button onclick="realizarPedido(' + restaurante.id + ')">Realizar Pedido</button></li>';
                             });

@@ -191,7 +191,18 @@ button[onclick="location.href='/login'"] {
 
 #listaFavoritos li, #resultadosBusqueda ul li {
     font-size: 1.2em; /* Increase font size for restaurant names */
-    margin-bottom: 10px;
+    border-bottom: 1px solid #000000; /* Línea debajo de cada plato */
+    padding-bottom: 10px; /* Espacio entre el contenido y la línea */
+    margin-bottom: 20px; /* Espaciado entre elementos */
+}
+
+#resultadosBusqueda ul li:last-child{
+    border-bottom: none; /* Quitar la línea del último elemento para un aspecto más limpio */
+    margin-bottom: -20px;
+}
+
+#listaFavoritos li{
+    border-bottom: none; /* Quitar la línea del último elemento para un aspecto más limpio */
 }
 
 #listaFavoritos button, #resultadosBusqueda ul button {
@@ -202,6 +213,11 @@ button[onclick="location.href='/login'"] {
     padding: 5px 10px;
     margin-left: 5px;
     cursor: pointer;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+#listaFavoritos li{
+    padding-bottom: 25px;
 }
 
 #listaFavoritos button:hover, #resultadosBusqueda ul button:hover {
@@ -462,4 +478,13 @@ footer{
     width: 740px;
     margin-left: 60px;
     padding-top: 22px;
+}
+.estrellas {
+    display: flex;
+    justify-content: center;
+    margin: 10px 0;
+}
+.estrellas i {
+    font-size: 2em;
+    cursor: pointer;
 }
