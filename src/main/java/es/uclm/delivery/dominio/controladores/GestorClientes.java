@@ -144,7 +144,8 @@ public ResponseEntity<?> obtenerPedidosEnCurso() {
         logger.info("Valorando pedido: {} con valoración: {}", idPedido, valoracion);
         Optional<Pedido> pedidoOpt = iuPedido.obtenerPedidoPorId(idPedido);
         if (pedidoOpt.isPresent()) {
-            Pedido pedido = pedidoOpt.get();
+            pedidoOpt.get().setEstado(EstadoPedido.ENTREGADO);
+            pedidoDAO.update(pedidoOpt.get());
             Optional<ServicioEntrega> servicioEntregaOpt = iuPedido.obtenerServicioEntregaPorPedido(idPedido);
             if (servicioEntregaOpt.isPresent()) {
                 ServicioEntrega servicioEntrega = servicioEntregaOpt.get();
