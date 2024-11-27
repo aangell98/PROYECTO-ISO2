@@ -42,7 +42,7 @@ public class GestorRepartos {
 
 
     @PostMapping("/autoasignar/{pedidoId}")
-    public ResponseEntity<?> autoasignarPedido(@PathVariable Long pedidoId) {
+    public ResponseEntity<String> autoasignarPedido(@PathVariable Long pedidoId) {
         try {
             String username = SecurityContextHolder.getContext().getAuthentication().getName();
             Optional<Repartidor> repartidorOpt = repartidorDAO.findByUsername(username);
