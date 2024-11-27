@@ -42,22 +42,22 @@
             </section>
         </div>
         <div class="order-container">
-            <div class="order-sections">
-                <h2>Pedidos en Curso</h2>
-                <section id="pedidoencurso">
-                    <ul id="currentOrders">
-                        <!-- Se llenará dinámicamente con pedidos en curso -->
-                    </ul>
-                </section>
-            </div>
-            <div class="order-anteriores">
-                <h2>Pedidos Anteriores</h2>
-                <section id="pastOrders">
-                    <ul id="previousOrders">
-                        <!-- Se llenará dinámicamente con pedidos anteriores -->
-                    </ul>
-                </section>
-            </div>
+        <div class="order-sections">
+            <h2>Pedidos en Curso</h2>
+            <section id="pedidoencurso">
+                <ul id="currentOrders">
+                    <!-- Se llenará dinámicamente con pedidos en curso -->
+                </ul>
+            </section>
+        </div>
+        <div class="order-anteriores">
+            <h2>Pedidos Anteriores</h2>
+            <section id="pastOrders">
+                <ul id="previousOrders">
+                    <!-- Se llenará dinámicamente con pedidos anteriores -->
+                </ul>
+            </section>
+        </div>
         </div>        
     </main>
     <footer>
@@ -206,14 +206,33 @@
                         <div class="modal-content">
                             <span class="close" onclick="cerrarVentanaValoracion()">&times;</span>
                             <h2>Valorar Pedido</h2>
-                            <p>Por favor, valora el pedido con una nota de 0 a 5:</p>
-                            <input type="number" id="valoracionInput" min="0" max="5" step="1">
+                            <p>Por favor, valora el pedido:</p>
+                            <div class="estrellas">
+                                <i class="far fa-star" data-value="1"></i>
+                                <i class="far fa-star" data-value="2"></i>
+                                <i class="far fa-star" data-value="3"></i>
+                                <i class="far fa-star" data-value="4"></i>
+                                <i class="far fa-star" data-value="5"></i>
+                            </div>
+                            <input type="hidden" id="valoracionInput" value="0">
                             <button onclick="enviarValoracion(${idPedido})">Enviar Valoración</button>
                         </div>
                     </div>
                 `;
                 $('body').append(valoracionHtml);
                 $('#valoracionModal').show();
+
+                $('.estrellas i').on('click', function() {
+                    var valoracion = $(this).data('value');
+                    $('#valoracionInput').val(valoracion);
+                    $('.estrellas i').each(function() {
+                        if ($(this).data('value') <= valoracion) {
+                            $(this).removeClass('far').addClass('fas');
+                        } else {
+                            $(this).removeClass('fas').addClass('far');
+                        }
+                    });
+                });
             }
 
             window.cerrarVentanaValoracion = function () {
@@ -221,7 +240,7 @@
             };
 
             window.enviarValoracion = function (idPedido) {
-                const valoracion = $('#valoracionInput').val();
+                const valoracion = $('#valoracionInput').val() || 0;
                 console.log("Enviando valoración:", valoracion, "para el pedido:", idPedido);
                 $.ajax({
                     url: '/valorar_pedido',
