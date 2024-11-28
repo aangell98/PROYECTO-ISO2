@@ -5,7 +5,9 @@ import java.util.Optional;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import jakarta.transaction.*;
+import jakarta.persistence.PersistenceException;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 
 @Transactional
 public abstract class EntidadDAO<E> {
@@ -23,8 +25,8 @@ public abstract class EntidadDAO<E> {
         try {
             entityManager.persist(entity);
             return 1; // Success
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (PersistenceException | IllegalArgumentException e) {
+            e.printStackTrace(); // Log error
             return 0; // Failure
         }
     }
@@ -33,8 +35,8 @@ public abstract class EntidadDAO<E> {
         try {
             entityManager.merge(entity);
             return 1; // Success
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (PersistenceException | IllegalArgumentException e) {
+            e.printStackTrace(); // Log error
             return 0; // Failure
         }
     }
@@ -43,8 +45,8 @@ public abstract class EntidadDAO<E> {
         try {
             entityManager.remove(entityManager.contains(entity) ? entity : entityManager.merge(entity));
             return 1; // Success
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (PersistenceException | IllegalArgumentException | EntityNotFoundException e) {
+            e.printStackTrace(); // Log error
             return 0; // Failure
         }
     }
@@ -52,8 +54,8 @@ public abstract class EntidadDAO<E> {
     public Optional<E> select(String id) {
         try {
             return Optional.ofNullable(entityManager.find(entityClass, id));
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (IllegalArgumentException | PersistenceException e) {
+            e.printStackTrace(); // Log error
             return Optional.empty(); // Failure
         }
     }
@@ -71,5 +73,4 @@ public abstract class EntidadDAO<E> {
                 .setParameter("ids", ids)
                 .getResultList();
     }
-    
 }
