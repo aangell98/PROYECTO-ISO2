@@ -5,7 +5,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import es.uclm.delivery.dominio.entidades.Direccion;
 
-import jakarta.persistence.PersistenceContext;
 
 @Repository
 public class DireccionDAO extends EntidadDAO<Direccion> {
