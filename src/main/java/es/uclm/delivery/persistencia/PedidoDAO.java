@@ -8,15 +8,12 @@ import org.springframework.stereotype.Repository;
 import es.uclm.delivery.dominio.entidades.EstadoPedido;
 import es.uclm.delivery.dominio.entidades.Pedido;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
+
 import jakarta.transaction.Transactional;
 
 @Repository
 public class PedidoDAO extends EntidadDAO<Pedido> {
 
-    @PersistenceContext
-    private EntityManager entityManager;
 
     public PedidoDAO() {
         super(Pedido.class);
