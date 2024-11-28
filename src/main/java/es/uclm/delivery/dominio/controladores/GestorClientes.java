@@ -62,7 +62,7 @@ public class GestorClientes {
         return iuBusqueda.obtenerRestaurante(restauranteId);
     }
     @GetMapping("/listar_pedidos_curso")
-public ResponseEntity<?> obtenerPedidosEnCurso() {
+public ResponseEntity<Object> obtenerPedidosEnCurso() {
     Cliente cliente = iuBusqueda.obtenerClienteActual();
     logger.info("Obteniendo pedidos en curso para el cliente: {}", cliente.getId());
     List<Pedido> pedidosEnCurso = iuPedido.obtenerPedidosEnCurso(cliente.getId());
