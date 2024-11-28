@@ -4,7 +4,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import es.uclm.delivery.dominio.entidades.Direccion;
-import jakarta.persistence.EntityManager;
+
 import jakarta.persistence.PersistenceContext;
 
 @Repository
