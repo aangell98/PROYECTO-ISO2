@@ -6,7 +6,7 @@ import java.util.Optional;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.PersistenceException;
-import jakarta.persistence.EntityNotFoundException;
+
 import jakarta.transaction.Transactional;
 
 @Transactional
@@ -46,12 +46,12 @@ public abstract class EntidadDAO<E> {
         try {
             entityManager.remove(entityManager.contains(entity) ? entity : entityManager.merge(entity));
             return 1; // Success
-        } catch (PersistenceException | IllegalArgumentException | EntityNotFoundException e) {
-            e.printStackTrace(); // Log error
+        } catch (PersistenceException | IllegalArgumentException e) { 
+            e.printStackTrace(); // Manejar el error
             return 0; // Failure
         }
     }
-
+    
     public Optional<E> select(String id) {
         try {
             return Optional.ofNullable(entityManager.find(entityClass, id));
