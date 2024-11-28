@@ -14,8 +14,6 @@ public class DireccionDAO extends EntidadDAO<Direccion> {
         super(Direccion.class);
     }
 
-    @PersistenceContext
-    private EntityManager entityManager;
 
     @Transactional
     public void save(Direccion direccion) {

@@ -4,7 +4,7 @@ import es.uclm.delivery.dominio.entidades.ServicioEntrega;
 import es.uclm.delivery.persistencia.RepartidorDAO;
 import es.uclm.delivery.persistencia.ServicioEntregaDAO;
 import es.uclm.delivery.persistencia.PedidoDAO;
-import es.uclm.delivery.dominio.entidades.CodigoPostal;
+
 import es.uclm.delivery.dominio.entidades.Direccion;
 import es.uclm.delivery.dominio.entidades.EstadoPedido;
 import es.uclm.delivery.dominio.entidades.Pedido;
@@ -17,11 +17,12 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -42,7 +43,7 @@ public class GestorRepartos {
 
 
     @PostMapping("/autoasignar/{pedidoId}")
-    public ResponseEntity<?> autoasignarPedido(@PathVariable Long pedidoId) {
+    public ResponseEntity<String> autoasignarPedido(@PathVariable Long pedidoId) {
         try {
             String username = SecurityContextHolder.getContext().getAuthentication().getName();
             Optional<Repartidor> repartidorOpt = repartidorDAO.findByUsername(username);
@@ -75,10 +76,19 @@ public class GestorRepartos {
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Repartidor no encontrado");
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al autoasignar el pedido");
-        }
+        } catch (NullPointerException e) {
+    // Maneja la excepción específica si ocurre
+    e.printStackTrace();
+    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error de datos nulos");
+} catch (DataAccessException e) {
+    // Maneja excepciones relacionadas con el acceso a datos
+    e.printStackTrace();
+    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error de acceso a la base de datos");
+} catch (Exception e) {
+    // Captura cualquier otra excepción no especificada
+    e.printStackTrace();
+    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al autoasignar el pedido");
+}
     }
 
     @GetMapping("/pedidos_asignados")
