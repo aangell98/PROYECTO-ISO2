@@ -31,6 +31,7 @@ public abstract class EntidadDAO<E> {
         }
     }
 
+    
     public int update(E entity) {
         try {
             entityManager.merge(entity);
