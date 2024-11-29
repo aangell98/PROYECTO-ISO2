@@ -1,8 +1,6 @@
 package es.uclm.delivery.persistencia;
 
 import es.uclm.delivery.dominio.entidades.Repartidor;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 
 import java.util.List;
 import java.util.Optional;
