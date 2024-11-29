@@ -67,7 +67,7 @@ public class IUBusqueda {
     public List<Restaurante> obtenerRestaurantesDestacados() {
         return restauranteDAO.obtenerRestaurantesAleatorios(4).stream()
                 .filter(r -> r.getNombre() != null && r.getDireccion() != null)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public Cliente obtenerClienteActual() {
