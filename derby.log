@@ -1,4 +1,4 @@
-Fri Nov 29 19:00:02 CET 2024 Thread[#37,Thread-3,5,main] Cleanup action starting
+Sat Nov 30 00:15:42 CET 2024 Thread[#37,Thread-3,5,main] Cleanup action starting
 java.sql.SQLException: Failed to start database 'database' with class loader jdk.internal.loader.ClassLoaders$AppClassLoader@70dea4e, see the next exception for details.
 	at org.apache.derby.impl.jdbc.SQLExceptionFactory.getSQLException(SQLExceptionFactory.java:115)
 	at org.apache.derby.impl.jdbc.SQLExceptionFactory.getSQLException(SQLExceptionFactory.java:141)
