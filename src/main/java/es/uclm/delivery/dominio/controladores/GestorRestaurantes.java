@@ -159,7 +159,7 @@ public class GestorRestaurantes {
             // Agregar log para verificar los valores de menus
             menus.forEach(menu -> System.out.println("Menu encontrado: " + (menu != null ? menu.getId() : "null")));
 
-            if (restauranteOpt.isEmpty() || restauranteOpt.get().getNombre() == null) {
+            if (restauranteOpt.get().getNombre() == null) {
                 model.addAttribute("restaurante", new Restaurante());
                 model.addAttribute("isRestauranteRegistrado", false);
             } else {
