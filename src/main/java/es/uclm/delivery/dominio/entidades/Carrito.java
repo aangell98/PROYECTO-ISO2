@@ -34,7 +34,6 @@ public class Carrito {
         this.restauranteId = restauranteId;
     }
 
-    // Método para eliminar un item del carrito (opcional)
     public void eliminarItem(Long itemId) {
         items.removeIf(item -> item.getId().equals(itemId));
         actualizarPrecioTotal();

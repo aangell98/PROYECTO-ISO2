@@ -4,11 +4,13 @@ import es.uclm.delivery.dominio.entidades.ServicioEntrega;
 import es.uclm.delivery.persistencia.RepartidorDAO;
 import es.uclm.delivery.persistencia.ServicioEntregaDAO;
 import es.uclm.delivery.persistencia.PedidoDAO;
+import es.uclm.delivery.dominio.entidades.Cliente;
 import es.uclm.delivery.dominio.entidades.CodigoPostal;
 import es.uclm.delivery.dominio.entidades.Direccion;
 import es.uclm.delivery.dominio.entidades.EstadoPedido;
 import es.uclm.delivery.dominio.entidades.Pedido;
 import es.uclm.delivery.dominio.entidades.Repartidor;
+import es.uclm.delivery.dominio.entidades.Restaurante;
 
 import java.util.HashMap;
 import java.util.List;
@@ -19,6 +21,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -39,7 +42,6 @@ public class GestorRepartos {
 
     @Autowired
     private PedidoDAO pedidoDAO;
-
 
     @PostMapping("/autoasignar/{pedidoId}")
     public ResponseEntity<?> autoasignarPedido(@PathVariable Long pedidoId) {
@@ -67,7 +69,8 @@ public class GestorRepartos {
 
                         return ResponseEntity.ok("Pedido autoasignado con éxito");
                     } else {
-                        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("El pedido no está disponible para autoasignación");
+                        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                                .body("El pedido no está disponible para autoasignación");
                     }
                 } else {
                     return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Pedido no encontrado");
@@ -83,7 +86,12 @@ public class GestorRepartos {
 
     @GetMapping("/pedidos_asignados")
     public ResponseEntity<List<Map<String, Object>>> obtenerPedidosAsignados() {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
+
+        String username = authentication.getName();
         Optional<Repartidor> repartidorOpt = repartidorDAO.findByUsername(username);
 
         if (repartidorOpt.isPresent()) {
@@ -94,9 +102,22 @@ public class GestorRepartos {
                 Pedido pedido = servicioEntrega.getPedido();
                 detalles.put("id", pedido.getId());
                 detalles.put("estado", pedido.getEstado().toString());
+                Cliente cliente = pedido.getCliente();
+                Restaurante restaurante = pedido.getRestaurante();
+                if (cliente != null) {
+                    detalles.put("cliente", cliente.getNombre() + " " + cliente.getApellidos());
+                } else {
+                    detalles.put("cliente", "Información no disponible");
+                }
+                if (restaurante != null) {
+                    detalles.put("restaurante", restaurante.getNombre() + " (" + restaurante.getDireccion() + ")");
+                } else {
+                    detalles.put("restaurante", "Información no disponible");
+                }
                 Direccion direccion = servicioEntrega.getDireccion();
                 if (direccion != null) {
-                    detalles.put("direccion", direccion.getCalle() + ", " + direccion.getCiudad() + ", " + direccion.getCodigoPostal());
+                    detalles.put("direccion",
+                            direccion.getCalle() + ", " + direccion.getCiudad() + ", " + direccion.getCodigoPostal());
                 } else {
                     detalles.put("direccion", "Dirección no disponible");
                 }
@@ -104,7 +125,7 @@ public class GestorRepartos {
             }).collect(Collectors.toList());
             return ResponseEntity.ok(pedidosDetalles);
         } else {
-            return ResponseEntity.status(404).body(null);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
 
@@ -125,5 +146,5 @@ public class GestorRepartos {
             return ResponseEntity.status(404).body(null);
         }
     }
-    
+
 }
