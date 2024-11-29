@@ -206,7 +206,7 @@ public class GestorPedidos {
                 detalles.put("direccion", "Dirección no disponible");
             }
             return detalles;
-        }).collect(Collectors.toList());
+        }).toList();
         return ResponseEntity.ok(pedidosDetalles);
     }
     
@@ -236,7 +236,7 @@ public ResponseEntity<List<Map<String, Object>>> obtenerPedidosAsignados() {
                 detalles.put("direccion", "Dirección no disponible");
             }
             return detalles;
-        }).collect(Collectors.toList());
+        }).toList();
         return ResponseEntity.ok(pedidosDetalles);
     } else {
         return ResponseEntity.status(404).body(null);
