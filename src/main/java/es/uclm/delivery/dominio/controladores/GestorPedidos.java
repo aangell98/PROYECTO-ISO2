@@ -67,7 +67,7 @@ public class GestorPedidos {
         // Calcular el precio total de cada carta de menú
         restaurante.getCartasMenu().forEach(cartaMenu -> {
             double precioTotal = cartaMenu.getItems().stream()
-                    .mapToDouble(plato -> plato.getPrecio())
+                    .mapToDouble(ItemMenu::getPrecio)
                     .sum();
             cartaMenu.setPrecioTotal(precioTotal); // Añade un campo `precioTotal` en la clase CartaMenu si no existe
         });
