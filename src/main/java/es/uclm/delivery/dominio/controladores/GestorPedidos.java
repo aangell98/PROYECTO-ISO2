@@ -77,7 +77,7 @@ public class GestorPedidos {
     }
 
     @PostMapping("/agregar_al_carrito")
-    public ResponseEntity<?> agregarAlCarrito(@ModelAttribute("carrito") Carrito carrito,
+    public ResponseEntity<Object> agregarAlCarrito(@ModelAttribute("carrito") Carrito carrito,
             @RequestBody Map<String, Long> requestData) {
         Long menuId = requestData.get("id"); // Obtener el ID del menú completo desde el JSON
         Optional<CartaMenu> menuOpt = cartaMenuDAO.findById(menuId);
@@ -92,14 +92,14 @@ public class GestorPedidos {
     }
 
     @DeleteMapping("/eliminar_del_carrito/{cartaMenuId}")
-    public ResponseEntity<?> eliminarDelCarrito(@ModelAttribute("carrito") Carrito carrito,
+    public ResponseEntity<Object> eliminarDelCarrito(@ModelAttribute("carrito") Carrito carrito,
             @PathVariable Long cartaMenuId) {
         carrito.eliminarItem(cartaMenuId); // Método que elimina el item por ID en el carrito
         return ResponseEntity.ok(carrito); // Devuelve el carrito actualizado al frontend
     }
 
     @DeleteMapping("/limpiar_carrito")
-    public ResponseEntity<?> limpiarCarrito(@ModelAttribute("carrito") Carrito carrito, SessionStatus sessionStatus) {
+    public ResponseEntity<Object> limpiarCarrito(@ModelAttribute("carrito") Carrito carrito, SessionStatus sessionStatus) {
         carrito.vaciar(); // Método que elimina todos los ítems del carrito
         sessionStatus.setComplete(); // Limpia el carrito de la sesion
         return ResponseEntity.ok(carrito); // Devuelve el carrito vacío
@@ -111,7 +111,7 @@ public class GestorPedidos {
     }
 
     @PostMapping("/confirmar_pedido")
-    public ResponseEntity<?> confirmarPedido(@ModelAttribute("carrito") Carrito carrito,
+    public ResponseEntity<Object> confirmarPedido(@ModelAttribute("carrito") Carrito carrito,
             @RequestBody Map<String, Object> requestData, SessionStatus sessionStatus) {
         Long direccionId;
         try {
