@@ -13,6 +13,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
+import java.util.ArrayList;
 
 @Controller
 public class GestorRestaurantes {
@@ -151,7 +152,10 @@ public class GestorRestaurantes {
                     .map(restaurante -> cartaMenuDAO.findAllByRestaurante(restaurante.getId()))
                     .orElse(List.of());
 
-            List<ItemMenu> items = itemMenuDAO.obtenerItemsPorRestaurante(restauranteOpt.get().getId());
+            List<ItemMenu> items = new ArrayList<>();
+            if(restauranteOpt.isPresent()){
+                items = itemMenuDAO.obtenerItemsPorRestaurante(restauranteOpt.get().getId());
+            }
             // Agregar log para verificar los valores de menus
             menus.forEach(menu -> System.out.println("Menu encontrado: " + (menu != null ? menu.getId() : "null")));
 
