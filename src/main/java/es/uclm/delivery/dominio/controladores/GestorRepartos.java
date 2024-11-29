@@ -43,53 +43,55 @@ public class GestorRepartos {
 
 
     @PostMapping("/autoasignar/{pedidoId}")
-    public ResponseEntity<String> autoasignarPedido(@PathVariable Long pedidoId) {
-        try {
-            String username = SecurityContextHolder.getContext().getAuthentication().getName();
-            Optional<Repartidor> repartidorOpt = repartidorDAO.findByUsername(username);
+public ResponseEntity<String> autoasignarPedido(@PathVariable Long pedidoId) {
+    try {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Optional<Repartidor> repartidorOpt = repartidorDAO.findByUsername(username);
 
-            if (repartidorOpt.isPresent()) {
-                Repartidor repartidor = repartidorOpt.get();
-                Optional<ServicioEntrega> servicioEntregaOpt = servicioEntregaDAO.findByPedidoId(pedidoId);
+        if (repartidorOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Repartidor no encontrado");
+        }
 
-                if (servicioEntregaOpt.isPresent()) {
-                    ServicioEntrega servicioEntrega = servicioEntregaOpt.get();
-                    if (servicioEntrega.getEstado() == EstadoPedido.PAGADO) {
-                        servicioEntrega.setRepartidor(repartidor);
-                        servicioEntrega.setEstado(EstadoPedido.RECOGIDO);
-                        servicioEntregaDAO.update(servicioEntrega);
+        Optional<ServicioEntrega> servicioEntregaOpt = servicioEntregaDAO.findByPedidoId(pedidoId);
 
-                        Optional<Pedido> pedidoOpt = pedidoDAO.findById(pedidoId);
-                        if (pedidoOpt.isPresent()) {
-                            Pedido pedido = pedidoOpt.get();
-                            pedido.setEstado(EstadoPedido.RECOGIDO);
-                            pedidoDAO.update(pedido);
-                        }
+        if (servicioEntregaOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Pedido no encontrado");
+        }
 
-                        return ResponseEntity.ok("Pedido autoasignado con éxito");
-                    } else {
-                        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("El pedido no está disponible para autoasignación");
-                    }
-                } else {
-                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Pedido no encontrado");
-                }
-            } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Repartidor no encontrado");
-            }
-        } catch (NullPointerException e) {
-    // Maneja la excepción específica si ocurre
-    e.printStackTrace();
-    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error de datos nulos");
-} catch (DataAccessException e) {
-    // Maneja excepciones relacionadas con el acceso a datos
-    e.printStackTrace();
-    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error de acceso a la base de datos");
-} catch (Exception e) {
-    // Captura cualquier otra excepción no especificada
-    e.printStackTrace();
-    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al autoasignar el pedido");
-}
+        ServicioEntrega servicioEntrega = servicioEntregaOpt.get();
+
+        if (servicioEntrega.getEstado() != EstadoPedido.PAGADO) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("El pedido no está disponible para autoasignación");
+        }
+
+        Repartidor repartidor = repartidorOpt.get();
+        servicioEntrega.setRepartidor(repartidor);
+        servicioEntrega.setEstado(EstadoPedido.RECOGIDO);
+        servicioEntregaDAO.update(servicioEntrega);
+
+        Optional<Pedido> pedidoOpt = pedidoDAO.findById(pedidoId);
+        if (pedidoOpt.isPresent()) {
+            Pedido pedido = pedidoOpt.get();
+            pedido.setEstado(EstadoPedido.RECOGIDO);
+            pedidoDAO.update(pedido);
+        }
+
+        return ResponseEntity.ok("Pedido autoasignado con éxito");
+
+    } catch (NullPointerException e) {
+        // Captura errores de datos nulos
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error de datos nulos: " + e.getMessage());
+    } catch (DataAccessException e) {
+        // Captura errores de acceso a la base de datos
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error de acceso a la base de datos: " + e.getMessage());
+    } catch (IllegalArgumentException e) {
+        // Captura errores de argumentos inválidos, como un pedido que no cumple los requisitos
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error de argumento inválido: " + e.getMessage());
+    } catch (Exception e) {
+        // Captura cualquier otra excepción no prevista
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error inesperado al autoasignar el pedido: " + e.getMessage());
     }
+}
 
     @GetMapping("/pedidos_asignados")
     public ResponseEntity<List<Map<String, Object>>> obtenerPedidosAsignados() {
