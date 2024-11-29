@@ -54,7 +54,7 @@ public class GestorLogin {
         if (usuario != null) {
             log.debug("Usuario encontrado: {}", usuario.getUsername());
             if (cifrarPassword(password).equals(usuario.getPassword())) {
-                log.info("Usuario autenticado: " + username);
+                log.info("Usuario autenticado: {}", username);
                 return true;
             } else {
                 log.warn("Contraseña incorrecta para el usuario: " + username);
