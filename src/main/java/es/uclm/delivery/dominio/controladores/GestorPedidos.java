@@ -25,6 +25,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.support.SessionStatus;
+
 import es.uclm.delivery.dominio.entidades.*;
 
 @SessionAttributes("carrito")
@@ -97,8 +99,9 @@ public class GestorPedidos {
     }
 
     @DeleteMapping("/limpiar_carrito")
-    public ResponseEntity<?> limpiarCarrito(@ModelAttribute("carrito") Carrito carrito) {
+    public ResponseEntity<?> limpiarCarrito(@ModelAttribute("carrito") Carrito carrito, SessionStatus sessionStatus) {
         carrito.vaciar(); // Método que elimina todos los ítems del carrito
+        sessionStatus.setComplete(); // Limpia el carrito de la sesion
         return ResponseEntity.ok(carrito); // Devuelve el carrito vacío
     }
 
@@ -109,7 +112,7 @@ public class GestorPedidos {
 
     @PostMapping("/confirmar_pedido")
     public ResponseEntity<?> confirmarPedido(@ModelAttribute("carrito") Carrito carrito,
-            @RequestBody Map<String, Object> requestData) {
+            @RequestBody Map<String, Object> requestData, SessionStatus sessionStatus) {
         Long direccionId;
         try {
             direccionId = Long.parseLong((String) requestData.get("direccionId"));
@@ -160,6 +163,7 @@ public class GestorPedidos {
                     servicioEntregaDAO.insert(servicioEntrega);
 
                     carrito.vaciar();
+                    sessionStatus.setComplete(); //Limpia el carrito de la sesion
 
                     logger.info("Pedido confirmado con éxito y servicio de entrega creado en estado PAGADO");
                     return ResponseEntity.ok("Pedido confirmado y servicio de entrega en proceso");
