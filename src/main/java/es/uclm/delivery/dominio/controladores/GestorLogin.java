@@ -52,7 +52,7 @@ public class GestorLogin {
     public boolean autenticar(String username, String password) {
         Usuario usuario = usuarioDAO.select(username).orElse(null);
         if (usuario != null) {
-            log.debug("Usuario encontrado: " + usuario.getUsername());
+            log.debug("Usuario encontrado: {}", usuario.getUsername());
             if (cifrarPassword(password).equals(usuario.getPassword())) {
                 log.info("Usuario autenticado: " + username);
                 return true;
