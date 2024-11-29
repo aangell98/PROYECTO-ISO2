@@ -57,17 +57,17 @@ public class GestorLogin {
                 log.info("Usuario autenticado: {}", username);
                 return true;
             } else {
-                log.warn("Contraseña incorrecta para el usuario: " + username);
+                log.warn("Contraseña incorrecta para el usuario: {}", username);
             }
         } else {
-            log.warn("Usuario no encontrado: " + username);
+            log.warn("Usuario no encontrado: {}", username);
         }
         return false;
     }
 
     public boolean registrar(String username, String password, String role) {
         if (usuarioDAO.select(username).isPresent()) {
-            log.warn("Intento de registro fallido. El usuario ya existe: " + username);
+            log.warn("Intento de registro fallido. El usuario ya existe: {}", username);
             return false; // El usuario ya existe
         }
         Usuario usuario = new Usuario();
@@ -75,13 +75,13 @@ public class GestorLogin {
         usuario.setPassword(cifrarPassword(password)); // La contraseña se encripta aquí
         usuario.setRole(role); // Asignar el rol adecuado
         usuarioDAO.insert(usuario);
-        log.info("Usuario registrado: " + username + " con rol: " + role);
+        log.info("Usuario registrado: {} con rol {}", username, role);
         return true;
     }
 
     public boolean registrarCliente(String username, String password, String role, String nombre, String apellidos, String dni) {
         if (usuarioDAO.select(username).isPresent()) {
-            log.warn("Intento de registro fallido. El usuario ya existe: " + username);
+            log.warn("Intento de registro fallido. El usuario ya existe: {}", username);
             return false; // El usuario ya existe
         }
         Usuario usuario = new Usuario();
@@ -95,13 +95,13 @@ public class GestorLogin {
         cliente.setDni(dni);
         cliente.setUsuario(usuario);
         clienteDAO.insert(cliente);
-        log.info("Cliente registrado: " + username);
+        log.info("Cliente registrado: {}", username);
         return true;
     }
 
     public boolean registrarRepartidor(String username, String password, String role, String nombre, String apellidos, String dni) {
         if (usuarioDAO.select(username).isPresent()) {
-            log.warn("Intento de registro fallido. El usuario ya existe: " + username);
+            log.warn("Intento de registro fallido. El usuario ya existe: {}", username);
             return false; // El usuario ya existe
         }
         Usuario usuario = new Usuario();
@@ -115,13 +115,13 @@ public class GestorLogin {
         repartidor.setDni(dni);
         repartidor.setUsuario(usuario);
         repartidorDAO.insert(repartidor);
-        log.info("Repartidor registrado: " + username);
+        log.info("Repartidor registrado: {}", username);
         return true;
     }
 
     public boolean registrarRestaurante(String username, String password, String role, String nombre, String direccion){
         if (usuarioDAO.select(username).isPresent()) {
-            log.warn("Intento de registro fallido. El usuario ya existe: " + username);
+            log.warn("Intento de registro fallido. El usuario ya existe: {}", username);
             return false; // El usuario ya existe
         }
         Usuario usuario = new Usuario();
@@ -134,7 +134,7 @@ public class GestorLogin {
         restaurante.setDireccion(direccion);
         restaurante.setUsuario(usuario);
         restauranteDAO.insert(restaurante);
-        log.info("Restaurante registrado: " + username);
+        log.info("Restaurante registrado: {}", username);
         return true;
     }
 }
