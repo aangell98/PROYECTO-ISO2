@@ -97,7 +97,7 @@ public ResponseEntity<Object> obtenerPedidosEnCurso() {
     }
 }
     @PostMapping("/confirmar_recepcion")
-    public ResponseEntity<?> confirmarRecepcion(@RequestBody Map<String, Long> payload) {
+    public ResponseEntity<Object> confirmarRecepcion(@RequestBody Map<String, Long> payload) {
         Long idPedido = payload.get("idPedido");
         logger.info("Confirmando recepción del pedido: {}", idPedido);
         Optional<Pedido> pedidoOpt = iuPedido.obtenerPedidoPorId(idPedido);
@@ -113,7 +113,7 @@ public ResponseEntity<Object> obtenerPedidosEnCurso() {
         }
     }
     @GetMapping("/listar_pedidos_anteriores")
-    public ResponseEntity<?> obtenerPedidosAnteriores() {
+    public ResponseEntity<Object> obtenerPedidosAnteriores() {
         Cliente cliente = iuBusqueda.obtenerClienteActual();
         logger.info("Obteniendo pedidos anteriores para el cliente: {}", cliente.getId());
         List<Pedido> pedidosAnteriores = iuPedido.obtenerPedidosEntregados(cliente.getId());
@@ -138,7 +138,7 @@ public ResponseEntity<Object> obtenerPedidosEnCurso() {
         }
     }
     @PostMapping("/valorar_pedido")
-    public ResponseEntity<?> valorarPedido(@RequestBody Map<String, Object> payload) {
+    public ResponseEntity<Object> valorarPedido(@RequestBody Map<String, Object> payload) {
         Long idPedido = Long.valueOf(payload.get("idPedido").toString());
         int valoracion = Integer.parseInt(payload.get("valoracion").toString());
         logger.info("Valorando pedido: {} con valoración: {}", idPedido, valoracion);
@@ -167,7 +167,7 @@ public ResponseEntity<Object> obtenerPedidosEnCurso() {
     }
 
    @PostMapping("/guardar_direccion")
-    public ResponseEntity<?> guardarDireccion(@RequestBody Direccion direccion, Principal principal) {
+    public ResponseEntity<Object> guardarDireccion(@RequestBody Direccion direccion, Principal principal) {
         String username = principal.getName();
         Optional<Cliente> clienteOpt = clienteDAO.findByUsername(username);
 
