@@ -17,9 +17,7 @@ public class RepartidorDAO extends EntidadDAO<Repartidor> {
         super(Repartidor.class);
     }
 
-     @PersistenceContext
-    private EntityManager entityManager;
-
+    
     public List<Long> findAllIds() {
         String sql = "SELECT id FROM repartidor";
         Query query = entityManager.createNativeQuery(sql);

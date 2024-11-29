@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -111,73 +112,73 @@ public class GestorPedidos {
     }
 
     @PostMapping("/confirmar_pedido")
-    public ResponseEntity<Object> confirmarPedido(@ModelAttribute("carrito") Carrito carrito,
-            @RequestBody Map<String, Object> requestData, SessionStatus sessionStatus) {
-        Long direccionId;
-        try {
-            direccionId = Long.parseLong((String) requestData.get("direccionId"));
-        } catch (NumberFormatException e) {
-            logger.error("Error al convertir direccionId a Long", e);
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ID de dirección inválido");
-        }
-        String metodoPago = (String) requestData.get("metodoPago");
-        Map<String, String> pagoInfo = (Map<String, String>) requestData.get("pagoInfo");
-
-        if (direccionId == null || metodoPago == null || pagoInfo == null) {
-            logger.error("Dirección, método de pago y datos de pago son requeridos");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Dirección, método de pago y datos de pago son requeridos");
-        }
-
-        try {
-            String username = iuBusqueda.obtenerClienteActual().getUsuario().getUsername();
-            Optional<Cliente> clienteOpt = clienteDAO.findByUsername(username);
-
-            if (clienteOpt.isPresent()) {
-                Cliente cliente = clienteOpt.get();
-                Optional<Direccion> direccionOpt = direccionDAO.findById(direccionId);
-
-                if (direccionOpt.isPresent()) {
-                    Direccion direccion = direccionOpt.get();
-
-                    // Crear el pedido
-                    Pedido pedido = new Pedido();
-                    pedido.setCliente(cliente);
-                    pedido.setRestaurante(iuBusqueda.obtenerRestaurante(carrito.getRestauranteId()));
-                    pedido.setEstado(EstadoPedido.PAGADO); // Estado inicial del pedido
-                    pedido.setFecha(new Date());
-                    pedidoDAO.insert(pedido);
-
-                    // Registrar el pago
-                    Pago pago = new Pago();
-                    pago.setPedido(pedido);
-                    pago.setTipo(MetodoPago.valueOf(metodoPago));
-                    pago.setFechaTransaccion(new Date());
-                    pagoDAO.insert(pago);
-
-                    // Crear servicio de entrega sin asignar repartidor y con estado "PAGADO"
-                    ServicioEntrega servicioEntrega = new ServicioEntrega();
-                    servicioEntrega.setPedido(pedido);
-                    servicioEntrega.setDireccion(direccion);
-                    servicioEntrega.setEstado(EstadoPedido.PAGADO); // Estado inicial del servicio
-                    servicioEntregaDAO.insert(servicioEntrega);
-
-                    carrito.vaciar();
-                    sessionStatus.setComplete(); //Limpia el carrito de la sesion
-
-                    logger.info("Pedido confirmado con éxito y servicio de entrega creado en estado PAGADO");
-                    return ResponseEntity.ok("Pedido confirmado y servicio de entrega en proceso");
-                } else {
-                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Dirección no encontrada");
-                }
-            } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cliente no encontrado");
-            }
-        } catch (Exception e) {
-            logger.error("Error al confirmar el pedido", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al confirmar el pedido");
-        }
+public ResponseEntity<Object> confirmarPedido(@ModelAttribute("carrito") Carrito carrito,
+        @RequestBody Map<String, Object> requestData, SessionStatus sessionStatus) {
+    Long direccionId;
+    try {
+        direccionId = Long.parseLong((String) requestData.get("direccionId"));
+    } catch (NumberFormatException e) {
+        logger.error("Error al convertir direccionId a Long", e);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ID de dirección inválido");
     }
+
+    String metodoPago = (String) requestData.get("metodoPago");
+    Map<String, String> pagoInfo = (Map<String, String>) requestData.get("pagoInfo");
+
+    if (direccionId == null || metodoPago == null || pagoInfo == null) {
+        logger.error("Dirección, método de pago y datos de pago son requeridos");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("Dirección, método de pago y datos de pago son requeridos");
+    }
+
+    try {
+        String username = iuBusqueda.obtenerClienteActual().getUsuario().getUsername();
+        Optional<Cliente> clienteOpt = clienteDAO.findByUsername(username);
+        if (clienteOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cliente no encontrado");
+        }
+
+        Cliente cliente = clienteOpt.get();
+        Optional<Direccion> direccionOpt = direccionDAO.findById(direccionId);
+        if (direccionOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Dirección no encontrada");
+        }
+
+        Direccion direccion = direccionOpt.get();
+        Pedido pedido = new Pedido();
+        pedido.setCliente(cliente);
+        pedido.setRestaurante(iuBusqueda.obtenerRestaurante(carrito.getRestauranteId()));
+        pedido.setEstado(EstadoPedido.PAGADO);
+        pedido.setFecha(new Date());
+        pedidoDAO.insert(pedido);
+
+        Pago pago = new Pago();
+        pago.setPedido(pedido);
+        pago.setTipo(MetodoPago.valueOf(metodoPago));
+        pago.setFechaTransaccion(new Date());
+        pagoDAO.insert(pago);
+
+        ServicioEntrega servicioEntrega = new ServicioEntrega();
+        servicioEntrega.setPedido(pedido);
+        servicioEntrega.setDireccion(direccion);
+        servicioEntrega.setEstado(EstadoPedido.PAGADO);
+        servicioEntregaDAO.insert(servicioEntrega);
+
+        carrito.vaciar();
+        sessionStatus.setComplete();
+        logger.info("Pedido confirmado con éxito y servicio de entrega creado en estado PAGADO");
+        return ResponseEntity.ok("Pedido confirmado y servicio de entrega en proceso");
+    } catch (IllegalArgumentException e) {
+        logger.error("Método de pago inválido", e);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Método de pago inválido");
+    } catch (NullPointerException e) {
+        logger.error("Error: Algún valor requerido es nulo", e);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error interno del servidor");
+    } catch (DataAccessException e) {
+        logger.error("Error al interactuar con la base de datos", e);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error en la base de datos");
+    }
+}
 
     @GetMapping("/pedidos_pagados")
     public ResponseEntity<List<Map<String, Object>>> obtenerPedidosPagados() {
