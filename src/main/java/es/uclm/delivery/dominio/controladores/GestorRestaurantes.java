@@ -5,6 +5,7 @@ import es.uclm.delivery.persistencia.*;
 import es.uclm.delivery.presentacion.IUEdicionMenu;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -27,34 +28,7 @@ public class GestorRestaurantes {
     @Autowired
     private CartaMenuDAO cartaMenuDAO;
 
-    @Autowired
-    private ItemMenuDAO itemMenuDAO;
-
-    @Autowired
-    private IUEdicionMenu iuEdicionMenu;
-
-    @PostMapping("/eliminarCartaMenu")
-    public String eliminarMenu(@RequestParam("menuId") Long menuId, RedirectAttributes redirectAttributes) {
-        int resultado = cartaMenuDAO.eliminarCartaMenuPorId(menuId);
-        if (resultado == 1) {
-            redirectAttributes.addFlashAttribute("mensaje", "Menú eliminado con éxito.");
-        } else {
-            redirectAttributes.addFlashAttribute("error", "Error al eliminar el menú.");
-        }
-        return "redirect:/homeRestaurante";
-    }
-
-    @PostMapping("/eliminarItemMenu")
-    public String eliminarItemMenu(@RequestParam Long platoId, Model model) {
-        ItemMenu itemMenu = itemMenuDAO.findById(platoId).orElse(null);
-        if (itemMenu != null) {
-            try {
-                int result = itemMenuDAO.delete(itemMenu);
-                if (result == 1) {
-                    // Éxito, redirigir o mostrar mensaje
-                    model.addAttribute("successMessage", "Plato eliminado correctamente.");
-                } else {
-                    // Error en la eliminación
+    @Autowired    // Error en la eliminación
                     model.addAttribute("errorMessage", "No se pudo eliminar el plato.");
                 }
             } catch (Exception e) {
@@ -64,10 +38,57 @@ public class GestorRestaurantes {
                 e.printStackTrace(); // O puedes registrar el error
             }
         } else {
-            model.addAttribute("errorMessage", "El plato no existe.");
+    private ItemMenuDAO itemMenuDAO;
+
+    @Autowired
+    private IUEdicionMenu iuEdicionMenu;
+
+    @PostMapping("/eliminarItemMenu")
+public String eliminarItemMenu(@RequestParam Long platoId, Model model) {
+    ItemMenu itemMenu = itemMenuDAO.findById(platoId).orElse(null);
+    if (itemMenu != null) {
+        try {
+            int result = itemMenuDAO.delete(itemMenu);
+            if (result == 1) {
+                model.addAttribute("successMessage", "Plato eliminado correctamente.");
+            } else {
+                model.addAttribute("errorMessage", "No se pudo eliminar el plato.");
+            }
+        } catch (DataAccessException e) {
+            // Manejar errores relacionados con la base de datos
+            model.addAttribute("errorMessage", "Error de acceso a la base de datos: " + e.getMessage());
+        } catch (IllegalArgumentException e) {
+            // Manejar errores por argumentos inválidos
+            model.addAttribute("errorMessage", "Error en el argumento: " + e.getMessage());
+        } catch (Exception e) {
+            // Manejar cualquier otro error inesperado
+            model.addAttribute("errorMessage", "Error inesperado al eliminar el plato: " + e.getMessage());
         }
-        return "redirect:/homeRestaurante"; // O la vista que desees
+    } else {
+        model.addAttribute("errorMessage", "El plato no existe.");
     }
+    return "redirect:/homeRestaurante";
+}
+
+@PostMapping("/eliminarCartaMenu")
+public String eliminarMenu(@RequestParam("menuId") Long menuId, RedirectAttributes redirectAttributes) {
+    try {
+        int resultado = cartaMenuDAO.eliminarCartaMenuPorId(menuId);
+        if (resultado == 1) {
+            redirectAttributes.addFlashAttribute("mensaje", "Menú eliminado con éxito.");
+        } else {
+            redirectAttributes.addFlashAttribute("error", "Error al eliminar el menú.");
+        }
+    } catch (DataAccessException e) {
+        redirectAttributes.addFlashAttribute("error", "Error de acceso a la base de datos: " + e.getMessage());
+    } catch (IllegalArgumentException e) {
+        redirectAttributes.addFlashAttribute("error", "Argumento inválido: " + e.getMessage());
+    } catch (Exception e) {
+        redirectAttributes.addFlashAttribute("error", "Error inesperado: " + e.getMessage());
+    }
+    return "redirect:/homeRestaurante";
+}
+
 
     @PostMapping("/editarRestaurante")
     public String editarRestaurante(@ModelAttribute Restaurante restaurante, Model model) {
@@ -102,8 +123,8 @@ public class GestorRestaurantes {
     }
 
     @PostMapping("/eliminarRestaurante")
-    public String eliminarRestaurante(@RequestParam(name = "restauranteId", required = true) Long restauranteId,
-            Model model) {
+public String eliminarRestaurante(@RequestParam(name = "restauranteId", required = true) Long restauranteId, Model model) {
+    try {
         Optional<Restaurante> restauranteOpt = restauranteDAO.findById(restauranteId);
         if (restauranteOpt.isPresent()) {
             Restaurante restaurante = restauranteOpt.get();
@@ -112,9 +133,15 @@ public class GestorRestaurantes {
         } else {
             model.addAttribute("error", "Error: Restaurante no encontrado.");
         }
-        return "redirect:/homeRestaurante";
+    } catch (DataAccessException e) {
+        model.addAttribute("error", "Error de acceso a la base de datos: " + e.getMessage());
+    } catch (IllegalArgumentException e) {
+        model.addAttribute("error", "Argumento inválido: " + e.getMessage());
+    } catch (Exception e) {
+        model.addAttribute("error", "Error inesperado al eliminar el restaurante: " + e.getMessage());
     }
-
+    return "redirect:/homeRestaurante";
+}
     @PostMapping("/editarCartaMenu")
     public String editarCartaMenu(@ModelAttribute CartaMenu cartaMenu, @RequestParam List<Long> itemsIds) {
         Optional<CartaMenu> cartaExistente = cartaMenuDAO.findById(cartaMenu.getId());
