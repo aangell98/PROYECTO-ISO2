@@ -33,7 +33,7 @@ public class GestorLogin {
     @Autowired
     private RestauranteDAO restauranteDAO;
 
-    private String cifrarPassword(String password) {
+    public String cifrarPassword(String password) {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
             byte[] hash = md.digest(password.getBytes());
