@@ -111,7 +111,7 @@ public class GestorRepartos {
                     detalles.put("direccion", "Dirección no disponible");
                 }
                 return detalles;
-            }).collect(Collectors.toList());
+            }).toList();
             return ResponseEntity.ok(pedidosDetalles);
         } else {
             return ResponseEntity.status(404).body(null);
