@@ -33,12 +33,12 @@ public class IULogin {
     private static final Logger log = LoggerFactory.getLogger(IULogin.class);
 
     @Autowired
-    private GestorLogin gestorLogin;
+    public GestorLogin gestorLogin;
 
     @Autowired
-    private UsuarioDAO usuarioDAO;
+    public UsuarioDAO usuarioDAO;
     @Autowired
-    private RestauranteDAO restauranteDAO;
+    public RestauranteDAO restauranteDAO;
 
     @GetMapping("/login")
     public String showLoginForm(Model model) {
@@ -136,7 +136,7 @@ public class IULogin {
     }
 
     @GetMapping("/home")
-public String mostrarHome(Model model) {
+    public String mostrarHome(Model model) {
     // Obtenemos todos los restaurantes usando el método existente en restauranteDAO
     List<Restaurante> todosLosRestaurantes = restauranteDAO.findAll();
 
@@ -158,7 +158,7 @@ public String mostrarHome(Model model) {
     return "home";
 }
     @Autowired
-    private ServicioEntregaDAO servicioEntregaDAO;
+    public ServicioEntregaDAO servicioEntregaDAO;
 
     @GetMapping("/homeCliente")
     public String homeCliente() {
