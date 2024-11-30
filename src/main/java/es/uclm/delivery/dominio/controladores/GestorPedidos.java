@@ -40,25 +40,25 @@ public class GestorPedidos {
     }
 
     @Autowired
-    private IUBusqueda IUBusqueda;
+    public IUBusqueda IUBusqueda;
     @Autowired
-    private ItemMenuDAO itemMenuDAO;
+    public ItemMenuDAO itemMenuDAO;
     @Autowired
-    private CartaMenuDAO cartaMenuDAO;
+    public CartaMenuDAO cartaMenuDAO;
     @Autowired
-    private PedidoDAO pedidoDAO;
+    public PedidoDAO pedidoDAO;
 
     @Autowired
-    private PagoDAO pagoDAO;
+    public PagoDAO pagoDAO;
     @Autowired
-    private DireccionDAO direccionDAO;
+    public DireccionDAO direccionDAO;
     @Autowired
-    private ServicioEntregaDAO servicioEntregaDAO;
+    public ServicioEntregaDAO servicioEntregaDAO;
     @Autowired
-    private RepartidorDAO repartidorDAO;
+    public RepartidorDAO repartidorDAO;
 
     @Autowired
-    private ClienteDAO clienteDAO;
+    public ClienteDAO clienteDAO;
 
     @GetMapping("/realizar_pedido")
     public String realizarPedido(@RequestParam("restauranteId") Long restauranteId, Model model,
