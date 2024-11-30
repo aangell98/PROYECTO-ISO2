@@ -14,8 +14,10 @@ public class Carrito {
     }
 
     public void agregarItem(ItemMenu item) {
-        this.items.add(item);
-        this.precioTotal += item.getPrecio();
+        if (item.getPrecio() > 0) {
+            this.items.add(item);
+            this.precioTotal += item.getPrecio();
+        }
     }
 
     public List<ItemMenu> getItems() {
