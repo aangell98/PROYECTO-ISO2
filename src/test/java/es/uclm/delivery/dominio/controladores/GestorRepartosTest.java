@@ -132,7 +132,7 @@ class GestorRepartosTest {
 
         ResponseEntity<?> response = gestorRepartos.autoasignarPedido(PEDIDO_ID);
 
-        assertEquals(200, response.getStatusCode().value());
+        assertEquals(404, response.getStatusCode().value());
         assertEquals("Pedido no encontrado", response.getBody());
     }
 
@@ -142,7 +142,7 @@ class GestorRepartosTest {
 
         ResponseEntity<?> response = gestorRepartos.autoasignarPedido(PEDIDO_ID);
 
-        assertEquals(200, response.getStatusCode().value());
+        assertEquals(404, response.getStatusCode().value());
         assertEquals("Repartidor no encontrado", response.getBody());
     }
 
@@ -152,7 +152,7 @@ class GestorRepartosTest {
 
         ResponseEntity<?> response = gestorRepartos.autoasignarPedido(PEDIDO_ID);
 
-        assertEquals(200, response.getStatusCode().value());
+        assertEquals(500, response.getStatusCode().value());
         assertEquals("Error al autoasignar el pedido", response.getBody());
     }
 
@@ -170,8 +170,7 @@ class GestorRepartosTest {
         servicioEntrega.setDireccion(direccion);
 
         when(repartidorDAO.findByUsername(USERNAME)).thenReturn(Optional.of(repartidor));
-        when(servicioEntregaDAO.findByRepartidorId(REPARTIDOR_ID))
-                .thenReturn(Collections.singletonList(servicioEntrega));
+        when(servicioEntregaDAO.findByRepartidorId(REPARTIDOR_ID)).thenReturn(Collections.singletonList(servicioEntrega));
 
         ResponseEntity<List<Map<String, Object>>> response = gestorRepartos.obtenerPedidosAsignados();
 
