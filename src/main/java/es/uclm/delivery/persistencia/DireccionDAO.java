@@ -19,8 +19,12 @@ public class DireccionDAO extends EntidadDAO<Direccion> {
 
     @Transactional
     public void save(Direccion direccion) {
+        if (direccion == null) {
+            throw new IllegalArgumentException("La dirección no puede ser nula");
+        }
         entityManager.persist(direccion);
     }
+
 
     public Direccion findByPedidoId(Long pedidoId) {
         return entityManager
