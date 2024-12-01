@@ -20,6 +20,9 @@ public abstract class EntidadDAO<E> {
     }
 
     public int insert(E entity) {
+        if (entity == null) {
+            throw new IllegalArgumentException("Entity cannot be null");
+        }
         try {
             entityManager.persist(entity);
             return 1; // Success
@@ -28,8 +31,12 @@ public abstract class EntidadDAO<E> {
             return 0; // Failure
         }
     }
+    
 
     public int update(E entity) {
+        if (entity == null) {
+            throw new IllegalArgumentException("Entity cannot be null");
+        }
         try {
             entityManager.merge(entity);
             return 1; // Success
@@ -40,6 +47,9 @@ public abstract class EntidadDAO<E> {
     }
 
     public int delete(E entity) {
+        if (entity == null) {
+            throw new IllegalArgumentException("Entity cannot be null");
+        }
         try {
             entityManager.remove(entityManager.contains(entity) ? entity : entityManager.merge(entity));
             return 1; // Success
