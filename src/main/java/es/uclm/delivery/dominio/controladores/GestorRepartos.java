@@ -87,9 +87,6 @@ public ResponseEntity<String> autoasignarPedido(@PathVariable Long pedidoId) {
     } catch (IllegalArgumentException e) {
         // Captura errores de argumentos inválidos, como un pedido que no cumple los requisitos
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error de argumento inválido: " + e.getMessage());
-    } catch (Exception e) {
-        // Captura cualquier otra excepción no prevista
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error inesperado al autoasignar el pedido: " + e.getMessage());
     }
 }
 

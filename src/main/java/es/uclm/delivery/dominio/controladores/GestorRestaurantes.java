@@ -29,7 +29,7 @@ public class GestorRestaurantes {
     private CartaMenuDAO cartaMenuDAO;
 
     @Autowired    // Error en la eliminación
-                    model.addAttribute("errorMessage", "No se pudo eliminar el plato.");
+                  /*   model.addAttribute("errorMessage", "No se pudo eliminar el plato.");
                 }
             } catch (Exception e) {
                 // Manejo de la excepción
@@ -37,7 +37,7 @@ public class GestorRestaurantes {
                         "No se puede eliminar el plato porque está asociado a uno o más menús.");
                 e.printStackTrace(); // O puedes registrar el error
             }
-        } else {
+        } else {*/
     private ItemMenuDAO itemMenuDAO;
 
     @Autowired
