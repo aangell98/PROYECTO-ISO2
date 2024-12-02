@@ -19,6 +19,10 @@ import static org.mockito.Mockito.*;
 
 class ItemMenuDAOTest {
 
+    private static final Long ITEM_ID = 1L;
+    private static final Long INVALID_ITEM_ID = 999L;
+    private static final Long RESTAURANTE_ID = 1L;
+
     private ItemMenuDAO itemMenuDAO;
     private EntityManager mockEntityManager;
 
@@ -36,9 +40,21 @@ class ItemMenuDAOTest {
         entityManagerField.set(itemMenuDAO, mockEntityManager);
     }
 
+    private ItemMenu crearItemMenu() {
+        ItemMenu item = new ItemMenu();
+        item.setId(ITEM_ID);
+        return item;
+    }
+
+    private Restaurante crearRestaurante() {
+        Restaurante restaurante = new Restaurante();
+        restaurante.setId(RESTAURANTE_ID);
+        return restaurante;
+    }
+
     @Test
     void testInsert_EntidadValida() {
-        ItemMenu item = new ItemMenu();
+        ItemMenu item = crearItemMenu();
         doNothing().when(mockEntityManager).persist(item);
 
         int result = itemMenuDAO.insert(item);
@@ -54,7 +70,7 @@ class ItemMenuDAOTest {
 
     @Test
     void testUpdate_EntidadValida() {
-        ItemMenu item = new ItemMenu();
+        ItemMenu item = crearItemMenu();
         when(mockEntityManager.merge(item)).thenReturn(item);
 
         int result = itemMenuDAO.update(item);
@@ -70,7 +86,7 @@ class ItemMenuDAOTest {
 
     @Test
     void testDelete_EntidadValida() {
-        ItemMenu item = new ItemMenu();
+        ItemMenu item = crearItemMenu();
         when(mockEntityManager.contains(item)).thenReturn(true);
 
         int result = itemMenuDAO.delete(item);
@@ -86,10 +102,10 @@ class ItemMenuDAOTest {
 
     @Test
     void testFindById_IdValido() {
-        ItemMenu item = new ItemMenu();
-        when(mockEntityManager.find(ItemMenu.class, 1L)).thenReturn(item);
+        ItemMenu item = crearItemMenu();
+        when(mockEntityManager.find(ItemMenu.class, ITEM_ID)).thenReturn(item);
 
-        Optional<ItemMenu> result = itemMenuDAO.findById(1L);
+        Optional<ItemMenu> result = itemMenuDAO.findById(ITEM_ID);
 
         assertTrue(result.isPresent());
         assertEquals(item, result.get());
@@ -97,21 +113,21 @@ class ItemMenuDAOTest {
 
     @Test
     void testFindById_IdInvalido() {
-        when(mockEntityManager.find(ItemMenu.class, 999L)).thenReturn(null);
+        when(mockEntityManager.find(ItemMenu.class, INVALID_ITEM_ID)).thenReturn(null);
 
-        Optional<ItemMenu> result = itemMenuDAO.findById(999L);
+        Optional<ItemMenu> result = itemMenuDAO.findById(INVALID_ITEM_ID);
 
         assertTrue(result.isEmpty());
     }
 
     @Test
     void testEliminarItemMenuPorId_EntidadExistente() {
-        ItemMenu item = new ItemMenu();
-        when(mockEntityManager.find(ItemMenu.class, 1L)).thenReturn(item);
+        ItemMenu item = crearItemMenu();
+        when(mockEntityManager.find(ItemMenu.class, ITEM_ID)).thenReturn(item);
         when(mockEntityManager.contains(item)).thenReturn(true);
         doNothing().when(mockEntityManager).remove(item);
 
-        int result = itemMenuDAO.eliminarItemMenuPorId(1L);
+        int result = itemMenuDAO.eliminarItemMenuPorId(ITEM_ID);
 
         assertEquals(1, result);
         verify(mockEntityManager).remove(item);
@@ -119,17 +135,16 @@ class ItemMenuDAOTest {
 
     @Test
     void testEliminarItemMenuPorId_EntidadNoExistente() {
-        when(mockEntityManager.find(ItemMenu.class, 999L)).thenReturn(null);
+        when(mockEntityManager.find(ItemMenu.class, INVALID_ITEM_ID)).thenReturn(null);
 
-        int result = itemMenuDAO.eliminarItemMenuPorId(999L);
+        int result = itemMenuDAO.eliminarItemMenuPorId(INVALID_ITEM_ID);
 
         assertEquals(0, result);
     }
 
     @Test
     void testObtenerItemsPorRestaurante_ConItems() {
-        Restaurante restaurante = new Restaurante();
-        restaurante.setId(1L);
+        Restaurante restaurante = crearRestaurante();
 
         ItemMenu item1 = new ItemMenu();
         item1.setRestaurante(restaurante);
@@ -142,7 +157,7 @@ class ItemMenuDAOTest {
         when(mockQuery.getResultList()).thenReturn(itemList);
         when(mockEntityManager.createQuery(anyString(), eq(ItemMenu.class))).thenReturn(mockQuery);
 
-        List<ItemMenu> result = itemMenuDAO.obtenerItemsPorRestaurante(1L);
+        List<ItemMenu> result = itemMenuDAO.obtenerItemsPorRestaurante(RESTAURANTE_ID);
 
         assertEquals(2, result.size());
         assertEquals(itemList, result);
@@ -154,8 +169,21 @@ class ItemMenuDAOTest {
         when(mockQuery.getResultList()).thenReturn(Collections.emptyList());
         when(mockEntityManager.createQuery(anyString(), eq(ItemMenu.class))).thenReturn(mockQuery);
 
-        List<ItemMenu> result = itemMenuDAO.obtenerItemsPorRestaurante(1L);
+        List<ItemMenu> result = itemMenuDAO.obtenerItemsPorRestaurante(RESTAURANTE_ID);
 
         assertTrue(result.isEmpty());
+    }
+
+    @Test
+    void testSetPrecio_Valido() {
+        ItemMenu item = new ItemMenu();
+        item.setPrecio(10.0);
+        assertEquals(10.0, item.getPrecio());
+    }
+
+    @Test
+    void testSetPrecio_Negativo() {
+        ItemMenu item = new ItemMenu();
+        assertThrows(IllegalArgumentException.class, () -> item.setPrecio(-10.0));
     }
 }
