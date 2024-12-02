@@ -15,6 +15,19 @@
         function closeModal(id) {
             document.getElementById(id).style.display = 'none';
         }
+
+        function validarPrecio(event, inputId, errorId) {
+            const precioInput = document.getElementById(inputId);
+            const precioError = document.getElementById(errorId);
+            const precio = parseFloat(precioInput.value);
+
+            if (precio < 0) {
+                precioError.style.display = 'block';
+                event.preventDefault(); // Evitar que el formulario se envíe
+            } else {
+                precioError.style.display = 'none';
+            }
+        }
     </script>
 </head>
 
@@ -140,13 +153,14 @@
         <div class="modal-content">
             <span class="close" onclick="closeModal('modalPlato')">&times;</span>
             <h2>Añadir Plato</h2>
-            <form method="post" action="/crearItemMenu">
+            <form id="formPlato" method="post" action="/crearItemMenu" onsubmit="validarPrecio(event, 'precioPlato', 'precioError')">
                 <label for="nombrePlato">Nombre:</label>
                 <input type="text" id="nombrePlato" name="nombre" required>
                 <label for="descripcionPlato">Descripción:</label>
                 <input type="text" id="descripcionPlato" name="descripcion" required>
                 <label for="precioPlato">Precio:</label>
                 <input type="number" id="precioPlato" name="precio" step="0.01" required>
+                <div id="precioError" class="error-message" style="display: none; color: red;">El precio no puede ser negativo.</div>
                 <button type="submit">Crear Plato</button>
             </form>
         </div>
@@ -189,7 +203,7 @@
         <div class="modal-content">
             <span class="close" onclick="closeModal('modalEditarPlato')">&times;</span>
             <h2>Editar Plato</h2>
-            <form method="post" action="/editarItemMenu">
+            <form id="formEditarPlato" method="post" action="/editarItemMenu" onsubmit="validarPrecio(event, 'precioPlatoEdit', 'precioErrorEdit')">
                 <label for="platoSelect">Seleccionar Plato:</label>
                 <select id="platoSelect" name="id" required>
                     <option value="" disabled selected>Selecciona un plato</option>
@@ -203,6 +217,7 @@
                 <input type="text" id="descripcionPlatoEdit" name="descripcion" required>
                 <label for="precioPlatoEdit">Nuevo Precio:</label>
                 <input type="number" id="precioPlatoEdit" name="precio" step="0.01" required>
+                <div id="precioErrorEdit" class="error-message" style="display: none; color: red;">El precio no puede ser negativo.</div>
                 <button type="submit">Actualizar Plato</button>
             </form>
         </div>

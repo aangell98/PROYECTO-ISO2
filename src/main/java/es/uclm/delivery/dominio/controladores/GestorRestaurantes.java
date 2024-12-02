@@ -130,14 +130,27 @@ public class GestorRestaurantes {
     }
 
     @PostMapping("/editarItemMenu")
-    public String editarItemMenu(@ModelAttribute ItemMenu itemMenu) {
-        Optional<ItemMenu> itemExistente = itemMenuDAO.findById(itemMenu.getId());
-        if (itemExistente.isPresent()) {
-            ItemMenu original = itemExistente.get();
-            original.setNombre(itemMenu.getNombre());
-            original.setDescripcion(itemMenu.getDescripcion());
-            original.setPrecio(itemMenu.getPrecio());
-            itemMenuDAO.update(original);
+    public String editarItemMenu(@ModelAttribute ItemMenu itemMenu, RedirectAttributes redirectAttributes) {
+        try {
+            if (itemMenu.getPrecio() < 0) {
+                throw new IllegalArgumentException("El precio no puede ser negativo");
+            }
+
+            Optional<ItemMenu> itemExistente = itemMenuDAO.findById(itemMenu.getId());
+            if (itemExistente.isPresent()) {
+                ItemMenu original = itemExistente.get();
+                original.setNombre(itemMenu.getNombre());
+                original.setDescripcion(itemMenu.getDescripcion());
+                original.setPrecio(itemMenu.getPrecio());
+                itemMenuDAO.update(original);
+                redirectAttributes.addFlashAttribute("successMessage", "Plato actualizado correctamente.");
+            } else {
+                redirectAttributes.addFlashAttribute("errorMessage", "El plato no existe.");
+            }
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Error al actualizar el plato.");
         }
         return "redirect:/homeRestaurante";
     }
@@ -191,16 +204,28 @@ public class GestorRestaurantes {
     }
 
     @PostMapping("/crearItemMenu")
-    public String crearItemMenu(@ModelAttribute ItemMenu itemMenu, Principal principal) {
-        Optional<Usuario> usuarioOpt = usuarioDAO.encontrarUser(principal.getName());
-        if (usuarioOpt.isPresent()) {
-            Usuario usuario = usuarioOpt.get();
-            Optional<Restaurante> restauranteOpt = restauranteDAO.findByUsuario(usuario);
-            if (restauranteOpt.isPresent()) {
-                Restaurante restaurante = restauranteOpt.get();
-                itemMenu.setRestaurante(restaurante); // Relacionar el ItemMenu con el restaurante
-                itemMenuDAO.insert(itemMenu);
+    public String crearItemMenu(@ModelAttribute ItemMenu itemMenu, Principal principal,
+            RedirectAttributes redirectAttributes) {
+        try {
+            if (itemMenu.getPrecio() < 0) {
+                throw new IllegalArgumentException("El precio no puede ser negativo");
             }
+
+            Optional<Usuario> usuarioOpt = usuarioDAO.encontrarUser(principal.getName());
+            if (usuarioOpt.isPresent()) {
+                Usuario usuario = usuarioOpt.get();
+                Optional<Restaurante> restauranteOpt = restauranteDAO.findByUsuario(usuario);
+                if (restauranteOpt.isPresent()) {
+                    Restaurante restaurante = restauranteOpt.get();
+                    itemMenu.setRestaurante(restaurante); // Relacionar el ItemMenu con el restaurante
+                    itemMenuDAO.insert(itemMenu);
+                    redirectAttributes.addFlashAttribute("successMessage", "Plato creado correctamente.");
+                }
+            }
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Error al crear el plato.");
         }
         return "redirect:/homeRestaurante";
     }
