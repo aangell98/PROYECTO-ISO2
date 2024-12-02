@@ -34,6 +34,11 @@ public class GestorRestaurantes {
 
     @PostMapping("/eliminarCartaMenu")
     public String eliminarMenu(@RequestParam("menuId") Long menuId, RedirectAttributes redirectAttributes) {
+        if (menuId == null) {
+            redirectAttributes.addFlashAttribute("error", "Error al eliminar el menú.");
+            return "redirect:/homeRestaurante";
+        }
+
         int resultado = cartaMenuDAO.eliminarCartaMenuPorId(menuId);
         if (resultado == 1) {
             redirectAttributes.addFlashAttribute("mensaje", "Menú eliminado con éxito.");
@@ -44,28 +49,25 @@ public class GestorRestaurantes {
     }
 
     @PostMapping("/eliminarItemMenu")
-    public String eliminarItemMenu(@RequestParam Long platoId, Model model) {
-        ItemMenu itemMenu = itemMenuDAO.findById(platoId).orElse(null);
-        if (itemMenu != null) {
-            try {
-                int result = itemMenuDAO.delete(itemMenu);
-                if (result == 1) {
-                    // Éxito, redirigir o mostrar mensaje
-                    model.addAttribute("successMessage", "Plato eliminado correctamente.");
-                } else {
-                    // Error en la eliminación
-                    model.addAttribute("errorMessage", "No se pudo eliminar el plato.");
-                }
-            } catch (Exception e) {
-                // Manejo de la excepción
+    public String eliminarItemMenu(@RequestParam("platoId") Long platoId, Model model) {
+        try {
+            Optional<ItemMenu> itemOpt = itemMenuDAO.findById(platoId);
+            if (itemOpt.isPresent()) {
+                ItemMenu item = itemOpt.get();
+                itemMenuDAO.delete(item);
+                model.addAttribute("successMessage", "Plato eliminado correctamente.");
+            } else {
+                model.addAttribute("errorMessage", "El plato no existe.");
+            }
+        } catch (RuntimeException e) {
+            if (e.getMessage().contains("Clave foránea")) {
                 model.addAttribute("errorMessage",
                         "No se puede eliminar el plato porque está asociado a uno o más menús.");
-                e.printStackTrace(); // O puedes registrar el error
+            } else {
+                model.addAttribute("errorMessage", "No se pudo eliminar el plato.");
             }
-        } else {
-            model.addAttribute("errorMessage", "El plato no existe.");
         }
-        return "redirect:/homeRestaurante"; // O la vista que desees
+        return "redirect:/homeRestaurante";
     }
 
     @PostMapping("/editarRestaurante")
@@ -189,19 +191,19 @@ public class GestorRestaurantes {
     }
 
     @PostMapping("/crearItemMenu")
-public String crearItemMenu(@ModelAttribute ItemMenu itemMenu, Principal principal) {
-    Optional<Usuario> usuarioOpt = usuarioDAO.encontrarUser(principal.getName());
-    if (usuarioOpt.isPresent()) {
-        Usuario usuario = usuarioOpt.get();
-        Optional<Restaurante> restauranteOpt = restauranteDAO.findByUsuario(usuario);
-        if (restauranteOpt.isPresent()) {
-            Restaurante restaurante = restauranteOpt.get();
-            itemMenu.setRestaurante(restaurante); // Relacionar el ItemMenu con el restaurante
-            itemMenuDAO.insert(itemMenu);
+    public String crearItemMenu(@ModelAttribute ItemMenu itemMenu, Principal principal) {
+        Optional<Usuario> usuarioOpt = usuarioDAO.encontrarUser(principal.getName());
+        if (usuarioOpt.isPresent()) {
+            Usuario usuario = usuarioOpt.get();
+            Optional<Restaurante> restauranteOpt = restauranteDAO.findByUsuario(usuario);
+            if (restauranteOpt.isPresent()) {
+                Restaurante restaurante = restauranteOpt.get();
+                itemMenu.setRestaurante(restaurante); // Relacionar el ItemMenu con el restaurante
+                itemMenuDAO.insert(itemMenu);
+            }
         }
+        return "redirect:/homeRestaurante";
     }
-    return "redirect:/homeRestaurante";
-}
 
     @PostMapping("/crearCartaMenu")
     public String crearCartaMenu(@ModelAttribute CartaMenu cartaMenu, @RequestParam List<Long> itemsIds,

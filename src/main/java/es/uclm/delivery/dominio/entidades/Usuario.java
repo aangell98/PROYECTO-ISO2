@@ -44,6 +44,9 @@ public class Usuario {
     }
 
     public void setRole(String role) {
+        if (role == null || role.isEmpty()) {
+            throw new IllegalArgumentException("El rol no puede estar vacío o ser nulo.");
+        }
         if (!role.startsWith("ROLE_")) {
             this.role = "ROLE_" + role;
         } else {
