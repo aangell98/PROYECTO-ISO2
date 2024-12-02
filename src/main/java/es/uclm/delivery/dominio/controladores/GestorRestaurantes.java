@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -119,24 +120,29 @@ public class GestorRestaurantes {
     }
 
     @PostMapping("/editarCartaMenu")
-public String editarCartaMenu(@ModelAttribute CartaMenu cartaMenu, @RequestParam List<Long> itemsIds) {
-    Optional<CartaMenu> cartaExistente = cartaMenuDAO.findById(cartaMenu.getId());
-    if (cartaExistente.isPresent()) {
-        CartaMenu original = cartaExistente.get();
-        original.setNombre(cartaMenu.getNombre());
-        original.setDescripcion(cartaMenu.getDescripcion());
-
-        // Desasociar los platos que ya no están en el menú
-        Collection<ItemMenu> itemsActuales = original.getItems();
-        Collection<ItemMenu> itemsNuevos = itemMenuDAO.findAllById(itemsIds);
-        itemsActuales.removeIf(item -> !itemsNuevos.contains(item));
-
-        // Asociar los nuevos platos al menú
-        original.setItems(itemsNuevos);
-        cartaMenuDAO.update(original);
+    public String editarCartaMenu(@ModelAttribute CartaMenu cartaMenu, @RequestParam List<Long> itemsIds) {
+        Optional<CartaMenu> cartaExistente = cartaMenuDAO.findById(cartaMenu.getId());
+        if (cartaExistente.isPresent()) {
+            CartaMenu original = cartaExistente.get();
+            original.setNombre(cartaMenu.getNombre());
+            original.setDescripcion(cartaMenu.getDescripcion());
+    
+            // Inicializar la lista de ítems si es null
+            if (original.getItems() == null) {
+                original.setItems(new ArrayList<>());
+            }
+    
+            // Convertir la colección a una lista mutable
+            List<ItemMenu> itemsActuales = new ArrayList<>(original.getItems());
+            List<ItemMenu> itemsNuevos = itemMenuDAO.findAllById(itemsIds);
+            itemsActuales.removeIf(item -> !itemsNuevos.contains(item));
+    
+            // Asociar los nuevos platos al menú
+            original.setItems(itemsNuevos);
+            cartaMenuDAO.update(original);
+        }
+        return "redirect:/homeRestaurante";
     }
-    return "redirect:/homeRestaurante";
-}
 
     @PostMapping("/editarItemMenu")
     public String editarItemMenu(@ModelAttribute ItemMenu itemMenu, RedirectAttributes redirectAttributes) {

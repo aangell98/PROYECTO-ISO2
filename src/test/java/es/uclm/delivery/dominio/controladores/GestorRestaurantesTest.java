@@ -10,6 +10,9 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.ui.Model;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -167,5 +170,73 @@ class GestorRestaurantesTest {
         assertEquals("redirect:/homeRestaurante", result);
         verify(model).addAttribute("error", "Error: Restaurante no encontrado.");
         verify(restauranteDAO, never()).update(any());
+    }
+
+    // -----------------------------------------
+    // Pruebas para editarCartaMenu
+    // -----------------------------------------
+    @Test
+    void editarCartaMenu_desasociarPlatos_exito() {
+        CartaMenu cartaMenu = new CartaMenu();
+        cartaMenu.setId(MENU_ID);
+        cartaMenu.setNombre("Nuevo Nombre");
+        cartaMenu.setDescripcion("Nueva Descripción");
+
+        ItemMenu item1 = crearItemMenu();
+        item1.setId(1L);
+        ItemMenu item2 = crearItemMenu();
+        item2.setId(2L);
+
+        cartaMenu.setItems(Arrays.asList(item1, item2));
+
+        when(cartaMenuDAO.findById(MENU_ID)).thenReturn(Optional.of(cartaMenu));
+        when(itemMenuDAO.findAllById(Arrays.asList(1L))).thenReturn(Collections.singletonList(item1));
+
+        String result = gestorRestaurantes.editarCartaMenu(cartaMenu, Collections.singletonList(1L));
+
+        assertEquals("redirect:/homeRestaurante", result);
+        verify(cartaMenuDAO).update(cartaMenu);
+        assertEquals(1, cartaMenu.getItems().size());
+        assertTrue(cartaMenu.getItems().contains(item1));
+        assertFalse(cartaMenu.getItems().contains(item2));
+    }
+
+    @Test
+    void editarCartaMenu_actualizarMenu_exito() {
+        CartaMenu cartaMenu = new CartaMenu();
+        cartaMenu.setId(MENU_ID);
+        cartaMenu.setNombre("Nuevo Nombre");
+        cartaMenu.setDescripcion("Nueva Descripción");
+
+        when(cartaMenuDAO.findById(MENU_ID)).thenReturn(Optional.of(cartaMenu));
+        when(itemMenuDAO.findAllById(Collections.emptyList())).thenReturn(Collections.emptyList());
+
+        String result = gestorRestaurantes.editarCartaMenu(cartaMenu, Collections.emptyList());
+
+        assertEquals("redirect:/homeRestaurante", result);
+        verify(cartaMenuDAO).update(cartaMenu);
+        assertEquals("Nuevo Nombre", cartaMenu.getNombre());
+        assertEquals("Nueva Descripción", cartaMenu.getDescripcion());
+    }
+
+    // -----------------------------------------
+    // Pruebas para editarItemMenu
+    // -----------------------------------------
+    @Test
+    void editarItemMenu_actualizarPlato_exito() {
+        ItemMenu itemMenu = crearItemMenu();
+        itemMenu.setNombre("Nuevo Nombre");
+        itemMenu.setDescripcion("Nueva Descripción");
+        itemMenu.setPrecio(15.0);
+
+        when(itemMenuDAO.findById(PLATO_ID)).thenReturn(Optional.of(itemMenu));
+
+        String result = gestorRestaurantes.editarItemMenu(itemMenu, redirectAttributes);
+
+        assertEquals("redirect:/homeRestaurante", result);
+        verify(itemMenuDAO).update(itemMenu);
+        assertEquals("Nuevo Nombre", itemMenu.getNombre());
+        assertEquals("Nueva Descripción", itemMenu.getDescripcion());
+        assertEquals(15.0, itemMenu.getPrecio());
     }
 }
