@@ -11,8 +11,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Controller
 public class GestorRestaurantes {
@@ -117,17 +119,24 @@ public class GestorRestaurantes {
     }
 
     @PostMapping("/editarCartaMenu")
-    public String editarCartaMenu(@ModelAttribute CartaMenu cartaMenu, @RequestParam List<Long> itemsIds) {
-        Optional<CartaMenu> cartaExistente = cartaMenuDAO.findById(cartaMenu.getId());
-        if (cartaExistente.isPresent()) {
-            CartaMenu original = cartaExistente.get();
-            original.setNombre(cartaMenu.getNombre());
-            original.setDescripcion(cartaMenu.getDescripcion());
-            original.setItems(itemMenuDAO.findAllById(itemsIds));
-            cartaMenuDAO.update(original);
-        }
-        return "redirect:/homeRestaurante";
+public String editarCartaMenu(@ModelAttribute CartaMenu cartaMenu, @RequestParam List<Long> itemsIds) {
+    Optional<CartaMenu> cartaExistente = cartaMenuDAO.findById(cartaMenu.getId());
+    if (cartaExistente.isPresent()) {
+        CartaMenu original = cartaExistente.get();
+        original.setNombre(cartaMenu.getNombre());
+        original.setDescripcion(cartaMenu.getDescripcion());
+
+        // Desasociar los platos que ya no están en el menú
+        Collection<ItemMenu> itemsActuales = original.getItems();
+        Collection<ItemMenu> itemsNuevos = itemMenuDAO.findAllById(itemsIds);
+        itemsActuales.removeIf(item -> !itemsNuevos.contains(item));
+
+        // Asociar los nuevos platos al menú
+        original.setItems(itemsNuevos);
+        cartaMenuDAO.update(original);
     }
+    return "redirect:/homeRestaurante";
+}
 
     @PostMapping("/editarItemMenu")
     public String editarItemMenu(@ModelAttribute ItemMenu itemMenu, RedirectAttributes redirectAttributes) {
@@ -167,8 +176,16 @@ public class GestorRestaurantes {
                     .orElse(List.of());
 
             List<ItemMenu> items = itemMenuDAO.obtenerItemsPorRestaurante(restauranteOpt.get().getId());
-            // Agregar log para verificar los valores de menus
-            menus.forEach(menu -> System.out.println("Menu encontrado: " + (menu != null ? menu.getId() : "null")));
+            // Calcular el precio total de cada menú
+            for (CartaMenu menu : menus) {
+                double precioTotal = menu.getItems().stream().mapToDouble(ItemMenu::getPrecio).sum();
+                menu.setPrecioTotal(precioTotal);
+            }
+
+            // Obtener los platos no asignados a ningún menú
+            List<ItemMenu> platosNoAsignados = items.stream()
+                    .filter(plato -> menus.stream().noneMatch(menu -> menu.getItems().contains(plato)))
+                    .collect(Collectors.toList());
 
             if (restauranteOpt.isEmpty() || restauranteOpt.get().getNombre() == null) {
                 model.addAttribute("restaurante", new Restaurante());
@@ -179,6 +196,7 @@ public class GestorRestaurantes {
                 model.addAttribute("isRestauranteRegistrado", true);
                 model.addAttribute("items", items);
                 model.addAttribute("menus", menus);
+                model.addAttribute("platosNoAsignados", platosNoAsignados);
                 model.addAttribute("cartaMenu", new CartaMenu());
                 model.addAttribute("itemMenu", new ItemMenu());
             }
