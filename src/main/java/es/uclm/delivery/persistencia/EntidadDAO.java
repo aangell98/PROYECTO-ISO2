@@ -28,7 +28,7 @@ public abstract class EntidadDAO<E> {
             return 1; // Success
         } catch (Exception e) {
             e.printStackTrace();
-            return 0; // Failure
+            throw e; // Rethrow the exception to be handled by the caller
         }
     }
     

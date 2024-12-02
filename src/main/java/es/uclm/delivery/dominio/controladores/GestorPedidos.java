@@ -79,14 +79,13 @@ public class GestorPedidos {
     @PostMapping("/agregar_al_carrito")
     public ResponseEntity<?> agregarAlCarrito(@ModelAttribute("carrito") Carrito carrito,
             @RequestBody Map<String, Long> requestData) {
-        Long menuId = requestData.get("id"); // Obtener el ID del menú completo desde el JSON
+        Long menuId = requestData.get("id");
         Optional<CartaMenu> menuOpt = cartaMenuDAO.findById(menuId);
         if (menuOpt.isPresent()) {
-            // Agregar todos los ítems del menú al carrito
             CartaMenu menu = menuOpt.get();
-            menu.getItems().forEach(carrito::agregarItem); // Agrega cada ítem al carrito
-            carrito.actualizarPrecioTotal(); // Asegúrate de actualizar el precio total del carrito
-            return ResponseEntity.ok(carrito); // Devuelve el carrito actualizado al frontend
+            menu.getItems().forEach(carrito::agregarItem);
+            carrito.actualizarPrecioTotal();
+            return ResponseEntity.ok(carrito);
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Menú no encontrado");
     }
@@ -113,16 +112,18 @@ public class GestorPedidos {
     public ResponseEntity<?> confirmarPedido(@ModelAttribute("carrito") Carrito carrito,
             @RequestBody Map<String, Object> requestData) {
         Long direccionId;
+
         try {
-            direccionId = Long.parseLong((String) requestData.get("direccionId"));
-        } catch (NumberFormatException e) {
+            direccionId = Long.parseLong(requestData.get("direccionId").toString());
+        } catch (NumberFormatException | NullPointerException e) {
             logger.error("Error al convertir direccionId a Long", e);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ID de dirección inválido");
         }
-        String metodoPago = (String) requestData.get("metodoPago");
-        Map<String, String> pagoInfo = (Map<String, String>) requestData.get("pagoInfo");
 
-        if (direccionId == null || metodoPago == null || pagoInfo == null) {
+        String metodoPago = (String) requestData.get("metodoPago");
+        Map<String, Object> pagoInfo = (Map<String, Object>) requestData.get("pagoInfo");
+
+        if (direccionId == null || metodoPago == null || pagoInfo == null || pagoInfo.isEmpty()) {
             logger.error("Dirección, método de pago y datos de pago son requeridos");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("Dirección, método de pago y datos de pago son requeridos");
@@ -143,7 +144,7 @@ public class GestorPedidos {
                     Pedido pedido = new Pedido();
                     pedido.setCliente(cliente);
                     pedido.setRestaurante(IUBusqueda.obtenerRestaurante(carrito.getRestauranteId()));
-                    pedido.setEstado(EstadoPedido.PAGADO); // Estado inicial del pedido
+                    pedido.setEstado(EstadoPedido.PAGADO);
                     pedido.setFecha(new Date());
                     pedidoDAO.insert(pedido);
 
@@ -154,11 +155,11 @@ public class GestorPedidos {
                     pago.setFechaTransaccion(new Date());
                     pagoDAO.insert(pago);
 
-                    // Crear servicio de entrega sin asignar repartidor y con estado "PAGADO"
+                    // Crear servicio de entrega
                     ServicioEntrega servicioEntrega = new ServicioEntrega();
                     servicioEntrega.setPedido(pedido);
                     servicioEntrega.setDireccion(direccion);
-                    servicioEntrega.setEstado(EstadoPedido.PAGADO); // Estado inicial del servicio
+                    servicioEntrega.setEstado(EstadoPedido.PAGADO);
                     servicioEntregaDAO.insert(servicioEntrega);
 
                     carrito.vaciar();
@@ -166,13 +167,15 @@ public class GestorPedidos {
                     logger.info("Pedido confirmado con éxito y servicio de entrega creado en estado PAGADO");
                     return ResponseEntity.ok("Pedido confirmado y servicio de entrega en proceso");
                 } else {
+                    logger.error("Dirección no encontrada");
                     return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Dirección no encontrada");
                 }
             } else {
+                logger.error("Cliente no encontrado");
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cliente no encontrado");
             }
         } catch (Exception e) {
-            logger.error("Error al confirmar el pedido", e);
+            logger.error("Error al confirmar el pedido: ", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al confirmar el pedido");
         }
     }
@@ -196,7 +199,8 @@ public class GestorPedidos {
                 detalles.put("restaurante", nombreRestaurante + " (" + direccionRestaurante + ")");
                 Direccion direccion = servicioEntrega.getDireccion();
                 if (direccion != null) {
-                    detalles.put("direccion", direccion.getCalle() + ", " + direccion.getCiudad() + ", " + direccion.getCodigoPostal());
+                    detalles.put("direccion",
+                            direccion.getCalle() + ", " + direccion.getCiudad() + ", " + direccion.getCodigoPostal());
                 } else {
                     detalles.put("direccion", "Dirección no disponible");
                 }
@@ -207,37 +211,38 @@ public class GestorPedidos {
         }).collect(Collectors.toList());
         return ResponseEntity.ok(pedidosDetalles);
     }
-    
-    @GetMapping("/pedidos_asignados")
-public ResponseEntity<List<Map<String, Object>>> obtenerPedidosAsignados() {
-    String username = SecurityContextHolder.getContext().getAuthentication().getName();
-    Optional<Repartidor> repartidorOpt = repartidorDAO.findByUsername(username);
 
-    if (repartidorOpt.isPresent()) {
-        Repartidor repartidor = repartidorOpt.get();
-        List<ServicioEntrega> serviciosEntrega = servicioEntregaDAO.findByRepartidorId(repartidor.getId());
-        List<Map<String, Object>> pedidosDetalles = serviciosEntrega.stream().map(servicioEntrega -> {
-            Map<String, Object> detalles = new HashMap<>();
-            Pedido pedido = servicioEntrega.getPedido();
-            detalles.put("id", pedido.getId());
-            detalles.put("estado", pedido.getEstado().toString());
-            String nombre = servicioEntrega.getPedido().getCliente().getNombre();
-            String apellidos = servicioEntrega.getPedido().getCliente().getApellidos();
-            detalles.put("cliente", nombre + " " + apellidos);
-            String nombreRestaurante = servicioEntrega.getPedido().getRestaurante().getNombre();
-            String direccionRestaurante = servicioEntrega.getPedido().getRestaurante().getDireccion();
-            detalles.put("restaurante", nombreRestaurante + " (" + direccionRestaurante + ")");
-            Direccion direccion = servicioEntrega.getDireccion();
-            if (direccion != null) {
-                detalles.put("direccion", direccion.getCalle() + ", " + direccion.getCiudad() + ", " + direccion.getCodigoPostal());
-            } else {
-                detalles.put("direccion", "Dirección no disponible");
-            }
-            return detalles;
-        }).collect(Collectors.toList());
-        return ResponseEntity.ok(pedidosDetalles);
-    } else {
-        return ResponseEntity.status(404).body(null);
+    @GetMapping("/pedidos_asignados")
+    public ResponseEntity<List<Map<String, Object>>> obtenerPedidosAsignados() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Optional<Repartidor> repartidorOpt = repartidorDAO.findByUsername(username);
+
+        if (repartidorOpt.isPresent()) {
+            Repartidor repartidor = repartidorOpt.get();
+            List<ServicioEntrega> serviciosEntrega = servicioEntregaDAO.findByRepartidorId(repartidor.getId());
+            List<Map<String, Object>> pedidosDetalles = serviciosEntrega.stream().map(servicioEntrega -> {
+                Map<String, Object> detalles = new HashMap<>();
+                Pedido pedido = servicioEntrega.getPedido();
+                detalles.put("id", pedido.getId());
+                detalles.put("estado", pedido.getEstado().toString());
+                String nombre = servicioEntrega.getPedido().getCliente().getNombre();
+                String apellidos = servicioEntrega.getPedido().getCliente().getApellidos();
+                detalles.put("cliente", nombre + " " + apellidos);
+                String nombreRestaurante = servicioEntrega.getPedido().getRestaurante().getNombre();
+                String direccionRestaurante = servicioEntrega.getPedido().getRestaurante().getDireccion();
+                detalles.put("restaurante", nombreRestaurante + " (" + direccionRestaurante + ")");
+                Direccion direccion = servicioEntrega.getDireccion();
+                if (direccion != null) {
+                    detalles.put("direccion",
+                            direccion.getCalle() + ", " + direccion.getCiudad() + ", " + direccion.getCodigoPostal());
+                } else {
+                    detalles.put("direccion", "Dirección no disponible");
+                }
+                return detalles;
+            }).collect(Collectors.toList());
+            return ResponseEntity.ok(pedidosDetalles);
+        } else {
+            return ResponseEntity.status(200).body(null);
+        }
     }
-}
 }
