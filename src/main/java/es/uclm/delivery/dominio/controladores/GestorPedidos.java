@@ -122,7 +122,7 @@ public class GestorPedidos {
 
         try {
             direccionId = Long.parseLong(requestData.get("direccionId").toString());
-        } catch (NumberFormatException | NullPointerException e) {
+        } catch (NumberFormatException e) {
             logger.error("Error al convertir direccionId a Long", e);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ID de dirección inválido");
         }
