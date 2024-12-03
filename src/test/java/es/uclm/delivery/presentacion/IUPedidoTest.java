@@ -17,6 +17,9 @@ import es.uclm.delivery.persistencia.ServicioEntregaDAO;
 
 public class IUPedidoTest {
 
+    private static final Long CLIENTE_ID = 1L;
+    private static final Long PEDIDO_ID = 1L;
+
     @Mock
     private PedidoDAO pedidoDAO;
 
@@ -34,18 +37,18 @@ public class IUPedidoTest {
     @Test
     void testObtenerPedidosEnCurso_ClienteConPedidos() {
         List<Pedido> pedidosEnCurso = Arrays.asList(new Pedido(), new Pedido());
-        when(pedidoDAO.findPedidosEnCurso(1L)).thenReturn(pedidosEnCurso);
+        when(pedidoDAO.findPedidosEnCurso(CLIENTE_ID)).thenReturn(pedidosEnCurso);
 
-        List<Pedido> result = iuPedido.obtenerPedidosEnCurso(1L);
+        List<Pedido> result = iuPedido.obtenerPedidosEnCurso(CLIENTE_ID);
 
         assertEquals(pedidosEnCurso, result);
     }
 
     @Test
     void testObtenerPedidosEnCurso_ClienteSinPedidos() {
-        when(pedidoDAO.findPedidosEnCurso(1L)).thenReturn(Collections.emptyList());
+        when(pedidoDAO.findPedidosEnCurso(CLIENTE_ID)).thenReturn(Collections.emptyList());
 
-        List<Pedido> result = iuPedido.obtenerPedidosEnCurso(1L);
+        List<Pedido> result = iuPedido.obtenerPedidosEnCurso(CLIENTE_ID);
 
         assertTrue(result.isEmpty());
     }
@@ -58,9 +61,9 @@ public class IUPedidoTest {
     @Test
     void testObtenerPedidoPorId_Existe() {
         Pedido pedido = new Pedido();
-        when(pedidoDAO.buscarporid(1L)).thenReturn(Optional.of(pedido));
+        when(pedidoDAO.buscarporid(PEDIDO_ID)).thenReturn(Optional.of(pedido));
 
-        Optional<Pedido> result = iuPedido.obtenerPedidoPorId(1L);
+        Optional<Pedido> result = iuPedido.obtenerPedidoPorId(PEDIDO_ID);
 
         assertTrue(result.isPresent());
         assertEquals(pedido, result.get());
@@ -68,9 +71,9 @@ public class IUPedidoTest {
 
     @Test
     void testObtenerPedidoPorId_NoExiste() {
-        when(pedidoDAO.buscarporid(1L)).thenReturn(Optional.empty());
+        when(pedidoDAO.buscarporid(PEDIDO_ID)).thenReturn(Optional.empty());
 
-        Optional<Pedido> result = iuPedido.obtenerPedidoPorId(1L);
+        Optional<Pedido> result = iuPedido.obtenerPedidoPorId(PEDIDO_ID);
 
         assertTrue(result.isEmpty());
     }
@@ -83,9 +86,9 @@ public class IUPedidoTest {
     @Test
     void testObtenerServicioEntregaPorPedido_Existe() {
         ServicioEntrega servicio = new ServicioEntrega();
-        when(servicioEntregaDAO.findByPedidoId(1L)).thenReturn(Optional.of(servicio));
+        when(servicioEntregaDAO.findByPedidoId(PEDIDO_ID)).thenReturn(Optional.of(servicio));
 
-        Optional<ServicioEntrega> result = iuPedido.obtenerServicioEntregaPorPedido(1L);
+        Optional<ServicioEntrega> result = iuPedido.obtenerServicioEntregaPorPedido(PEDIDO_ID);
 
         assertTrue(result.isPresent());
         assertEquals(servicio, result.get());
@@ -93,9 +96,9 @@ public class IUPedidoTest {
 
     @Test
     void testObtenerServicioEntregaPorPedido_NoExiste() {
-        when(servicioEntregaDAO.findByPedidoId(1L)).thenReturn(Optional.empty());
+        when(servicioEntregaDAO.findByPedidoId(PEDIDO_ID)).thenReturn(Optional.empty());
 
-        Optional<ServicioEntrega> result = iuPedido.obtenerServicioEntregaPorPedido(1L);
+        Optional<ServicioEntrega> result = iuPedido.obtenerServicioEntregaPorPedido(PEDIDO_ID);
 
         assertTrue(result.isEmpty());
     }
@@ -109,9 +112,9 @@ public class IUPedidoTest {
     void testMarcarPedidoComoEntregado_Exito() {
         Pedido pedido = new Pedido();
         pedido.setEstado(EstadoPedido.PAGADO);
-        when(pedidoDAO.findById(1L)).thenReturn(Optional.of(pedido));
+        when(pedidoDAO.findById(PEDIDO_ID)).thenReturn(Optional.of(pedido));
 
-        iuPedido.marcarPedidoComoEntregado(1L);
+        iuPedido.marcarPedidoComoEntregado(PEDIDO_ID);
 
         assertEquals(EstadoPedido.ENTREGADO, pedido.getEstado());
         verify(pedidoDAO).update(pedido);
@@ -119,9 +122,9 @@ public class IUPedidoTest {
 
     @Test
     void testMarcarPedidoComoEntregado_PedidoNoExiste() {
-        when(pedidoDAO.findById(1L)).thenReturn(Optional.empty());
+        when(pedidoDAO.findById(PEDIDO_ID)).thenReturn(Optional.empty());
 
-        assertThrows(IllegalArgumentException.class, () -> iuPedido.marcarPedidoComoEntregado(1L));
+        assertThrows(IllegalArgumentException.class, () -> iuPedido.marcarPedidoComoEntregado(PEDIDO_ID));
     }
 
     @Test
@@ -132,18 +135,18 @@ public class IUPedidoTest {
     @Test
     void testObtenerPedidosEntregados_ClienteConPedidos() {
         List<Pedido> pedidosEntregados = Arrays.asList(new Pedido(), new Pedido());
-        when(pedidoDAO.findPedidosEntregados(1L)).thenReturn(pedidosEntregados);
+        when(pedidoDAO.findPedidosEntregados(CLIENTE_ID)).thenReturn(pedidosEntregados);
 
-        List<Pedido> result = iuPedido.obtenerPedidosEntregados(1L);
+        List<Pedido> result = iuPedido.obtenerPedidosEntregados(CLIENTE_ID);
 
         assertEquals(pedidosEntregados, result);
     }
 
     @Test
     void testObtenerPedidosEntregados_ClienteSinPedidos() {
-        when(pedidoDAO.findPedidosEntregados(1L)).thenReturn(Collections.emptyList());
+        when(pedidoDAO.findPedidosEntregados(CLIENTE_ID)).thenReturn(Collections.emptyList());
 
-        List<Pedido> result = iuPedido.obtenerPedidosEntregados(1L);
+        List<Pedido> result = iuPedido.obtenerPedidosEntregados(CLIENTE_ID);
 
         assertTrue(result.isEmpty());
     }

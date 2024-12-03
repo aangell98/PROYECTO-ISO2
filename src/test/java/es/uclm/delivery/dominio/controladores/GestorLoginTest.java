@@ -22,6 +22,25 @@ import java.util.Optional;
 
 class GestorLoginTest {
 
+    private static final String USERNAME = "testUser";
+    private static final String PASSWORD = "password123";
+    private static final String WRONG_PASSWORD = "wrongPassword";
+    private static final String NON_EXISTENT_USER = "nonExistentUser";
+    private static final String NEW_USER = "newUser";
+    private static final String EXISTING_USER = "existingUser";
+    private static final String CLIENT_ROLE = "CLIENT";
+    private static final String USER_ROLE = "USER";
+    private static final String REPARTIDOR_ROLE = "REPARTIDOR";
+    private static final String RESTAURANTE_ROLE = "RESTAURANTE";
+    private static final String CLIENT_NAME = "John";
+    private static final String CLIENT_SURNAME = "Doe";
+    private static final String CLIENT_DNI = "12345678A";
+    private static final String REPARTIDOR_NAME = "Jane";
+    private static final String REPARTIDOR_SURNAME = "Smith";
+    private static final String REPARTIDOR_DNI = "87654321B";
+    private static final String RESTAURANTE_NAME = "Good Food";
+    private static final String RESTAURANTE_ADDRESS = "123 Street";
+
     @InjectMocks
     private GestorLogin gestorLogin;
 
@@ -42,56 +61,59 @@ class GestorLoginTest {
         MockitoAnnotations.openMocks(this);
     }
 
+    private Usuario crearUsuario(String username, String password) {
+        Usuario usuario = new Usuario();
+        usuario.setUsername(username);
+        usuario.setPassword(gestorLogin.cifrarPassword(password));
+        return usuario;
+    }
+
     @Test
     void testAutenticarUsuarioCorrecto() {
-        Usuario mockUsuario = new Usuario();
-        mockUsuario.setUsername("testUser");
-        mockUsuario.setPassword(gestorLogin.cifrarPassword("password123"));
+        Usuario mockUsuario = crearUsuario(USERNAME, PASSWORD);
 
-        when(usuarioDAO.select("testUser")).thenReturn(Optional.of(mockUsuario));
+        when(usuarioDAO.select(USERNAME)).thenReturn(Optional.of(mockUsuario));
 
-        assertTrue(gestorLogin.autenticar("testUser", "password123"));
+        assertTrue(gestorLogin.autenticar(USERNAME, PASSWORD));
     }
 
     @Test
     void testAutenticarUsuarioIncorrecto() {
-        Usuario mockUsuario = new Usuario();
-        mockUsuario.setUsername("testUser");
-        mockUsuario.setPassword(gestorLogin.cifrarPassword("password123"));
+        Usuario mockUsuario = crearUsuario(USERNAME, PASSWORD);
 
-        when(usuarioDAO.select("testUser")).thenReturn(Optional.of(mockUsuario));
+        when(usuarioDAO.select(USERNAME)).thenReturn(Optional.of(mockUsuario));
 
-        assertFalse(gestorLogin.autenticar("testUser", "wrongPassword"));
+        assertFalse(gestorLogin.autenticar(USERNAME, WRONG_PASSWORD));
     }
 
     @Test
     void testAutenticarUsuarioNoExiste() {
-        when(usuarioDAO.select("nonExistentUser")).thenReturn(Optional.empty());
+        when(usuarioDAO.select(NON_EXISTENT_USER)).thenReturn(Optional.empty());
 
-        assertFalse(gestorLogin.autenticar("nonExistentUser", "password"));
+        assertFalse(gestorLogin.autenticar(NON_EXISTENT_USER, PASSWORD));
     }
 
     @Test
     void testRegistrarUsuarioExitoso() {
-        when(usuarioDAO.select("newUser")).thenReturn(Optional.empty());
+        when(usuarioDAO.select(NEW_USER)).thenReturn(Optional.empty());
 
-        assertTrue(gestorLogin.registrar("newUser", "password123", "USER"));
+        assertTrue(gestorLogin.registrar(NEW_USER, PASSWORD, USER_ROLE));
 
         verify(usuarioDAO).insert(any(Usuario.class));
     }
 
     @Test
     void testRegistrarUsuarioDuplicado() {
-        when(usuarioDAO.select("existingUser")).thenReturn(Optional.of(new Usuario()));
+        when(usuarioDAO.select(EXISTING_USER)).thenReturn(Optional.of(new Usuario()));
 
-        assertFalse(gestorLogin.registrar("existingUser", "password123", "USER"));
+        assertFalse(gestorLogin.registrar(EXISTING_USER, PASSWORD, USER_ROLE));
     }
 
     @Test
     void testRegistrarClienteExitoso() {
-        when(usuarioDAO.select("newClient")).thenReturn(Optional.empty());
+        when(usuarioDAO.select(NEW_USER)).thenReturn(Optional.empty());
 
-        assertTrue(gestorLogin.registrarCliente("newClient", "password123", "CLIENT", "John", "Doe", "12345678A"));
+        assertTrue(gestorLogin.registrarCliente(NEW_USER, PASSWORD, CLIENT_ROLE, CLIENT_NAME, CLIENT_SURNAME, CLIENT_DNI));
 
         verify(usuarioDAO).insert(any(Usuario.class));
         verify(clienteDAO).insert(any(Cliente.class));
@@ -99,16 +121,16 @@ class GestorLoginTest {
 
     @Test
     void testRegistrarClienteDuplicado() {
-        when(usuarioDAO.select("existingClient")).thenReturn(Optional.of(new Usuario()));
+        when(usuarioDAO.select(EXISTING_USER)).thenReturn(Optional.of(new Usuario()));
 
-        assertFalse(gestorLogin.registrarCliente("existingClient", "password123", "CLIENT", "John", "Doe", "12345678A"));
+        assertFalse(gestorLogin.registrarCliente(EXISTING_USER, PASSWORD, CLIENT_ROLE, CLIENT_NAME, CLIENT_SURNAME, CLIENT_DNI));
     }
 
     @Test
     void testRegistrarRepartidorExitoso() {
-        when(usuarioDAO.select("newRepartidor")).thenReturn(Optional.empty());
+        when(usuarioDAO.select(NEW_USER)).thenReturn(Optional.empty());
 
-        assertTrue(gestorLogin.registrarRepartidor("newRepartidor", "password123", "REPARTIDOR", "Jane", "Smith", "87654321B"));
+        assertTrue(gestorLogin.registrarRepartidor(NEW_USER, PASSWORD, REPARTIDOR_ROLE, REPARTIDOR_NAME, REPARTIDOR_SURNAME, REPARTIDOR_DNI));
 
         verify(usuarioDAO).insert(any(Usuario.class));
         verify(repartidorDAO).insert(any(Repartidor.class));
@@ -116,9 +138,9 @@ class GestorLoginTest {
 
     @Test
     void testRegistrarRestauranteExitoso() {
-        when(usuarioDAO.select("newRestaurant")).thenReturn(Optional.empty());
+        when(usuarioDAO.select(NEW_USER)).thenReturn(Optional.empty());
 
-        assertTrue(gestorLogin.registrarRestaurante("newRestaurant", "password123", "RESTAURANTE", "Good Food", "123 Street"));
+        assertTrue(gestorLogin.registrarRestaurante(NEW_USER, PASSWORD, RESTAURANTE_ROLE, RESTAURANTE_NAME, RESTAURANTE_ADDRESS));
 
         verify(usuarioDAO).insert(any(Usuario.class));
         verify(restauranteDAO).insert(any(Restaurante.class));
@@ -126,8 +148,8 @@ class GestorLoginTest {
 
     @Test
     void testRegistrarRestauranteDuplicado() {
-        when(usuarioDAO.select("existingRestaurant")).thenReturn(Optional.of(new Usuario()));
+        when(usuarioDAO.select(EXISTING_USER)).thenReturn(Optional.of(new Usuario()));
 
-        assertFalse(gestorLogin.registrarRestaurante("existingRestaurant", "password123", "RESTAURANTE", "Good Food", "123 Street"));
+        assertFalse(gestorLogin.registrarRestaurante(EXISTING_USER, PASSWORD, RESTAURANTE_ROLE, RESTAURANTE_NAME, RESTAURANTE_ADDRESS));
     }
 }

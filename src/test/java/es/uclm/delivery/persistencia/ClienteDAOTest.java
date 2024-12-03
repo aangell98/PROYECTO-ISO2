@@ -7,16 +7,21 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import java.lang.reflect.Field;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-
-import java.lang.reflect.Field;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 class ClienteDAOTest {
+
+    private static final String USERNAME_EXISTENTE = "user1";
+    private static final String USERNAME_INEXISTENTE = "nonexistent";
+    private static final String USERNAME_VACIO = "";
+    private static final String USERNAME_ESPACIOS = "   ";
+    private static final String USERNAME_MUY_LARGO = "a".repeat(256);
 
     private ClienteDAO clienteDAO;
     private EntityManager mockEntityManager;
@@ -31,18 +36,21 @@ class ClienteDAOTest {
         entityManagerField.set(clienteDAO, mockEntityManager); // Configurar el mock
     }
 
+    private TypedQuery<Cliente> crearMockTypedQuery() {
+        return Mockito.mock(TypedQuery.class);
+    }
+
     @Test
     void testFindByUsername_UsuarioEncontrado() {
-        String username = "user1";
         Cliente mockCliente = new Cliente();
         mockCliente.setId(1L);
 
-        TypedQuery<Cliente> mockQuery = Mockito.mock(TypedQuery.class);
+        TypedQuery<Cliente> mockQuery = crearMockTypedQuery();
         when(mockEntityManager.createQuery(anyString(), eq(Cliente.class))).thenReturn(mockQuery);
-        when(mockQuery.setParameter("username", username)).thenReturn(mockQuery);
+        when(mockQuery.setParameter("username", USERNAME_EXISTENTE)).thenReturn(mockQuery);
         when(mockQuery.getResultStream()).thenReturn(java.util.stream.Stream.of(mockCliente));
 
-        Optional<Cliente> result = clienteDAO.findByUsername(username);
+        Optional<Cliente> result = clienteDAO.findByUsername(USERNAME_EXISTENTE);
 
         assertTrue(result.isPresent());
         assertEquals(1L, result.get().getId());
@@ -50,61 +58,53 @@ class ClienteDAOTest {
 
     @Test
     void testFindByUsername_UsuarioNoEncontrado() {
-        String username = "nonexistent";
-
-        TypedQuery<Cliente> mockQuery = Mockito.mock(TypedQuery.class);
+        TypedQuery<Cliente> mockQuery = crearMockTypedQuery();
         when(mockEntityManager.createQuery(anyString(), eq(Cliente.class))).thenReturn(mockQuery);
-        when(mockQuery.setParameter("username", username)).thenReturn(mockQuery);
+        when(mockQuery.setParameter("username", USERNAME_INEXISTENTE)).thenReturn(mockQuery);
         when(mockQuery.getResultStream()).thenReturn(java.util.stream.Stream.empty());
 
-        Optional<Cliente> result = clienteDAO.findByUsername(username);
+        Optional<Cliente> result = clienteDAO.findByUsername(USERNAME_INEXISTENTE);
 
         assertFalse(result.isPresent());
     }
 
     @Test
     void testFindByUsername_UsernameEsNull() {
-        assertThrows(java.lang.NullPointerException.class, () -> clienteDAO.findByUsername(null));
+        assertThrows(NullPointerException.class, () -> clienteDAO.findByUsername(null));
     }
 
     @Test
     void testFindByUsername_UsernameEsVacio() {
-        String username = "";
-
-        TypedQuery<Cliente> mockQuery = Mockito.mock(TypedQuery.class);
+        TypedQuery<Cliente> mockQuery = crearMockTypedQuery();
         when(mockEntityManager.createQuery(anyString(), eq(Cliente.class))).thenReturn(mockQuery);
-        when(mockQuery.setParameter("username", username)).thenReturn(mockQuery);
+        when(mockQuery.setParameter("username", USERNAME_VACIO)).thenReturn(mockQuery);
         when(mockQuery.getResultStream()).thenReturn(java.util.stream.Stream.empty());
 
-        Optional<Cliente> result = clienteDAO.findByUsername(username);
+        Optional<Cliente> result = clienteDAO.findByUsername(USERNAME_VACIO);
 
         assertFalse(result.isPresent());
     }
 
     @Test
     void testFindByUsername_UsernameEsEspacios() {
-        String username = "   ";
-
-        TypedQuery<Cliente> mockQuery = Mockito.mock(TypedQuery.class);
+        TypedQuery<Cliente> mockQuery = crearMockTypedQuery();
         when(mockEntityManager.createQuery(anyString(), eq(Cliente.class))).thenReturn(mockQuery);
-        when(mockQuery.setParameter("username", username)).thenReturn(mockQuery);
+        when(mockQuery.setParameter("username", USERNAME_ESPACIOS)).thenReturn(mockQuery);
         when(mockQuery.getResultStream()).thenReturn(java.util.stream.Stream.empty());
 
-        Optional<Cliente> result = clienteDAO.findByUsername(username);
+        Optional<Cliente> result = clienteDAO.findByUsername(USERNAME_ESPACIOS);
 
         assertFalse(result.isPresent());
     }
 
     @Test
     void testFindByUsername_UsernameMuyLargo() {
-        String username = "a".repeat(256); // 256 caracteres
-
-        TypedQuery<Cliente> mockQuery = Mockito.mock(TypedQuery.class);
+        TypedQuery<Cliente> mockQuery = crearMockTypedQuery();
         when(mockEntityManager.createQuery(anyString(), eq(Cliente.class))).thenReturn(mockQuery);
-        when(mockQuery.setParameter("username", username)).thenReturn(mockQuery);
+        when(mockQuery.setParameter("username", USERNAME_MUY_LARGO)).thenReturn(mockQuery);
         when(mockQuery.getResultStream()).thenReturn(java.util.stream.Stream.empty());
 
-        Optional<Cliente> result = clienteDAO.findByUsername(username);
+        Optional<Cliente> result = clienteDAO.findByUsername(USERNAME_MUY_LARGO);
 
         assertFalse(result.isPresent());
     }

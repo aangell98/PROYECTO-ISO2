@@ -1,4 +1,5 @@
 package es.uclm.delivery.presentacion;
+
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,6 +15,22 @@ import es.uclm.delivery.persistencia.*;
 import java.util.*;
 
 class IULoginTest {
+
+    private static final String USERNAME_CLIENTE = "cliente1";
+    private static final String PASSWORD_CORRECTO = "password123";
+    private static final String PASSWORD_INCORRECTO = "wrongpassword";
+    private static final String ROLE_CLIENTE = "CLIENTE";
+    private static final String ROLE_REPARTIDOR = "REPARTIDOR";
+    private static final String ROLE_RESTAURANTE = "RESTAURANTE";
+    private static final String ROLE_DESCONOCIDO = "UNKNOWN_ROLE";
+    private static final String NOMBRE_CLIENTE = "John";
+    private static final String APELLIDO_CLIENTE = "Doe";
+    private static final String DNI_CLIENTE = "12345678A";
+    private static final String NOMBRE_REPARTIDOR = "Pedro";
+    private static final String APELLIDO_REPARTIDOR = "Gomez";
+    private static final String DNI_REPARTIDOR = "87654321B";
+    private static final String NOMBRE_RESTAURANTE = "Restaurante El Buen Comer";
+    private static final String DIRECCION_RESTAURANTE = "Calle Ficticia 123";
 
     private IULogin loginController;
     private GestorLogin mockGestorLogin;
@@ -40,13 +57,11 @@ class IULoginTest {
 
     @Test
     void testLoginUsuarioCorrecto() {
-        Usuario mockUsuario = Mockito.mock(Usuario.class);
-        Mockito.when(mockUsuario.getUsername()).thenReturn("cliente1");
-        Mockito.when(mockUsuario.getPassword()).thenReturn("password123");
+        Usuario mockUsuario = crearMockUsuario(USERNAME_CLIENTE, PASSWORD_CORRECTO);
 
         // Mocking successful authentication
-        Mockito.when(mockGestorLogin.autenticar("cliente1", "password123")).thenReturn(true);
-        Mockito.when(mockUsuarioDAO.getRole("cliente1")).thenReturn("CLIENTE");
+        Mockito.when(mockGestorLogin.autenticar(USERNAME_CLIENTE, PASSWORD_CORRECTO)).thenReturn(true);
+        Mockito.when(mockUsuarioDAO.getRole(USERNAME_CLIENTE)).thenReturn(ROLE_CLIENTE);
 
         Model model = Mockito.mock(Model.class);
         HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
@@ -60,12 +75,10 @@ class IULoginTest {
 
     @Test
     void testLoginUsuarioIncorrecto() {
-        Usuario mockUsuario = Mockito.mock(Usuario.class);
-        Mockito.when(mockUsuario.getUsername()).thenReturn("cliente1");
-        Mockito.when(mockUsuario.getPassword()).thenReturn("wrongpassword");
+        Usuario mockUsuario = crearMockUsuario(USERNAME_CLIENTE, PASSWORD_INCORRECTO);
 
         // Mocking failed authentication
-        Mockito.when(mockGestorLogin.autenticar("cliente1", "wrongpassword")).thenReturn(false);
+        Mockito.when(mockGestorLogin.autenticar(USERNAME_CLIENTE, PASSWORD_INCORRECTO)).thenReturn(false);
 
         Model model = Mockito.mock(Model.class);
         HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
@@ -76,75 +89,51 @@ class IULoginTest {
 
     @Test
     void testLoginUsuarioConRolDesconocido() {
-        // Mock de Usuario
-        Usuario mockUsuario = Mockito.mock(Usuario.class);
-        Mockito.when(mockUsuario.getUsername()).thenReturn("cliente1");
-        Mockito.when(mockUsuario.getPassword()).thenReturn("password123");
+        Usuario mockUsuario = crearMockUsuario(USERNAME_CLIENTE, PASSWORD_CORRECTO);
 
         // Mocking successful authentication with unknown role
-        Mockito.when(mockGestorLogin.autenticar("cliente1", "password123")).thenReturn(true);
-        Mockito.when(mockUsuarioDAO.getRole("cliente1")).thenReturn("UNKNOWN_ROLE");
+        Mockito.when(mockGestorLogin.autenticar(USERNAME_CLIENTE, PASSWORD_CORRECTO)).thenReturn(true);
+        Mockito.when(mockUsuarioDAO.getRole(USERNAME_CLIENTE)).thenReturn(ROLE_DESCONOCIDO);
 
-        // Mock de Model
         Model model = Mockito.mock(Model.class);
-        
-        // Mock de HttpServletRequest y HttpSession
         HttpServletRequest mockRequest = Mockito.mock(HttpServletRequest.class);
         HttpSession mockSession = Mockito.mock(HttpSession.class);
         Mockito.when(mockRequest.getSession()).thenReturn(mockSession);
 
-        // Ejecutamos el método de login
         String result = loginController.login(mockUsuario, model, mockRequest);
 
-        // Comprobamos que el resultado es el esperado para un rol desconocido
         assertEquals("login", result);
-        
-        // Verificamos que la sesión ha sido alterada aunque el rol sea desconocido
         Mockito.verify(mockSession, Mockito.atLeastOnce()).setAttribute(Mockito.anyString(), Mockito.any());
     }
 
     @Test
     void testLoginUsuarioSinPrefijoRole() {
-        // Mock de Usuario
-        Usuario mockUsuario = Mockito.mock(Usuario.class);
-        Mockito.when(mockUsuario.getUsername()).thenReturn("cliente1");
-        Mockito.when(mockUsuario.getPassword()).thenReturn("password123");
+        Usuario mockUsuario = crearMockUsuario(USERNAME_CLIENTE, PASSWORD_CORRECTO);
 
         // Mocking successful authentication with role not starting with "ROLE_"
-        Mockito.when(mockGestorLogin.autenticar("cliente1", "password123")).thenReturn(true);
-        Mockito.when(mockUsuarioDAO.getRole("cliente1")).thenReturn("CLIENTE");
+        Mockito.when(mockGestorLogin.autenticar(USERNAME_CLIENTE, PASSWORD_CORRECTO)).thenReturn(true);
+        Mockito.when(mockUsuarioDAO.getRole(USERNAME_CLIENTE)).thenReturn(ROLE_CLIENTE);
 
-        // Mock de Model
         Model model = Mockito.mock(Model.class);
-        
-        // Mock de HttpServletRequest
         HttpServletRequest mockRequest = Mockito.mock(HttpServletRequest.class);
-        
-        // Mock de HttpSession
         HttpSession mockSession = Mockito.mock(HttpSession.class);
         Mockito.when(mockRequest.getSession()).thenReturn(mockSession);
 
-        // Ejecutamos el método de login
         String result = loginController.login(mockUsuario, model, mockRequest);
 
-        // Comprobamos que el resultado es el esperado para un usuario sin prefijo en el rol
         assertEquals("redirect:/homeCliente", result);
-
-        // Verificamos que la sesión haya sido configurada correctamente
         Mockito.verify(mockSession, Mockito.atLeastOnce()).setAttribute(Mockito.anyString(), Mockito.any());
     }
-
 
     // ---------------------------------- TEST REGISTRO CLIENTE -----------------------------------
 
     @Test
     void testRegistrarClienteUsuarioExistente() {
-        Usuario mockUsuario = Mockito.mock(Usuario.class);
-        Cliente mockCliente = Mockito.mock(Cliente.class);
-        Mockito.when(mockUsuario.getUsername()).thenReturn("cliente1");
+        Usuario mockUsuario = crearMockUsuario(USERNAME_CLIENTE, PASSWORD_CORRECTO);
+        Cliente mockCliente = crearMockCliente();
 
         // Mocking registration failure due to existing username
-        Mockito.when(mockGestorLogin.registrarCliente("cliente1", "password123", "CLIENTE", "John", "Doe", "12345678A")).thenReturn(false);
+        Mockito.when(mockGestorLogin.registrarCliente(USERNAME_CLIENTE, PASSWORD_CORRECTO, ROLE_CLIENTE, NOMBRE_CLIENTE, APELLIDO_CLIENTE, DNI_CLIENTE)).thenReturn(false);
 
         Model model = Mockito.mock(Model.class);
         String result = loginController.registrarCliente(mockUsuario, mockCliente, model);
@@ -154,15 +143,13 @@ class IULoginTest {
 
     // ---------------------------------- TEST REGISTRO REPARTIDOR -----------------------------------
 
-
     @Test
     void testRegistrarRepartidorUsuarioExistente() {
-        Usuario mockUsuario = Mockito.mock(Usuario.class);
-        Repartidor mockRepartidor = Mockito.mock(Repartidor.class);
-        Mockito.when(mockUsuario.getUsername()).thenReturn("repartidor1");
+        Usuario mockUsuario = crearMockUsuario("repartidor1", PASSWORD_CORRECTO);
+        Repartidor mockRepartidor = crearMockRepartidor();
 
         // Mocking registration failure due to existing username
-        Mockito.when(mockGestorLogin.registrarRepartidor("repartidor1", "password123", "REPARTIDOR", "Pedro", "Gomez", "87654321B")).thenReturn(false);
+        Mockito.when(mockGestorLogin.registrarRepartidor("repartidor1", PASSWORD_CORRECTO, ROLE_REPARTIDOR, NOMBRE_REPARTIDOR, APELLIDO_REPARTIDOR, DNI_REPARTIDOR)).thenReturn(false);
 
         Model model = Mockito.mock(Model.class);
         String result = loginController.registrarRepartidor(mockUsuario, mockRepartidor, model);
@@ -174,12 +161,11 @@ class IULoginTest {
 
     @Test
     void testRegistrarRestauranteUsuarioExistente() {
-        Usuario mockUsuario = Mockito.mock(Usuario.class);
-        Restaurante mockRestaurante = Mockito.mock(Restaurante.class);
-        Mockito.when(mockUsuario.getUsername()).thenReturn("restaurante1");
+        Usuario mockUsuario = crearMockUsuario("restaurante1", PASSWORD_CORRECTO);
+        Restaurante mockRestaurante = crearMockRestaurante();
 
         // Mocking registration failure due to existing username
-        Mockito.when(mockGestorLogin.registrarRestaurante("restaurante1", "password123", "RESTAURANTE", "Restaurante El Buen Comer", "Calle Ficticia 123")).thenReturn(false);
+        Mockito.when(mockGestorLogin.registrarRestaurante("restaurante1", PASSWORD_CORRECTO, ROLE_RESTAURANTE, NOMBRE_RESTAURANTE, DIRECCION_RESTAURANTE)).thenReturn(false);
 
         Model model = Mockito.mock(Model.class);
         String result = loginController.registrarRestaurante(mockUsuario, mockRestaurante, model);
@@ -191,14 +177,10 @@ class IULoginTest {
 
     @Test
     void testMostrarHomeConRestaurantes() {
-        Restaurante mockRestaurante1 = Mockito.mock(Restaurante.class);
-        Mockito.when(mockRestaurante1.getNombre()).thenReturn("Restaurante 1");
-        Mockito.when(mockRestaurante1.getDireccion()).thenReturn("Calle 1");
-        Restaurante mockRestaurante2 = Mockito.mock(Restaurante.class);
-        Mockito.when(mockRestaurante2.getNombre()).thenReturn("Restaurante 1");
-        Mockito.when(mockRestaurante2.getDireccion()).thenReturn("Calle 1");
+        Restaurante mockRestaurante1 = crearMockRestaurante();
+        Restaurante mockRestaurante2 = crearMockRestaurante();
         List<Restaurante> mockRestaurantes = Arrays.asList(mockRestaurante1, mockRestaurante2);
-        
+
         Mockito.when(mockRestauranteDAO.findAll()).thenReturn(mockRestaurantes);
 
         Model model = Mockito.mock(Model.class);
@@ -211,7 +193,7 @@ class IULoginTest {
     @Test
     void testMostrarHomeSinRestaurantes() {
         List<Restaurante> mockRestaurantes = Collections.emptyList();
-        
+
         Mockito.when(mockRestauranteDAO.findAll()).thenReturn(mockRestaurantes);
 
         Model model = Mockito.mock(Model.class);
@@ -248,5 +230,37 @@ class IULoginTest {
 
         assertEquals("homeRepartidor", result);
         Mockito.verify(model).addAttribute(Mockito.eq("pedidosPendientes"), Mockito.anyList());
+    }
+
+    // Métodos auxiliares para crear mocks
+
+    private Usuario crearMockUsuario(String username, String password) {
+        Usuario mockUsuario = Mockito.mock(Usuario.class);
+        Mockito.when(mockUsuario.getUsername()).thenReturn(username);
+        Mockito.when(mockUsuario.getPassword()).thenReturn(password);
+        return mockUsuario;
+    }
+
+    private Cliente crearMockCliente() {
+        Cliente mockCliente = Mockito.mock(Cliente.class);
+        Mockito.when(mockCliente.getNombre()).thenReturn(NOMBRE_CLIENTE);
+        Mockito.when(mockCliente.getApellidos()).thenReturn(APELLIDO_CLIENTE);
+        Mockito.when(mockCliente.getDni()).thenReturn(DNI_CLIENTE);
+        return mockCliente;
+    }
+
+    private Repartidor crearMockRepartidor() {
+        Repartidor mockRepartidor = Mockito.mock(Repartidor.class);
+        Mockito.when(mockRepartidor.getNombre()).thenReturn(NOMBRE_REPARTIDOR);
+        Mockito.when(mockRepartidor.getApellidos()).thenReturn(APELLIDO_REPARTIDOR);
+        Mockito.when(mockRepartidor.getDni()).thenReturn(DNI_REPARTIDOR);
+        return mockRepartidor;
+    }
+
+    private Restaurante crearMockRestaurante() {
+        Restaurante mockRestaurante = Mockito.mock(Restaurante.class);
+        Mockito.when(mockRestaurante.getNombre()).thenReturn(NOMBRE_RESTAURANTE);
+        Mockito.when(mockRestaurante.getDireccion()).thenReturn(DIRECCION_RESTAURANTE);
+        return mockRestaurante;
     }
 }

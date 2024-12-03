@@ -1,14 +1,14 @@
 package es.uclm.delivery.persistencia;
 
 import es.uclm.delivery.dominio.entidades.Direccion;
-import org.junit.jupiter.api.*;
-import org.mockito.*;
-
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
+import java.lang.reflect.Field;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,23 +19,27 @@ import static org.mockito.Mockito.*;
 
 class EntidadDAOTest {
 
+    private static final Long ID_VALIDO = 1L;
+    private static final Long ID_INVALIDO = 999L;
+    private static final String ID_VALIDO_STRING = "1";
+    private static final String ID_INVALIDO_STRING = "999";
+
     private EntidadDAO<Direccion> entidadDAO;
     private EntityManager mockEntityManager;
 
     @BeforeEach
     void setUp() throws NoSuchFieldException, IllegalAccessException {
-        // Crear el mock de EntityManager
         mockEntityManager = mock(EntityManager.class);
-
-        // Instanciamos DireccionDAO directamente
         entidadDAO = new DireccionDAO();
 
-        // Usamos reflexión para acceder al campo "entityManager" en EntidadDAO
-        java.lang.reflect.Field entityManagerField = EntidadDAO.class.getDeclaredField("entityManager");
-        entityManagerField.setAccessible(true);  // Hacemos el campo accesible
-        entityManagerField.set(entidadDAO, mockEntityManager);  // Inyectamos el mock en el campo
+        Field entityManagerField = EntidadDAO.class.getDeclaredField("entityManager");
+        entityManagerField.setAccessible(true);
+        entityManagerField.set(entidadDAO, mockEntityManager);
     }
 
+    private TypedQuery<Direccion> crearMockTypedQuery() {
+        return Mockito.mock(TypedQuery.class);
+    }
 
     @Test
     void testInsert_EntidadValida() {
@@ -88,9 +92,9 @@ class EntidadDAOTest {
     @Test
     void testSelect_IdValido() {
         Direccion direccion = new Direccion();
-        when(mockEntityManager.find(Direccion.class, "1")).thenReturn(direccion);
+        when(mockEntityManager.find(Direccion.class, ID_VALIDO_STRING)).thenReturn(direccion);
 
-        Optional<Direccion> result = entidadDAO.select("1");
+        Optional<Direccion> result = entidadDAO.select(ID_VALIDO_STRING);
 
         assertTrue(result.isPresent());
         assertEquals(direccion, result.get());
@@ -98,9 +102,9 @@ class EntidadDAOTest {
 
     @Test
     void testSelect_IdInvalido() {
-        when(mockEntityManager.find(Direccion.class, "999")).thenReturn(null);
+        when(mockEntityManager.find(Direccion.class, ID_INVALIDO_STRING)).thenReturn(null);
 
-        Optional<Direccion> result = entidadDAO.select("999");
+        Optional<Direccion> result = entidadDAO.select(ID_INVALIDO_STRING);
 
         assertTrue(result.isEmpty());
     }
@@ -108,9 +112,9 @@ class EntidadDAOTest {
     @Test
     void testFindById_IdValido() {
         Direccion direccion = new Direccion();
-        when(mockEntityManager.find(Direccion.class, 1L)).thenReturn(direccion);
+        when(mockEntityManager.find(Direccion.class, ID_VALIDO)).thenReturn(direccion);
 
-        Optional<Direccion> result = entidadDAO.findById(1L);
+        Optional<Direccion> result = entidadDAO.findById(ID_VALIDO);
 
         assertTrue(result.isPresent());
         assertEquals(direccion, result.get());
@@ -118,30 +122,25 @@ class EntidadDAOTest {
 
     @Test
     void testFindById_IdInvalido() {
-        when(mockEntityManager.find(Direccion.class, 999L)).thenReturn(null);
+        when(mockEntityManager.find(Direccion.class, ID_INVALIDO)).thenReturn(null);
 
-        Optional<Direccion> result = entidadDAO.findById(999L);
+        Optional<Direccion> result = entidadDAO.findById(ID_INVALIDO);
 
         assertTrue(result.isEmpty());
     }
 
     @Test
     void testFindAll() {
-        // Crear una lista de entidades de ejemplo que esperamos que devuelva el método findAll
         List<Direccion> direccionList = Arrays.asList(new Direccion(), new Direccion());
 
-        // Crear un mock de TypedQuery que devuelve la lista de Direccion
-        TypedQuery<Direccion> mockTypedQuery = mock(TypedQuery.class);
+        TypedQuery<Direccion> mockTypedQuery = crearMockTypedQuery();
         when(mockTypedQuery.getResultList()).thenReturn(direccionList);
 
-        // Crear un mock del EntityManager que devuelve el mockTypedQuery
         when(mockEntityManager.createQuery(anyString(), eq(Direccion.class))).thenReturn(mockTypedQuery);
 
-        // Llamar al método findAll que debería usar el mockEntityManager
         List<Direccion> result = entidadDAO.findAll();
 
-        // Verificar que el resultado no es null y que contiene las dos direcciones esperadas
         assertNotNull(result);
-        assertEquals(2, result.size()); // Debería devolver dos elementos en la lista
+        assertEquals(2, result.size());
     }
 }

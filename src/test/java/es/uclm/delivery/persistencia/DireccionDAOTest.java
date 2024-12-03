@@ -18,6 +18,11 @@ import static org.mockito.Mockito.*;
 
 class DireccionDAOTest {
 
+    private static final Long PEDIDO_ID_EXISTENTE = 1L;
+    private static final Long PEDIDO_ID_INEXISTENTE = 99L;
+    private static final Long PEDIDO_ID_NEGATIVO = -1L;
+    private static final Long PEDIDO_ID_MAXIMO = Long.MAX_VALUE;
+
     private DireccionDAO direccionDAO;
     private EntityManager mockEntityManager;
 
@@ -30,6 +35,10 @@ class DireccionDAOTest {
         Field entityManagerField = DireccionDAO.class.getDeclaredField("entityManager");
         entityManagerField.setAccessible(true);
         entityManagerField.set(direccionDAO, mockEntityManager);
+    }
+
+    private TypedQuery<Direccion> crearMockTypedQuery() {
+        return Mockito.mock(TypedQuery.class);
     }
 
     @Test
@@ -51,16 +60,15 @@ class DireccionDAOTest {
 
     @Test
     void testFindByPedidoId_PedidoIdValidoExistente() {
-        Long pedidoId = 1L;
         Direccion mockDireccion = new Direccion();
         mockDireccion.setId(1L);
 
-        TypedQuery<Direccion> mockQuery = Mockito.mock(TypedQuery.class);
+        TypedQuery<Direccion> mockQuery = crearMockTypedQuery();
         when(mockEntityManager.createQuery(anyString(), eq(Direccion.class))).thenReturn(mockQuery);
-        when(mockQuery.setParameter("pedidoId", pedidoId)).thenReturn(mockQuery);
+        when(mockQuery.setParameter("pedidoId", PEDIDO_ID_EXISTENTE)).thenReturn(mockQuery);
         when(mockQuery.getSingleResult()).thenReturn(mockDireccion);
 
-        Direccion result = direccionDAO.findByPedidoId(pedidoId);
+        Direccion result = direccionDAO.findByPedidoId(PEDIDO_ID_EXISTENTE);
 
         assertNotNull(result);
         assertEquals(1L, result.getId());
@@ -68,45 +76,40 @@ class DireccionDAOTest {
 
     @Test
     void testFindByPedidoId_PedidoIdValidoNoExistente() {
-        Long pedidoId = 99L;
-
-        TypedQuery<Direccion> mockQuery = Mockito.mock(TypedQuery.class);
+        TypedQuery<Direccion> mockQuery = crearMockTypedQuery();
         when(mockEntityManager.createQuery(anyString(), eq(Direccion.class))).thenReturn(mockQuery);
-        when(mockQuery.setParameter("pedidoId", pedidoId)).thenReturn(mockQuery);
+        when(mockQuery.setParameter("pedidoId", PEDIDO_ID_INEXISTENTE)).thenReturn(mockQuery);
         when(mockQuery.getSingleResult()).thenThrow(new NoResultException());
 
-        assertThrows(NoResultException.class, () -> direccionDAO.findByPedidoId(pedidoId));
+        assertThrows(NoResultException.class, () -> direccionDAO.findByPedidoId(PEDIDO_ID_INEXISTENTE));
     }
 
     @Test
     void testFindByPedidoId_PedidoIdEsNulo() {
-        assertThrows(java.lang.NullPointerException.class, () -> direccionDAO.findByPedidoId(null));
+        assertThrows(NullPointerException.class, () -> direccionDAO.findByPedidoId(null));
     }
 
     @Test
     void testFindByPedidoId_PedidoIdEsNegativo() {
-        Long pedidoId = -1L;
-
-        TypedQuery<Direccion> mockQuery = Mockito.mock(TypedQuery.class);
+        TypedQuery<Direccion> mockQuery = crearMockTypedQuery();
         when(mockEntityManager.createQuery(anyString(), eq(Direccion.class))).thenReturn(mockQuery);
-        when(mockQuery.setParameter("pedidoId", pedidoId)).thenReturn(mockQuery);
+        when(mockQuery.setParameter("pedidoId", PEDIDO_ID_NEGATIVO)).thenReturn(mockQuery);
         when(mockQuery.getSingleResult()).thenThrow(new NoResultException());
 
-        assertThrows(NoResultException.class, () -> direccionDAO.findByPedidoId(pedidoId));
+        assertThrows(NoResultException.class, () -> direccionDAO.findByPedidoId(PEDIDO_ID_NEGATIVO));
     }
 
     @Test
     void testFindByPedidoId_PedidoIdMaximo() {
-        Long pedidoId = Long.MAX_VALUE;
         Direccion mockDireccion = new Direccion();
         mockDireccion.setId(1L);
 
-        TypedQuery<Direccion> mockQuery = Mockito.mock(TypedQuery.class);
+        TypedQuery<Direccion> mockQuery = crearMockTypedQuery();
         when(mockEntityManager.createQuery(anyString(), eq(Direccion.class))).thenReturn(mockQuery);
-        when(mockQuery.setParameter("pedidoId", pedidoId)).thenReturn(mockQuery);
+        when(mockQuery.setParameter("pedidoId", PEDIDO_ID_MAXIMO)).thenReturn(mockQuery);
         when(mockQuery.getSingleResult()).thenReturn(mockDireccion);
 
-        Direccion result = direccionDAO.findByPedidoId(pedidoId);
+        Direccion result = direccionDAO.findByPedidoId(PEDIDO_ID_MAXIMO);
 
         assertNotNull(result);
         assertEquals(1L, result.getId());

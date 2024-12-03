@@ -52,6 +52,10 @@ class ItemMenuDAOTest {
         return restaurante;
     }
 
+    private TypedQuery<ItemMenu> crearMockTypedQuery() {
+        return mock(TypedQuery.class);
+    }
+
     @Test
     void testInsert_EntidadValida() {
         ItemMenu item = crearItemMenu();
@@ -153,7 +157,7 @@ class ItemMenuDAOTest {
 
         List<ItemMenu> itemList = Arrays.asList(item1, item2);
 
-        TypedQuery<ItemMenu> mockQuery = mock(TypedQuery.class);
+        TypedQuery<ItemMenu> mockQuery = crearMockTypedQuery();
         when(mockQuery.getResultList()).thenReturn(itemList);
         when(mockEntityManager.createQuery(anyString(), eq(ItemMenu.class))).thenReturn(mockQuery);
 
@@ -165,7 +169,7 @@ class ItemMenuDAOTest {
 
     @Test
     void testObtenerItemsPorRestaurante_SinItems() {
-        TypedQuery<ItemMenu> mockQuery = mock(TypedQuery.class);
+        TypedQuery<ItemMenu> mockQuery = crearMockTypedQuery();
         when(mockQuery.getResultList()).thenReturn(Collections.emptyList());
         when(mockEntityManager.createQuery(anyString(), eq(ItemMenu.class))).thenReturn(mockQuery);
 

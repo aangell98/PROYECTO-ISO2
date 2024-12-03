@@ -27,6 +27,14 @@ import static org.mockito.Mockito.*;
 @SpringBootTest
 class GestorClientesTest {
 
+    private static final Long RESTAURANTE_ID = 1L;
+    private static final String RESTAURANTE_NOMBRE = "Favorito A";
+    private static final String USERNAME = "testUser";
+    private static final String CALLE = "Calle Falsa";
+    private static final String CIUDAD = "Ciudad falsa";
+    private static final String CODIGO_POSTAL = "12345";
+    private static final Long DIRECCION_ID = 1L;
+
     @Autowired
     @InjectMocks
     private GestorClientes gestorClientes;
@@ -55,9 +63,38 @@ class GestorClientesTest {
     @Mock
     private Principal principal;
 
+    private Usuario usuarioMock;
+    private Cliente clienteMock;
+    private Direccion direccionMock;
+
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
+        usuarioMock = crearUsuario();
+        clienteMock = crearCliente();
+        direccionMock = crearDireccion();
+    }
+
+    private Usuario crearUsuario() {
+        Usuario usuario = new Usuario();
+        usuario.setUsername(USERNAME);
+        return usuario;
+    }
+
+    private Cliente crearCliente() {
+        Cliente cliente = new Cliente();
+        cliente.setUsuario(usuarioMock);
+        return cliente;
+    }
+
+    private Direccion crearDireccion() {
+        Direccion direccion = new Direccion();
+        direccion.setCalle(CALLE);
+        direccion.setCiudad(CIUDAD);
+        direccion.setCodigoPostal(CODIGO_POSTAL);
+        direccion.setCliente(clienteMock);
+        direccion.setId(DIRECCION_ID);
+        return direccion;
     }
 
     // -------------------------------
@@ -66,11 +103,9 @@ class GestorClientesTest {
 
     @Test
     void testAgregarFavorito_ValidId() {
-        Long idRestaurante = 1L;
+        gestorClientes.agregarFavorito(RESTAURANTE_ID);
 
-        gestorClientes.agregarFavorito(idRestaurante);
-
-        verify(iuBusqueda).marcarFavorito(idRestaurante);
+        verify(iuBusqueda).marcarFavorito(RESTAURANTE_ID);
     }
 
     @Test
@@ -82,11 +117,9 @@ class GestorClientesTest {
 
     @Test
     void testEliminarFavorito_ValidId() {
-        Long idRestaurante = 1L;
+        gestorClientes.eliminarFavorito(RESTAURANTE_ID);
 
-        gestorClientes.eliminarFavorito(idRestaurante);
-
-        verify(iuBusqueda).desmarcarFavorito(idRestaurante);
+        verify(iuBusqueda).desmarcarFavorito(RESTAURANTE_ID);
     }
 
     @Test
@@ -99,7 +132,7 @@ class GestorClientesTest {
     @Test
     void testListarFavoritos_Success() {
         Restaurante favoritoMock = new Restaurante();
-        favoritoMock.setNombre("Favorito A");
+        favoritoMock.setNombre(RESTAURANTE_NOMBRE);
         List<Restaurante> favoritosMock = List.of(favoritoMock);
         when(iuBusqueda.listarFavoritos()).thenReturn(favoritosMock);
 
@@ -107,7 +140,7 @@ class GestorClientesTest {
 
         assertNotNull(result);
         assertEquals(1, result.size());
-        assertEquals("Favorito A", result.get(0).getNombre());
+        assertEquals(RESTAURANTE_NOMBRE, result.get(0).getNombre());
         verify(iuBusqueda).listarFavoritos();
     }
 
@@ -128,19 +161,8 @@ class GestorClientesTest {
 
     @Test
     void testGuardarDireccion_ValidCliente() {
-        Usuario usuarioMock = new Usuario();
-        usuarioMock.setUsername("testUser");
-        String username = usuarioMock.getUsername();
-        Direccion direccionMock = new Direccion();
-        Cliente clienteMock = new Cliente();
-        clienteMock.setUsuario(usuarioMock);
-        direccionMock.setCalle("Calle Falsa");
-        direccionMock.setCiudad("Ciudad falsa");
-        direccionMock.setCodigoPostal("12345");
-        direccionMock.setCliente(clienteMock);
-        direccionMock.setId(1L);
-        when(principal.getName()).thenReturn(username);
-        when(clienteDAO.findByUsername(username)).thenReturn(Optional.of(clienteMock));
+        when(principal.getName()).thenReturn(USERNAME);
+        when(clienteDAO.findByUsername(USERNAME)).thenReturn(Optional.of(clienteMock));
 
         ResponseEntity<?> response = gestorClientes.guardarDireccion(direccionMock, principal);
 
@@ -151,16 +173,8 @@ class GestorClientesTest {
 
     @Test
     void testGuardarDireccion_ClienteNoEncontrado() {
-        String username = "testUser";
-        Direccion direccionMock = new Direccion();
-        Cliente clienteMock = new Cliente();
-        direccionMock.setCalle("Calle Falsa");
-        direccionMock.setCiudad("Ciudad falsa");
-        direccionMock.setCodigoPostal("12345");
-        direccionMock.setCliente(clienteMock);
-        direccionMock.setId(1L);
-        when(principal.getName()).thenReturn(username);
-        when(clienteDAO.findByUsername(username)).thenReturn(Optional.empty());
+        when(principal.getName()).thenReturn(USERNAME);
+        when(clienteDAO.findByUsername(USERNAME)).thenReturn(Optional.empty());
 
         ResponseEntity<?> response = gestorClientes.guardarDireccion(direccionMock, principal);
 
@@ -171,10 +185,8 @@ class GestorClientesTest {
 
     @Test
     void testGuardarDireccion_NullDireccion() {
-        String username = "testUser";
-        Cliente clienteMock = new Cliente();
-        when(principal.getName()).thenReturn(username);
-        when(clienteDAO.findByUsername(username)).thenReturn(Optional.of(clienteMock));
+        when(principal.getName()).thenReturn(USERNAME);
+        when(clienteDAO.findByUsername(USERNAME)).thenReturn(Optional.of(clienteMock));
 
         ResponseEntity<?> response = gestorClientes.guardarDireccion(null, principal);
 
@@ -185,37 +197,26 @@ class GestorClientesTest {
 
     @Test
     void testListarDirecciones_ValidCliente() {
-        String username = "testUser";
-        Cliente clienteMock = new Cliente();
-        Direccion direccionMock = new Direccion();
-        direccionMock.setCalle("Calle Falsa");
-        direccionMock.setCiudad("Ciudad falsa");
-        direccionMock.setCodigoPostal("12345");
-        direccionMock.setCliente(clienteMock);
-        direccionMock.setId(1L);
-
         clienteMock.setDirecciones(List.of(direccionMock));
-        when(principal.getName()).thenReturn(username);
-        when(clienteDAO.findByUsername(username)).thenReturn(Optional.of(clienteMock));
+        when(principal.getName()).thenReturn(USERNAME);
+        when(clienteDAO.findByUsername(USERNAME)).thenReturn(Optional.of(clienteMock));
 
         ResponseEntity<List<Direccion>> response = gestorClientes.listarDirecciones(principal);
 
         assertEquals(200, response.getStatusCode().value());
         assertNotNull(response.getBody());
         assertEquals(1, response.getBody().size());
-        assertEquals("Calle Falsa", direccionMock.getCalle());
-        assertEquals("Ciudad falsa", direccionMock.getCiudad());
-        assertEquals("12345", direccionMock.getCodigoPostal());
+        assertEquals(CALLE, direccionMock.getCalle());
+        assertEquals(CIUDAD, direccionMock.getCiudad());
+        assertEquals(CODIGO_POSTAL, direccionMock.getCodigoPostal());
         assertEquals(clienteMock, direccionMock.getCliente());
-        assertEquals(1L, direccionMock.getId());
-
+        assertEquals(DIRECCION_ID, direccionMock.getId());
     }
 
     @Test
     void testListarDirecciones_ClienteNoEncontrado() {
-        String username = "testUser";
-        when(principal.getName()).thenReturn(username);
-        when(clienteDAO.findByUsername(username)).thenReturn(Optional.empty());
+        when(principal.getName()).thenReturn(USERNAME);
+        when(clienteDAO.findByUsername(USERNAME)).thenReturn(Optional.empty());
 
         ResponseEntity<List<Direccion>> response = gestorClientes.listarDirecciones(principal);
 
@@ -225,11 +226,9 @@ class GestorClientesTest {
 
     @Test
     void testListarDirecciones_NoDirecciones() {
-        String username = "testUser";
-        Cliente clienteMock = new Cliente();
         clienteMock.setDirecciones(List.of());
-        when(principal.getName()).thenReturn(username);
-        when(clienteDAO.findByUsername(username)).thenReturn(Optional.of(clienteMock));
+        when(principal.getName()).thenReturn(USERNAME);
+        when(clienteDAO.findByUsername(USERNAME)).thenReturn(Optional.of(clienteMock));
 
         ResponseEntity<List<Direccion>> response = gestorClientes.listarDirecciones(principal);
 

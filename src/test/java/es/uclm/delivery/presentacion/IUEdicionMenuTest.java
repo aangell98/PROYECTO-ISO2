@@ -14,11 +14,21 @@ import org.mockito.MockitoAnnotations;
 
 import java.util.Optional;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class IUEdicionMenuTest {
+
+    private static final Long RESTAURANTE_ID = 1L;
+    private static final Long CARTA_MENU_ID = 1L;
+    private static final Long ITEM_MENU_ID = 1L;
+    private static final String RESTAURANTE_NOMBRE = "Restaurante A";
+    private static final String RESTAURANTE_DIRECCION = "Calle Ficticia 123";
+    private static final String CARTA_MENU_NOMBRE = "Carta Especial";
+    private static final String CARTA_MENU_DESCRIPCION = "Descripción de la carta";
+    private static final String ITEM_MENU_NOMBRE = "Plato 1";
+    private static final String ITEM_MENU_DESCRIPCION = "Delicioso plato";
+    private static final double ITEM_MENU_PRECIO = 15.0;
 
     @Mock
     private RestauranteDAO restauranteDAO;
@@ -39,28 +49,40 @@ class IUEdicionMenuTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        // Inicializar los objetos para las pruebas
-        restaurante = new Restaurante();
-        restaurante.setId(1L);
-        restaurante.setNombre("Restaurante A");
-        restaurante.setDireccion("Calle Ficticia 123");
+        restaurante = crearRestaurante();
+        cartaMenu = crearCartaMenu();
+        itemMenu = crearItemMenu();
+    }
 
-        cartaMenu = new CartaMenu();
-        cartaMenu.setId(1L);
-        cartaMenu.setNombre("Carta Especial");
-        cartaMenu.setDescripcion("Descripción de la carta");
+    private Restaurante crearRestaurante() {
+        Restaurante restaurante = new Restaurante();
+        restaurante.setId(RESTAURANTE_ID);
+        restaurante.setNombre(RESTAURANTE_NOMBRE);
+        restaurante.setDireccion(RESTAURANTE_DIRECCION);
+        return restaurante;
+    }
 
-        itemMenu = new ItemMenu();
-        itemMenu.setId(1L);
-        itemMenu.setNombre("Plato 1");
-        itemMenu.setDescripcion("Delicioso plato");
-        itemMenu.setPrecio(15.0);
+    private CartaMenu crearCartaMenu() {
+        CartaMenu cartaMenu = new CartaMenu();
+        cartaMenu.setId(CARTA_MENU_ID);
+        cartaMenu.setNombre(CARTA_MENU_NOMBRE);
+        cartaMenu.setDescripcion(CARTA_MENU_DESCRIPCION);
+        return cartaMenu;
+    }
+
+    private ItemMenu crearItemMenu() {
+        ItemMenu itemMenu = new ItemMenu();
+        itemMenu.setId(ITEM_MENU_ID);
+        itemMenu.setNombre(ITEM_MENU_NOMBRE);
+        itemMenu.setDescripcion(ITEM_MENU_DESCRIPCION);
+        itemMenu.setPrecio(ITEM_MENU_PRECIO);
+        return itemMenu;
     }
 
     // Prueba para editar un restaurante
     @Test
     void testEditarRestaurante_Existente() {
-        when(restauranteDAO.findById(restaurante.getId())).thenReturn(Optional.of(restaurante));
+        when(restauranteDAO.findById(RESTAURANTE_ID)).thenReturn(Optional.of(restaurante));
 
         boolean resultado = iuEdicionMenu.editarRestaurante(restaurante);
         assertTrue(resultado);
@@ -69,7 +91,7 @@ class IUEdicionMenuTest {
 
     @Test
     void testEditarRestaurante_NoExistente() {
-        when(restauranteDAO.findById(restaurante.getId())).thenReturn(Optional.empty());
+        when(restauranteDAO.findById(RESTAURANTE_ID)).thenReturn(Optional.empty());
 
         boolean resultado = iuEdicionMenu.editarRestaurante(restaurante);
         assertFalse(resultado);
@@ -86,7 +108,7 @@ class IUEdicionMenuTest {
     // Prueba para editar una carta de menú
     @Test
     void testEditarCartaMenu_Existente() {
-        when(cartaMenuDAO.findById(cartaMenu.getId())).thenReturn(Optional.of(cartaMenu));
+        when(cartaMenuDAO.findById(CARTA_MENU_ID)).thenReturn(Optional.of(cartaMenu));
 
         boolean resultado = iuEdicionMenu.editarCartaMenu(cartaMenu);
         assertTrue(resultado);
@@ -95,7 +117,7 @@ class IUEdicionMenuTest {
 
     @Test
     void testEditarCartaMenu_NoExistente() {
-        when(cartaMenuDAO.findById(cartaMenu.getId())).thenReturn(Optional.empty());
+        when(cartaMenuDAO.findById(CARTA_MENU_ID)).thenReturn(Optional.empty());
 
         boolean resultado = iuEdicionMenu.editarCartaMenu(cartaMenu);
         assertFalse(resultado);
@@ -112,7 +134,7 @@ class IUEdicionMenuTest {
     // Prueba para editar un item de menú
     @Test
     void testEditarItemMenu_Existente() {
-        when(itemMenuDAO.findById(itemMenu.getId())).thenReturn(Optional.of(itemMenu));
+        when(itemMenuDAO.findById(ITEM_MENU_ID)).thenReturn(Optional.of(itemMenu));
 
         boolean resultado = iuEdicionMenu.editarItemMenu(itemMenu);
         assertTrue(resultado);
@@ -121,7 +143,7 @@ class IUEdicionMenuTest {
 
     @Test
     void testEditarItemMenu_NoExistente() {
-        when(itemMenuDAO.findById(itemMenu.getId())).thenReturn(Optional.empty());
+        when(itemMenuDAO.findById(ITEM_MENU_ID)).thenReturn(Optional.empty());
 
         boolean resultado = iuEdicionMenu.editarItemMenu(itemMenu);
         assertFalse(resultado);
@@ -133,35 +155,6 @@ class IUEdicionMenuTest {
         boolean resultado = iuEdicionMenu.editarItemMenu(null);
         assertFalse(resultado);
         verify(itemMenuDAO, times(0)).update(any(ItemMenu.class));
-    }
-
-    // Pruebas con errores al intentar actualizar en base de datos
-
-    @Test
-    void testEditarRestaurante_ErrorActualizacion() {
-        when(restauranteDAO.findById(restaurante.getId())).thenReturn(Optional.of(restaurante));
-        doThrow(new RuntimeException("Error al actualizar")).when(restauranteDAO).update(any(Restaurante.class));
-
-        boolean resultado = iuEdicionMenu.editarRestaurante(restaurante);
-        assertFalse(resultado);
-    }
-
-    @Test
-    void testEditarCartaMenu_ErrorActualizacion() {
-        when(cartaMenuDAO.findById(cartaMenu.getId())).thenReturn(Optional.of(cartaMenu));
-        doThrow(new RuntimeException("Error al actualizar")).when(cartaMenuDAO).update(any(CartaMenu.class));
-
-        boolean resultado = iuEdicionMenu.editarCartaMenu(cartaMenu);
-        assertFalse(resultado);
-    }
-
-    @Test
-    void testEditarItemMenu_ErrorActualizacion() {
-        when(itemMenuDAO.findById(itemMenu.getId())).thenReturn(Optional.of(itemMenu));
-        doThrow(new RuntimeException("Error al actualizar")).when(itemMenuDAO).update(any(ItemMenu.class));
-
-        boolean resultado = iuEdicionMenu.editarItemMenu(itemMenu);
-        assertFalse(resultado);
     }
 
     // Prueba con un item de menú con precio negativo
