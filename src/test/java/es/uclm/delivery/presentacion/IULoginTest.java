@@ -1,6 +1,10 @@
 package es.uclm.delivery.presentacion;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
@@ -263,4 +267,124 @@ class IULoginTest {
         Mockito.when(mockRestaurante.getDireccion()).thenReturn(DIRECCION_RESTAURANTE);
         return mockRestaurante;
     }
+
+    // Nuevos métodos de prueba para cubrir las líneas de código especificadas en IULogin
+
+@Test
+void testShowLoginForm() {
+    Model model = Mockito.mock(Model.class);
+
+    String result = loginController.showLoginForm(model);
+
+    assertEquals("login", result);
+    verify(model).addAttribute(eq("usuario"), any(Usuario.class));
+}
+
+@Test
+void testLoginUsuarioRepartidor() {
+    Usuario mockUsuario = crearMockUsuario(USERNAME_CLIENTE, PASSWORD_CORRECTO);
+
+    // Mocking successful authentication
+    Mockito.when(mockGestorLogin.autenticar(USERNAME_CLIENTE, PASSWORD_CORRECTO)).thenReturn(true);
+    Mockito.when(mockUsuarioDAO.getRole(USERNAME_CLIENTE)).thenReturn(ROLE_REPARTIDOR);
+
+    Model model = Mockito.mock(Model.class);
+    HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
+    HttpSession session = Mockito.mock(HttpSession.class);
+    Mockito.when(request.getSession()).thenReturn(session);
+
+    String result = loginController.login(mockUsuario, model, request);
+
+    assertEquals("redirect:/homeRepartidor", result);
+}
+
+@Test
+void testLoginUsuarioRestaurante() {
+    Usuario mockUsuario = crearMockUsuario(USERNAME_CLIENTE, PASSWORD_CORRECTO);
+
+    // Mocking successful authentication
+    Mockito.when(mockGestorLogin.autenticar(USERNAME_CLIENTE, PASSWORD_CORRECTO)).thenReturn(true);
+    Mockito.when(mockUsuarioDAO.getRole(USERNAME_CLIENTE)).thenReturn(ROLE_RESTAURANTE);
+
+    Model model = Mockito.mock(Model.class);
+    HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
+    HttpSession session = Mockito.mock(HttpSession.class);
+    Mockito.when(request.getSession()).thenReturn(session);
+
+    String result = loginController.login(mockUsuario, model, request);
+
+    assertEquals("redirect:/homeRestaurante", result);
+}
+
+@Test
+void testShowRegistroClienteForm() {
+    Model model = Mockito.mock(Model.class);
+
+    String result = loginController.showRegistroClienteForm(model);
+
+    assertEquals("registroCliente", result);
+    verify(model).addAttribute(eq("usuario"), any(Usuario.class));
+}
+
+@Test
+void testRegistrarClienteExitoso() {
+    Usuario mockUsuario = crearMockUsuario(USERNAME_CLIENTE, PASSWORD_CORRECTO);
+    Cliente mockCliente = crearMockCliente();
+
+    Mockito.when(mockGestorLogin.registrarCliente(USERNAME_CLIENTE, PASSWORD_CORRECTO, "CLIENTE", 
+                                                  NOMBRE_CLIENTE, APELLIDO_CLIENTE, DNI_CLIENTE)).thenReturn(true);
+
+    Model model = Mockito.mock(Model.class);
+    String result = loginController.registrarCliente(mockUsuario, mockCliente, model);
+
+    assertEquals("redirect:/login", result);
+}
+
+@Test
+void testShowRegistroRepartidorForm() {
+    Model model = Mockito.mock(Model.class);
+
+    String result = loginController.showRegistroRepartidorForm(model);
+
+    assertEquals("registroRepartidor", result);
+    verify(model).addAttribute(eq("usuario"), any(Usuario.class));
+}
+
+@Test
+void testRegistrarRepartidorExitoso() {
+    Usuario mockUsuario = crearMockUsuario("repartidor1", PASSWORD_CORRECTO);
+    Repartidor mockRepartidor = crearMockRepartidor();
+
+    Mockito.when(mockGestorLogin.registrarRepartidor("repartidor1", PASSWORD_CORRECTO, "REPARTIDOR", 
+                                                     NOMBRE_REPARTIDOR, APELLIDO_REPARTIDOR, DNI_REPARTIDOR)).thenReturn(true);
+
+    Model model = Mockito.mock(Model.class);
+    String result = loginController.registrarRepartidor(mockUsuario, mockRepartidor, model);
+
+    assertEquals("redirect:/login", result);
+}
+
+@Test
+void testShowRegistroRestauranteForm() {
+    Model model = Mockito.mock(Model.class);
+
+    String result = loginController.showRegistroRestauranteForm(model);
+
+    assertEquals("registroRestaurante", result);
+    verify(model).addAttribute(eq("usuario"), any(Usuario.class));
+}
+
+@Test
+void testRegistrarRestauranteExitoso() {
+    Usuario mockUsuario = crearMockUsuario("restaurante1", PASSWORD_CORRECTO);
+    Restaurante mockRestaurante = crearMockRestaurante();
+
+    Mockito.when(mockGestorLogin.registrarRestaurante("restaurante1", PASSWORD_CORRECTO, "RESTAURANTE", 
+                                                      NOMBRE_RESTAURANTE, DIRECCION_RESTAURANTE)).thenReturn(true);
+
+    Model model = Mockito.mock(Model.class);
+    String result = loginController.registrarRestaurante(mockUsuario, mockRestaurante, model);
+
+    assertEquals("redirect:/login", result);
+}
 }
