@@ -222,4 +222,28 @@ class IUBusquedaTest {
         RuntimeException exception = assertThrows(RuntimeException.class, () -> iuBusqueda.obtenerClienteActual());
         assertEquals("Cliente no encontrado", exception.getMessage());
     }
+
+    @Test
+void testObtenerClienteActual_PrincipalNoUserDetails() {
+    // Simular el SecurityContext y la autenticación
+    SecurityContext securityContext = mock(SecurityContext.class);
+    Authentication authentication = mock(Authentication.class);
+    String principalName = "principalName";
+
+    when(securityContext.getAuthentication()).thenReturn(authentication);
+    when(authentication.getPrincipal()).thenReturn(principalName);
+
+    SecurityContextHolder.setContext(securityContext);
+
+    Cliente cliente = new Cliente();
+    cliente.setUsuario(new Usuario());
+    cliente.getUsuario().setUsername(principalName);
+
+    when(clienteDAO.findByUsername(principalName)).thenReturn(Optional.of(cliente));
+
+    Cliente result = iuBusqueda.obtenerClienteActual();
+
+    assertNotNull(result);
+    assertEquals(principalName, result.getUsuario().getUsername());
+}
 }
