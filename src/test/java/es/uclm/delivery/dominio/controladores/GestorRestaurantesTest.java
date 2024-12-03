@@ -13,6 +13,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.security.Principal;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -274,5 +275,114 @@ class GestorRestaurantesTest {
 
         assertEquals("redirect:/homeRestaurante", result);
         verify(restauranteDAO).delete(restauranteMock);
+    }
+    // Nuevos métodos de prueba para cubrir más código en GestorRestaurantes
+
+    @Test
+    void testCrearRestaurante() {
+        Principal principal = mock(Principal.class);
+        when(principal.getName()).thenReturn("usuario1");
+        Usuario usuarioMock = new Usuario();
+        usuarioMock.setUsername("usuario1");
+        Restaurante restauranteMock = new Restaurante();
+        restauranteMock.setNombre("Restaurante Prueba");
+        restauranteMock.setDireccion("Calle Falsa 123");
+
+        when(usuarioDAO.encontrarUser("usuario1")).thenReturn(Optional.of(usuarioMock));
+        when(restauranteDAO.findByUsuario(usuarioMock)).thenReturn(Optional.of(restauranteMock));
+
+        Restaurante nuevoRestaurante = new Restaurante();
+        nuevoRestaurante.setNombre("Nuevo Restaurante");
+        nuevoRestaurante.setDireccion("Nueva Dirección");
+
+        String result = gestorRestaurantes.crearRestaurante(nuevoRestaurante, principal);
+
+        assertEquals("redirect:/homeRestaurante", result);
+        verify(restauranteDAO).update(restauranteMock);
+        assertEquals("Nuevo Restaurante", restauranteMock.getNombre());
+        assertEquals("Nueva Dirección", restauranteMock.getDireccion());
+    }
+
+    @Test
+    void testCrearRestauranteUsuarioNoEncontrado() {
+        Principal principal = mock(Principal.class);
+        when(principal.getName()).thenReturn("usuario1");
+
+        when(usuarioDAO.encontrarUser("usuario1")).thenReturn(Optional.empty());
+
+        Restaurante nuevoRestaurante = new Restaurante();
+        nuevoRestaurante.setNombre("Nuevo Restaurante");
+        nuevoRestaurante.setDireccion("Nueva Dirección");
+
+        String result = gestorRestaurantes.crearRestaurante(nuevoRestaurante, principal);
+
+        assertEquals("redirect:/homeRestaurante", result);
+        verify(restauranteDAO, never()).update(any());
+    }
+
+    @Test
+    void testCrearCartaMenu() {
+        Principal principal = mock(Principal.class);
+        when(principal.getName()).thenReturn("usuario1");
+        Usuario usuarioMock = new Usuario();
+        usuarioMock.setUsername("usuario1");
+        Restaurante restauranteMock = new Restaurante();
+        restauranteMock.setId(RESTAURANTE_ID);
+
+        when(usuarioDAO.encontrarUser("usuario1")).thenReturn(Optional.of(usuarioMock));
+        when(restauranteDAO.findByUsuario(usuarioMock)).thenReturn(Optional.of(restauranteMock));
+
+        CartaMenu cartaMenu = new CartaMenu();
+        cartaMenu.setNombre("Nueva Carta");
+        List<Long> itemsIds = Arrays.asList(1L, 2L);
+        ItemMenu item1 = new ItemMenu();
+        item1.setId(1L);
+        ItemMenu item2 = new ItemMenu();
+        item2.setId(2L);
+
+        when(itemMenuDAO.findAllById(itemsIds)).thenReturn(Arrays.asList(item1, item2));
+
+        String result = gestorRestaurantes.crearCartaMenu(cartaMenu, itemsIds, principal);
+
+        assertEquals("redirect:/homeRestaurante", result);
+        verify(cartaMenuDAO).insert(cartaMenu);
+        assertEquals(2, cartaMenu.getItems().size());
+    }
+
+    @Test
+    void testCrearCartaMenuUsuarioNoEncontrado() {
+        Principal principal = mock(Principal.class);
+        when(principal.getName()).thenReturn("usuario1");
+
+        when(usuarioDAO.encontrarUser("usuario1")).thenReturn(Optional.empty());
+
+        CartaMenu cartaMenu = new CartaMenu();
+        cartaMenu.setNombre("Nueva Carta");
+        List<Long> itemsIds = Arrays.asList(1L, 2L);
+
+        String result = gestorRestaurantes.crearCartaMenu(cartaMenu, itemsIds, principal);
+
+        assertEquals("redirect:/homeRestaurante", result);
+        verify(cartaMenuDAO, never()).insert(any());
+    }
+
+    @Test
+    void testCrearCartaMenuRestauranteNoEncontrado() {
+        Principal principal = mock(Principal.class);
+        when(principal.getName()).thenReturn("usuario1");
+        Usuario usuarioMock = new Usuario();
+        usuarioMock.setUsername("usuario1");
+
+        when(usuarioDAO.encontrarUser("usuario1")).thenReturn(Optional.of(usuarioMock));
+        when(restauranteDAO.findByUsuario(usuarioMock)).thenReturn(Optional.empty());
+
+        CartaMenu cartaMenu = new CartaMenu();
+        cartaMenu.setNombre("Nueva Carta");
+        List<Long> itemsIds = Arrays.asList(1L, 2L);
+
+        String result = gestorRestaurantes.crearCartaMenu(cartaMenu, itemsIds, principal);
+
+        assertEquals("redirect:/homeRestaurante", result);
+        verify(cartaMenuDAO, never()).insert(any());
     }
 }
