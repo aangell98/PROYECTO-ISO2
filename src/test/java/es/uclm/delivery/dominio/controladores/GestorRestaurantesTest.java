@@ -10,11 +10,13 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.ui.Model;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.security.Principal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 class GestorRestaurantesTest {
@@ -137,8 +139,8 @@ class GestorRestaurantesTest {
         String result = gestorRestaurantes.eliminarItemMenu(PLATO_ID, model);
 
         assertEquals("redirect:/homeRestaurante", result);
-        verify(model).addAttribute("errorMessage", 
-            "No se puede eliminar el plato porque está asociado a uno o más menús.");
+        verify(model).addAttribute("errorMessage",
+                "No se puede eliminar el plato porque está asociado a uno o más menús.");
     }
 
     // -----------------------------------------
@@ -237,5 +239,40 @@ class GestorRestaurantesTest {
         assertEquals("Nuevo Nombre", itemMenu.getNombre());
         assertEquals("Nueva Descripción", itemMenu.getDescripcion());
         assertEquals(15.0, itemMenu.getPrecio());
+    }
+
+    @Test
+    void testEliminarNombreDireccionRestaurante() {
+        Principal principal = mock(Principal.class);
+        when(principal.getName()).thenReturn("usuario1");
+        Usuario usuarioMock = new Usuario();
+        usuarioMock.setUsername("usuario1");
+        Restaurante restauranteMock = new Restaurante();
+        restauranteMock.setNombre("Restaurante Prueba");
+        restauranteMock.setDireccion("Calle Falsa 123");
+
+        when(usuarioDAO.encontrarUser("usuario1")).thenReturn(Optional.of(usuarioMock));
+        when(restauranteDAO.findByUsuario(usuarioMock)).thenReturn(Optional.of(restauranteMock));
+
+        String result = gestorRestaurantes.eliminarNombreDireccionRestaurante(principal);
+
+        assertEquals("redirect:/homeRestaurante", result);
+        verify(restauranteDAO).update(restauranteMock);
+        assertNull(restauranteMock.getNombre());
+        assertNull(restauranteMock.getDireccion());
+    }
+
+    @Test
+    void testEliminarRestaurante() {
+        Long restauranteId = 1L;
+        Restaurante restauranteMock = new Restaurante();
+        restauranteMock.setId(restauranteId);
+
+        when(restauranteDAO.findById(restauranteId)).thenReturn(Optional.of(restauranteMock));
+
+        String result = gestorRestaurantes.eliminarRestaurante(restauranteId, mock(Model.class));
+
+        assertEquals("redirect:/homeRestaurante", result);
+        verify(restauranteDAO).delete(restauranteMock);
     }
 }
