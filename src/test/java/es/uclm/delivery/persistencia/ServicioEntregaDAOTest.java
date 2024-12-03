@@ -11,7 +11,6 @@ import java.util.*;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
@@ -54,7 +53,7 @@ class ServicioEntregaDAOTest {
         ServicioEntrega servicio = crearServicioEntrega();
         TypedQuery<ServicioEntrega> mockQuery = crearMockTypedQuery();
         when(mockEntityManager.createQuery(anyString(), eq(ServicioEntrega.class))).thenReturn(mockQuery);
-        when(mockQuery.setParameter(eq("pedidoId"), eq(PEDIDO_ID_EXISTENTE))).thenReturn(mockQuery);
+        when(mockQuery.setParameter("pedidoId", PEDIDO_ID_EXISTENTE)).thenReturn(mockQuery);
         when(mockQuery.getResultStream()).thenReturn(Stream.of(servicio));
 
         Optional<ServicioEntrega> result = servicioEntregaDAO.findByPedidoId(PEDIDO_ID_EXISTENTE);
@@ -67,7 +66,7 @@ class ServicioEntregaDAOTest {
     void testFindByPedidoId_PedidoNoExistente() {
         TypedQuery<ServicioEntrega> mockQuery = crearMockTypedQuery();
         when(mockEntityManager.createQuery(anyString(), eq(ServicioEntrega.class))).thenReturn(mockQuery);
-        when(mockQuery.setParameter(eq("pedidoId"), eq(PEDIDO_ID_INEXISTENTE))).thenReturn(mockQuery);
+        when(mockQuery.setParameter("pedidoId", PEDIDO_ID_INEXISTENTE)).thenReturn(mockQuery);
         when(mockQuery.getResultStream()).thenReturn(Stream.empty());
 
         Optional<ServicioEntrega> result = servicioEntregaDAO.findByPedidoId(PEDIDO_ID_INEXISTENTE);
@@ -80,7 +79,7 @@ class ServicioEntregaDAOTest {
         List<ServicioEntrega> servicios = Arrays.asList(crearServicioEntrega(), crearServicioEntrega());
         TypedQuery<ServicioEntrega> mockQuery = crearMockTypedQuery();
         when(mockEntityManager.createQuery(anyString(), eq(ServicioEntrega.class))).thenReturn(mockQuery);
-        when(mockQuery.setParameter(eq("estado"), eq(ESTADO_PAGADO))).thenReturn(mockQuery);
+        when(mockQuery.setParameter("estado", ESTADO_PAGADO)).thenReturn(mockQuery);
         when(mockQuery.getResultList()).thenReturn(servicios);
 
         List<ServicioEntrega> result = servicioEntregaDAO.findByEstado(ESTADO_PAGADO);
@@ -93,7 +92,7 @@ class ServicioEntregaDAOTest {
     void testFindByEstado_NoExistenServicios() {
         TypedQuery<ServicioEntrega> mockQuery = crearMockTypedQuery();
         when(mockEntityManager.createQuery(anyString(), eq(ServicioEntrega.class))).thenReturn(mockQuery);
-        when(mockQuery.setParameter(eq("estado"), eq(ESTADO_PAGADO))).thenReturn(mockQuery);
+        when(mockQuery.setParameter("estado", ESTADO_PAGADO)).thenReturn(mockQuery);
         when(mockQuery.getResultList()).thenReturn(Collections.emptyList());
 
         List<ServicioEntrega> result = servicioEntregaDAO.findByEstado(ESTADO_PAGADO);
@@ -107,7 +106,7 @@ class ServicioEntregaDAOTest {
         List<ServicioEntrega> servicios = Arrays.asList(crearServicioEntrega(), crearServicioEntrega());
         TypedQuery<ServicioEntrega> mockQuery = crearMockTypedQuery();
         when(mockEntityManager.createQuery(anyString(), eq(ServicioEntrega.class))).thenReturn(mockQuery);
-        when(mockQuery.setParameter(eq("repartidorId"), eq(REPARTIDOR_ID))).thenReturn(mockQuery);
+        when(mockQuery.setParameter("repartidorId", REPARTIDOR_ID)).thenReturn(mockQuery);
         when(mockQuery.getResultList()).thenReturn(servicios);
 
         List<ServicioEntrega> result = servicioEntregaDAO.findByRepartidorId(REPARTIDOR_ID);
@@ -120,7 +119,7 @@ class ServicioEntregaDAOTest {
     void testFindByRepartidorId_NoExistenServicios() {
         TypedQuery<ServicioEntrega> mockQuery = crearMockTypedQuery();
         when(mockEntityManager.createQuery(anyString(), eq(ServicioEntrega.class))).thenReturn(mockQuery);
-        when(mockQuery.setParameter(eq("repartidorId"), eq(REPARTIDOR_ID))).thenReturn(mockQuery);
+        when(mockQuery.setParameter("repartidorId", REPARTIDOR_ID)).thenReturn(mockQuery);
         when(mockQuery.getResultList()).thenReturn(Collections.emptyList());
 
         List<ServicioEntrega> result = servicioEntregaDAO.findByRepartidorId(REPARTIDOR_ID);
