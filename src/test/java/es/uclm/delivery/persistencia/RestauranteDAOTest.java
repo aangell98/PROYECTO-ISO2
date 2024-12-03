@@ -13,6 +13,7 @@ import jakarta.persistence.TypedQuery;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -68,7 +69,7 @@ class RestauranteDAOTest {
         Restaurante restaurante = crearRestaurante();
         TypedQuery<Restaurante> mockQuery = crearMockTypedQueryRestaurante();
         when(mockEntityManager.createQuery(anyString(), eq(Restaurante.class))).thenReturn(mockQuery);
-        when(mockQuery.setParameter("usuario", usuario)).thenReturn(mockQuery);
+        when(mockQuery.setParameter(eq("usuario"), eq(usuario))).thenReturn(mockQuery);
         when(mockQuery.getSingleResult()).thenReturn(restaurante);
 
         Optional<Restaurante> result = restauranteDAO.findByUsuario(usuario);
@@ -82,7 +83,7 @@ class RestauranteDAOTest {
         Usuario usuario = crearUsuario(USERNAME_INEXISTENTE);
         TypedQuery<Restaurante> mockQuery = crearMockTypedQueryRestaurante();
         when(mockEntityManager.createQuery(anyString(), eq(Restaurante.class))).thenReturn(mockQuery);
-        when(mockQuery.setParameter("usuario", usuario)).thenReturn(mockQuery);
+        when(mockQuery.setParameter(eq("usuario"), eq(usuario))).thenReturn(mockQuery);
         when(mockQuery.getSingleResult()).thenThrow(new NoResultException());
 
         Optional<Restaurante> result = restauranteDAO.findByUsuario(usuario);
@@ -109,7 +110,7 @@ class RestauranteDAOTest {
         List<CartaMenu> cartas = Arrays.asList(new CartaMenu(), new CartaMenu());
         TypedQuery<CartaMenu> mockQuery = crearMockTypedQueryCartaMenu();
         when(mockEntityManager.createQuery(anyString(), eq(CartaMenu.class))).thenReturn(mockQuery);
-        when(mockQuery.setParameter("restauranteID", RESTAURANTE_ID)).thenReturn(mockQuery);
+        when(mockQuery.setParameter(eq("restauranteId"), eq(RESTAURANTE_ID))).thenReturn(mockQuery);
         when(mockQuery.getResultList()).thenReturn(cartas);
 
         List<CartaMenu> result = restauranteDAO.findCartasMenuByRestauranteId(RESTAURANTE_ID);
@@ -122,7 +123,7 @@ class RestauranteDAOTest {
     void testFindCartasMenuByRestauranteId_NoExistenCartas() {
         TypedQuery<CartaMenu> mockQuery = crearMockTypedQueryCartaMenu();
         when(mockEntityManager.createQuery(anyString(), eq(CartaMenu.class))).thenReturn(mockQuery);
-        when(mockQuery.setParameter("restauranteID", RESTAURANTE_ID)).thenReturn(mockQuery);
+        when(mockQuery.setParameter(eq("restauranteId"), eq(RESTAURANTE_ID))).thenReturn(mockQuery);
         when(mockQuery.getResultList()).thenReturn(Collections.emptyList());
 
         List<CartaMenu> result = restauranteDAO.findCartasMenuByRestauranteId(RESTAURANTE_ID);
@@ -163,7 +164,7 @@ class RestauranteDAOTest {
         Usuario usuario = crearUsuario(USERNAME_EXISTENTE);
         TypedQuery<Restaurante> mockQuery = crearMockTypedQueryRestaurante();
         when(mockEntityManager.createQuery(anyString(), eq(Restaurante.class))).thenReturn(mockQuery);
-        when(mockQuery.setParameter("usuario", usuario)).thenReturn(mockQuery);
+        when(mockQuery.setParameter(eq("usuario"), eq(usuario))).thenReturn(mockQuery);
         when(mockQuery.getSingleResult()).thenThrow(new PersistenceException());
 
         Optional<Restaurante> result = restauranteDAO.findByUsuario(usuario);
