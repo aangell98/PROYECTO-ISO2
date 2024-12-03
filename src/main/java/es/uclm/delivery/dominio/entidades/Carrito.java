@@ -2,6 +2,8 @@ package es.uclm.delivery.dominio.entidades;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 public class Carrito {
     private List<ItemMenu> items;
@@ -14,8 +16,11 @@ public class Carrito {
     }
 
     public void agregarItem(ItemMenu item) {
-        this.items.add(item);
-        this.precioTotal += item.getPrecio();
+        if (item.getPrecio() > 0) {
+            this.items.add(item);
+            this.precioTotal += item.getPrecio();
+            redondearPrecioTotal();
+        }
     }
 
     public List<ItemMenu> getItems() {
@@ -34,7 +39,6 @@ public class Carrito {
         this.restauranteId = restauranteId;
     }
 
-    // Método para eliminar un item del carrito (opcional)
     public void eliminarItem(Long itemId) {
         items.removeIf(item -> item.getId().equals(itemId));
         actualizarPrecioTotal();
@@ -42,10 +46,17 @@ public class Carrito {
 
     public void actualizarPrecioTotal() {
         precioTotal = items.stream().mapToDouble(ItemMenu::getPrecio).sum();
+        redondearPrecioTotal();
     }
 
     public void vaciar() {
         items.clear();
         actualizarPrecioTotal();
+    }
+
+    private void redondearPrecioTotal() {
+        BigDecimal bd = BigDecimal.valueOf(precioTotal);
+        bd = bd.setScale(2, RoundingMode.HALF_UP);
+        precioTotal = bd.doubleValue();
     }
 }

@@ -29,16 +29,16 @@ public class IULogin {
     private static final Logger log = LoggerFactory.getLogger(IULogin.class);
 
     @Autowired
-    private GestorLogin gestorLogin;
+    public GestorLogin gestorLogin;
 
     @Autowired
-    private UsuarioDAO usuarioDAO;
+    public UsuarioDAO usuarioDAO;
 
     @Autowired
-    private RestauranteDAO restauranteDAO;
+    public RestauranteDAO restauranteDAO;
 
     @Autowired
-    private ServicioEntregaDAO servicioEntregaDAO;
+    public ServicioEntregaDAO servicioEntregaDAO;
 
     @GetMapping("/login")
     public String showLoginForm(Model model) {
