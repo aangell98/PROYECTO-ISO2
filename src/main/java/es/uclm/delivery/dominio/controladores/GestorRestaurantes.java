@@ -186,11 +186,11 @@ public String eliminarRestaurante(@RequestParam(name = "restauranteId", required
             // Agregar log para verificar los valores de menus
             menus.forEach(menu -> System.out.println("Menu encontrado: " + (menu != null ? menu.getId() : "null")));
 
-            if (restauranteOpt.isPresent() && restauranteOpt.get().getNombre() == null) {
+            Restaurante restaurante = restauranteOpt.orElse(null);
+            if (restaurante != null && restaurante.getNombre() == null) {
                 model.addAttribute("restaurante", new Restaurante());
                 model.addAttribute("isRestauranteRegistrado", false);
             } else {
-                Restaurante restaurante = restauranteOpt.get();
                 model.addAttribute("restaurante", restaurante);
                 model.addAttribute("isRestauranteRegistrado", true);
                 model.addAttribute("items", items);
