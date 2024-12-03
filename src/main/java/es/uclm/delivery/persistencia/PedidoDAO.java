@@ -24,6 +24,9 @@ public class PedidoDAO extends EntidadDAO<Pedido> {
 
     @Transactional
     public void save(Pedido pedido) {
+        if (pedido == null) {
+            throw new IllegalArgumentException("Pedido cannot be null");
+        }
         entityManager.persist(pedido);
     }
 
