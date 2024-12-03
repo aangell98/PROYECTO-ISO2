@@ -10,7 +10,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mock.web.MockHttpSession;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.Authentication;
@@ -65,7 +64,7 @@ class GestorPedidosTest {
 
         assertEquals("realizarPedido", resultado);
         assertEquals(restauranteId, carrito.getRestauranteId());
-        verify(model).addAttribute(eq("restaurante"), eq(restaurante));
+        verify(model).addAttribute("restaurante", restaurante);
     }
 
     @Test
@@ -156,7 +155,6 @@ class GestorPedidosTest {
         carrito.agregarItem(new ItemMenu());
         carrito.agregarItem(new ItemMenu());
 
-        SessionStatus sessionStatus = mock(SessionStatus.class);
         ResponseEntity<?> respuesta = gestorPedidos.limpiarCarrito(carrito);
 
         assertEquals(200, respuesta.getStatusCode().value());
