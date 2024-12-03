@@ -21,7 +21,6 @@ import static org.mockito.Mockito.*;
 class RestauranteDAOTest {
 
     private static final Long RESTAURANTE_ID = 1L;
-    private static final String CODIGO_POSTAL_INEXISTENTE = "99999";
     private static final String USERNAME_EXISTENTE = "user1";
     private static final String USERNAME_INEXISTENTE = "userInexistente";
 
