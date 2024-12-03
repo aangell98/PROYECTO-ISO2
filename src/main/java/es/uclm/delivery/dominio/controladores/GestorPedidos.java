@@ -137,7 +137,12 @@ public class GestorPedidos {
         }
 
         try {
-            String username = iuBusqueda.obtenerClienteActual().getUsuario().getUsername();
+            Cliente clienteActual = iuBusqueda.obtenerClienteActual();
+            if (clienteActual == null || clienteActual.getUsuario() == null) {
+                logger.error("Cliente no encontrado");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cliente no encontrado");
+            }
+            String username = clienteActual.getUsuario().getUsername();
             Optional<Cliente> clienteOpt = clienteDAO.findByUsername(username);
 
             if (clienteOpt.isPresent()) {

@@ -336,4 +336,98 @@ class GestorPedidosTest {
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
         assertEquals("Error al confirmar el pedido", response.getBody());
     }
+
+    @Test
+void testConfirmarPedido_DireccionInvalida() {
+    // Arrange
+    Map<String, Object> requestData = Map.of(
+        "direccionId", "invalid_id",  // Dirección inválida
+        "metodoPago", "CREDIT_CARD",
+        "pagoInfo", Map.of("numeroTarjeta", "1234567890")
+    );
+    Carrito carrito = new Carrito();
+    
+    // Act
+    ResponseEntity<Object> result = gestorPedidos.confirmarPedido(carrito, requestData);
+
+    // Assert
+    assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
+    assertEquals("ID de dirección inválido", result.getBody());
+}
+
+@Test
+void testConfirmarPedido_FaltanParametros() {
+    // Arrange
+    Map<String, Object> requestData = Map.of(
+        "direccionId", 1L,  // Dirección válida
+        "metodoPago", "CREDIT_CARD"  // Pago sin datos
+    );
+    Carrito carrito = new Carrito();
+
+    // Act
+    ResponseEntity<Object> result = gestorPedidos.confirmarPedido(carrito, requestData);
+
+    // Assert
+    assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
+    assertEquals("Dirección, método de pago y datos de pago son requeridos", result.getBody());
+}
+
+@Test
+void testConfirmarPedido_ClienteNoEncontrado() {
+    // Arrange
+    Map<String, Object> requestData = Map.of(
+        "direccionId", 1L,
+        "metodoPago", "CREDIT_CARD",
+        "pagoInfo", Map.of("numeroTarjeta", "1234567890")
+    );
+    Carrito carrito = new Carrito();
+    when(iuBusqueda.obtenerClienteActual()).thenReturn(new Cliente());  // Cliente simulado
+
+    // Simulamos que no se encuentra el cliente en la base de datos
+    when(clienteDAO.findByUsername(anyString())).thenReturn(Optional.empty());
+
+    // Act
+    ResponseEntity<Object> result = gestorPedidos.confirmarPedido(carrito, requestData);
+
+    // Assert
+    assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
+    assertEquals("Cliente no encontrado", result.getBody());
+}
+
+@Test
+void testConfirmarPedido_Exito() {
+    // Arrange
+    Map<String, Object> requestData = Map.of(
+        "direccionId", "1",
+        "metodoPago", "CREDIT_CARD",
+        "pagoInfo", Map.of("numeroTarjeta", "1234567890")
+    );
+    Carrito carrito = new Carrito();
+    carrito.setRestauranteId(1L);
+
+    // Simulamos que el cliente y la dirección existen
+    Cliente cliente = new Cliente();
+    cliente.setUsuario(new Usuario());
+    cliente.getUsuario().setUsername("testUser");
+    Direccion direccion = new Direccion();
+    Restaurante restaurante = new Restaurante();
+    restaurante.setId(1L);
+
+    when(iuBusqueda.obtenerClienteActual()).thenReturn(cliente);
+    when(clienteDAO.findByUsername("testUser")).thenReturn(Optional.of(cliente));
+    when(direccionDAO.findById(1L)).thenReturn(Optional.of(direccion));
+    when(iuBusqueda.obtenerRestaurante(1L)).thenReturn(restaurante);
+
+    // Act
+    ResponseEntity<Object> result = gestorPedidos.confirmarPedido(carrito, requestData);
+
+    // Assert
+    assertEquals(HttpStatus.OK, result.getStatusCode());
+    assertEquals("Pedido confirmado y servicio de entrega en proceso", result.getBody());
+    // Verificar que los métodos insert han sido llamados
+    verify(pedidoDAO, times(1)).insert(any(Pedido.class));
+    verify(pagoDAO, times(1)).insert(any(Pago.class));
+    verify(servicioEntregaDAO, times(1)).insert(any(ServicioEntrega.class));
+}
+
 }
