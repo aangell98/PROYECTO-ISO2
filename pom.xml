@@ -32,6 +32,9 @@
 		<sonar.projectKey>aangell98_PROYECTO-ISO2</sonar.projectKey>
 		<sonar.organization>proyectodelivery-iso2-uclm</sonar.organization>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
+		<sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
+		<sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
+		<sonar.jacoco.reportPath>${project.basedir}/target/jacoco.exec</sonar.jacoco.reportPath>
 	</properties>
 	<dependencies>
 		<dependency>
