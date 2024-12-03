@@ -1,5 +1,6 @@
 package es.uclm.delivery.presentacion;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,7 +27,6 @@ public class IUBusqueda {
     }
 
     public void marcarFavorito(Long idRestaurante) {
-        // Obtener el cliente actual (esto es solo un ejemplo, debes obtener el cliente autenticado)
         Cliente cliente = clienteDAO.findById(1L).orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
         Restaurante restaurante = restauranteDAO.findById(idRestaurante).orElseThrow(() -> new RuntimeException("Restaurante no encontrado"));
         
@@ -39,7 +39,6 @@ public class IUBusqueda {
     }
 
     public void desmarcarFavorito(Long idRestaurante) {
-        // Obtener el cliente actual (esto es solo un ejemplo, debes obtener el cliente autenticado)
         Cliente cliente = clienteDAO.findById(1L).orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
         ClienteFavoritos favorito = cliente.getFavoritos().stream()
             .filter(f -> f.getRestaurante().getId().equals(idRestaurante))
@@ -51,7 +50,6 @@ public class IUBusqueda {
     }
 
     public List<Restaurante> listarFavoritos() {
-        // Obtener el cliente actual (esto es solo un ejemplo, debes obtener el cliente autenticado)
         Cliente cliente = clienteDAO.findById(1L).orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
         return cliente.getFavoritos().stream().map(ClienteFavoritos::getRestaurante).toList();
     }
@@ -59,6 +57,9 @@ public class IUBusqueda {
     public Restaurante obtenerRestaurante(Long restauranteId) {
         Restaurante restaurante = restauranteDAO.findById(restauranteId).orElseThrow(() -> new RuntimeException("Restaurante no encontrado"));
         List<CartaMenu> cartasMenu = restauranteDAO.findCartasMenuByRestauranteId(restauranteId);
+        if (restaurante.getCartasMenu() == null) {
+            restaurante.setCartasMenu(new ArrayList<>()); // Inicializar la colección cartasMenu
+        }
         restaurante.getCartasMenu().clear();
         restaurante.getCartasMenu().addAll(cartasMenu);
         return restaurante;
@@ -71,7 +72,6 @@ public class IUBusqueda {
     }
 
     public Cliente obtenerClienteActual() {
-        // Obtener el nombre de usuario del cliente autenticado
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String username;
         if (principal instanceof UserDetails) {
@@ -80,7 +80,6 @@ public class IUBusqueda {
             username = principal.toString();
         }
 
-        // Buscar el cliente por el nombre de usuario
         return clienteDAO.findByUsername(username).orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
     }
 }

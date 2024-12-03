@@ -69,6 +69,7 @@ public class GestorPedidos {
             double precioTotal = cartaMenu.getItems().stream()
                     .mapToDouble(plato -> plato.getPrecio())
                     .sum();
+            precioTotal = Math.round(precioTotal * 100.0) / 100.0; // Aproximar a dos decimales
             cartaMenu.setPrecioTotal(precioTotal); // Añade un campo `precioTotal` en la clase CartaMenu si no existe
         });
         carrito.setRestauranteId(restauranteId); // Almacenar el ID del restaurante en el carrito

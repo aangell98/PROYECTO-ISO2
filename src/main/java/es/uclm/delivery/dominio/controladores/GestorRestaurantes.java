@@ -185,7 +185,7 @@ public class GestorRestaurantes {
             // Calcular el precio total de cada menú
             for (CartaMenu menu : menus) {
                 double precioTotal = menu.getItems().stream().mapToDouble(ItemMenu::getPrecio).sum();
-                menu.setPrecioTotal(precioTotal);
+                menu.setPrecioTotal(Math.round(precioTotal * 100.0) / 100.0);
             }
 
             // Obtener los platos no asignados a ningún menú
