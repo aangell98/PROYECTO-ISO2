@@ -30,7 +30,6 @@ es\uclm\delivery\dominio\entidades\Cliente.class
 es\uclm\delivery\dominio\controladores\GestorPedidos.class
 es\uclm\delivery\ServletInitializer.class
 es\uclm\delivery\dominio\entidades\Restaurante.class
-es\uclm\delivery\presentacion\IUAltaUsuario.class
 es\uclm\delivery\persistencia\PagoDAO.class
 es\uclm\delivery\persistencia\PedidoDAO.class
 es\uclm\delivery\dominio\controladores\GestorRestaurantes.class
