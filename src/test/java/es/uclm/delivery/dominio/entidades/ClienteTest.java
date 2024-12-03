@@ -5,9 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.BeforeAll;
 
-
-//ESTO ES UN EJEMPLO DE FUNCIONAMIENTO DE UN TEST UNITARIO
-
 public class ClienteTest {
 
     static Cliente cliente = new Cliente();

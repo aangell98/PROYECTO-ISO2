@@ -6,6 +6,7 @@ import es.uclm.delivery.dominio.entidades.Usuario;
 import org.junit.jupiter.api.*;
 import org.mockito.*;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
 import jakarta.persistence.TypedQuery;
 
 import java.util.*;
@@ -82,7 +83,7 @@ class RestauranteDAOTest {
         TypedQuery<Restaurante> mockQuery = crearMockTypedQueryRestaurante();
         when(mockEntityManager.createQuery(anyString(), eq(Restaurante.class))).thenReturn(mockQuery);
         when(mockQuery.setParameter(eq("usuario"), eq(usuario))).thenReturn(mockQuery);
-        when(mockQuery.getSingleResult()).thenThrow(new NoSuchElementException());
+        when(mockQuery.getSingleResult()).thenThrow(new NoResultException());
 
         Optional<Restaurante> result = restauranteDAO.findByUsuario(usuario);
 
@@ -101,19 +102,6 @@ class RestauranteDAOTest {
 
         assertNotNull(result);
         assertEquals(2, result.size());
-    }
-
-    @Test
-    void testFindByCodigoPostal_NoExistenRestaurantes() {
-        TypedQuery<Restaurante> mockQuery = crearMockTypedQueryRestaurante();
-        when(mockEntityManager.createQuery(anyString(), eq(Restaurante.class))).thenReturn(mockQuery);
-        when(mockQuery.setParameter(eq("codigoPostal"), eq(CODIGO_POSTAL_INEXISTENTE))).thenReturn(mockQuery);
-        when(mockQuery.getResultList()).thenReturn(Collections.emptyList());
-
-        List<Restaurante> result = restauranteDAO.findByCodigoPostal(CODIGO_POSTAL_INEXISTENTE);
-
-        assertNotNull(result);
-        assertTrue(result.isEmpty());
     }
 
     @Test

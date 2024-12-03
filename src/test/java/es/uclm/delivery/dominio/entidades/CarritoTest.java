@@ -3,8 +3,6 @@ package es.uclm.delivery.dominio.entidades;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
-
 class CarritoTest {
 
     // Test para agregar un ítem válido
