@@ -14,10 +14,12 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -95,6 +97,14 @@ class GestorClientesTest {
         direccion.setCliente(clienteMock);
         direccion.setId(DIRECCION_ID);
         return direccion;
+    }
+
+    private Pedido crearPedidoConRestaurante() {
+        Pedido pedido = new Pedido();
+        Restaurante restaurante = new Restaurante();
+        restaurante.setNombre(RESTAURANTE_NOMBRE);
+        pedido.setRestaurante(restaurante);
+        return pedido;
     }
 
     // -------------------------------
@@ -236,4 +246,156 @@ class GestorClientesTest {
         assertNotNull(response.getBody());
         assertTrue(response.getBody().isEmpty());
     }
+
+    @Test
+    void buscarRestaurantes_deberiaRetornarListaDeRestaurantes() {
+        String codigoPostal = "12345";
+        Restaurante restauranteA = new Restaurante();
+        restauranteA.setId(1L);
+        restauranteA.setNombre("Restaurante A");
+        Restaurante restauranteB = new Restaurante();
+        restauranteB.setId(2L);
+        restauranteB.setNombre("Restaurante B");
+        List<Restaurante> restaurantesMock = List.of(restauranteA, restauranteB);
+
+        when(iuBusqueda.buscarRestaurantesPorCodigoPostal(codigoPostal)).thenReturn(restaurantesMock);
+
+        List<Restaurante> resultado = gestorClientes.buscarRestaurantes(codigoPostal);
+
+        assertEquals(2, resultado.size());
+        verify(iuBusqueda).buscarRestaurantesPorCodigoPostal(codigoPostal);
+    }
+
+    @Test
+    void testBuscarRestaurantes() {
+        // Arrange
+        String codigoPostal = "28001";
+        List<Restaurante> restaurantes = List.of(new Restaurante(), new Restaurante());
+        when(iuBusqueda.buscarRestaurantesPorCodigoPostal(codigoPostal)).thenReturn(restaurantes);
+
+        // Act
+        List<Restaurante> result = gestorClientes.buscarRestaurantes(codigoPostal);
+
+        // Assert
+        assertEquals(2, result.size());
+        verify(iuBusqueda, times(1)).buscarRestaurantesPorCodigoPostal(codigoPostal);
+    }
+
+    @Test
+    void testAgregarFavorito() {
+        // Arrange
+        Long idRestaurante = 1L;
+
+        // Act
+        gestorClientes.agregarFavorito(idRestaurante);
+
+        // Assert
+        verify(iuBusqueda, times(1)).marcarFavorito(idRestaurante);
+    }
+
+    @Test
+    void testEliminarFavorito() {
+        // Arrange
+        Long idRestaurante = 1L;
+
+        // Act
+        gestorClientes.eliminarFavorito(idRestaurante);
+
+        // Assert
+        verify(iuBusqueda, times(1)).desmarcarFavorito(idRestaurante);
+    }
+
+    @Test
+    void testObtenerPedidosEnCurso() {
+        // Arrange
+        Cliente cliente = new Cliente(); // Simula un cliente
+        cliente.setId(1L); // Asegúrate de que el cliente tiene un ID
+        Pedido pedido1 = crearPedidoConRestaurante();
+        Pedido pedido2 = crearPedidoConRestaurante();
+        List<Pedido> pedidosEnCurso = List.of(pedido1, pedido2);
+        when(iuBusqueda.obtenerClienteActual()).thenReturn(cliente);
+        when(iuPedido.obtenerPedidosEnCurso(cliente.getId())).thenReturn(pedidosEnCurso);
+
+        // Act
+        ResponseEntity<Object> result = gestorClientes.obtenerPedidosEnCurso();
+
+        // Assert
+        assertEquals(HttpStatus.OK, result.getStatusCode());
+        assertTrue(result.getBody() instanceof List);
+        verify(iuPedido, times(1)).obtenerPedidosEnCurso(cliente.getId());
+    }
+
+    @Test
+    void testConfirmarRecepcionPedidoExistente() {
+        // Arrange
+        Map<String, Long> payload = Map.of("idPedido", 1L);
+        Pedido pedido = new Pedido();
+        pedido.setId(1L);
+        Restaurante restaurante = new Restaurante();
+        restaurante.setNombre(RESTAURANTE_NOMBRE);
+        pedido.setRestaurante(restaurante);
+        when(iuPedido.obtenerPedidoPorId(1L)).thenReturn(Optional.of(pedido));
+
+        // Act
+        ResponseEntity<Object> result = gestorClientes.confirmarRecepcion(payload);
+
+        // Assert
+        assertEquals(HttpStatus.OK, result.getStatusCode());
+        verify(pedidoDAO, times(1)).update(pedido);
+    }
+
+    @Test
+    void testConfirmarRecepcionPedidoNoExistente() {
+        // Arrange
+        Map<String, Long> payload = Map.of("idPedido", 1L);
+        when(iuPedido.obtenerPedidoPorId(1L)).thenReturn(Optional.empty());
+
+        // Act
+        ResponseEntity<Object> result = gestorClientes.confirmarRecepcion(payload);
+
+        // Assert
+        assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
+    }
+
+    @Test
+    void testObtenerPedidosAnteriores() {
+        // Arrange
+        Cliente cliente = new Cliente(); // Simula un cliente
+        cliente.setId(1L); // Asegúrate de que el cliente tiene un ID
+        Pedido pedido1 = crearPedidoConRestaurante();
+        Pedido pedido2 = crearPedidoConRestaurante();
+        List<Pedido> pedidosAnteriores = List.of(pedido1, pedido2);
+        when(iuBusqueda.obtenerClienteActual()).thenReturn(cliente);
+        when(iuPedido.obtenerPedidosEntregados(cliente.getId())).thenReturn(pedidosAnteriores);
+
+        // Act
+        ResponseEntity<Object> result = gestorClientes.obtenerPedidosAnteriores();
+
+        // Assert
+        assertEquals(HttpStatus.OK, result.getStatusCode());
+        assertTrue(result.getBody() instanceof List);
+        verify(iuPedido, times(1)).obtenerPedidosEntregados(cliente.getId());
+    }
+
+    @Test
+    void testValorarPedido() {
+        // Arrange
+        Map<String, Object> payload = Map.of("idPedido", 1L, "valoracion", 4);
+        Pedido pedido = new Pedido();
+        Repartidor repartidor = new Repartidor();
+        repartidor.setEficiencia(3.5);
+        ServicioEntrega servicioEntrega = new ServicioEntrega();
+        servicioEntrega.setRepartidor(repartidor);
+        when(iuPedido.obtenerPedidoPorId(1L)).thenReturn(Optional.of(pedido));
+        when(iuPedido.obtenerServicioEntregaPorPedido(1L)).thenReturn(Optional.of(servicioEntrega));
+
+        // Act
+        ResponseEntity<Object> result = gestorClientes.valorarPedido(payload);
+
+        // Assert
+        assertEquals(HttpStatus.OK, result.getStatusCode());
+        assertEquals(3.75, repartidor.getEficiencia(), 0.01);
+        verify(repartidorDAO, times(1)).update(repartidor);
+    }
+
 }
