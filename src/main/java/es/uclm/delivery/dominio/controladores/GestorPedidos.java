@@ -40,7 +40,7 @@ public class GestorPedidos {
     }
 
     @Autowired
-    public IUBusqueda IUBusqueda;
+    public IUBusqueda iuBusqueda;
     @Autowired
     public ItemMenuDAO itemMenuDAO;
     @Autowired
@@ -63,7 +63,7 @@ public class GestorPedidos {
     @GetMapping("/realizar_pedido")
     public String realizarPedido(@RequestParam("restauranteId") Long restauranteId, Model model,
             @ModelAttribute("carrito") Carrito carrito) {
-        Restaurante restaurante = IUBusqueda.obtenerRestaurante(restauranteId);
+        Restaurante restaurante = iuBusqueda.obtenerRestaurante(restauranteId);
         // Calcular el precio total de cada carta de menú
         restaurante.getCartasMenu().forEach(cartaMenu -> {
             double precioTotal = cartaMenu.getItems().stream()
@@ -131,7 +131,7 @@ public class GestorPedidos {
         }
 
         try {
-            String username = IUBusqueda.obtenerClienteActual().getUsuario().getUsername();
+            String username = iuBusqueda.obtenerClienteActual().getUsuario().getUsername();
             Optional<Cliente> clienteOpt = clienteDAO.findByUsername(username);
 
             if (clienteOpt.isPresent()) {
@@ -144,7 +144,7 @@ public class GestorPedidos {
                     // Crear el pedido
                     Pedido pedido = new Pedido();
                     pedido.setCliente(cliente);
-                    pedido.setRestaurante(IUBusqueda.obtenerRestaurante(carrito.getRestauranteId()));
+                    pedido.setRestaurante(iuBusqueda.obtenerRestaurante(carrito.getRestauranteId()));
                     pedido.setEstado(EstadoPedido.PAGADO);
                     pedido.setFecha(new Date());
                     pedidoDAO.insert(pedido);
