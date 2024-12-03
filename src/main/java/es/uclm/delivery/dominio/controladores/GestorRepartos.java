@@ -18,7 +18,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -122,7 +121,7 @@ public class GestorRepartos {
                     detalles.put("direccion", "Dirección no disponible");
                 }
                 return detalles;
-            }).collect(Collectors.toList());
+            }).toList();
             return ResponseEntity.ok(pedidosDetalles);
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);

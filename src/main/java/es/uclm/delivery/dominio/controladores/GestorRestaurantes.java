@@ -12,7 +12,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -189,7 +188,7 @@ public class GestorRestaurantes {
                 // Obtener los platos no asignados a ningún menú
                 List<ItemMenu> platosNoAsignados = items.stream()
                         .filter(plato -> menus.stream().noneMatch(menu -> menu.getItems().contains(plato)))
-                        .collect(Collectors.toList());
+                        .toList();
 
                 Restaurante restaurante = restauranteOpt.get();
                 model.addAttribute("restaurante", restaurante);
