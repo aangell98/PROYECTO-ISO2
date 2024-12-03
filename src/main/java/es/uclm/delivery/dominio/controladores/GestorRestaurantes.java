@@ -177,26 +177,20 @@ public class GestorRestaurantes {
             Usuario usuario = usuarioOpt.get();
             Optional<Restaurante> restauranteOpt = restauranteDAO.findByUsuario(usuario);
 
-            List<CartaMenu> menus = restauranteOpt
-                    .map(restaurante -> cartaMenuDAO.findAllByRestaurante(restaurante.getId()))
-                    .orElse(List.of());
+            if (restauranteOpt.isPresent()) {
+                List<CartaMenu> menus = cartaMenuDAO.findAllByRestaurante(restauranteOpt.get().getId());
+                List<ItemMenu> items = itemMenuDAO.obtenerItemsPorRestaurante(restauranteOpt.get().getId());
+                // Calcular el precio total de cada menú
+                for (CartaMenu menu : menus) {
+                    double precioTotal = menu.getItems().stream().mapToDouble(ItemMenu::getPrecio).sum();
+                    menu.setPrecioTotal(Math.round(precioTotal * 100.0) / 100.0);
+                }
 
-            List<ItemMenu> items = itemMenuDAO.obtenerItemsPorRestaurante(restauranteOpt.get().getId());
-            // Calcular el precio total de cada menú
-            for (CartaMenu menu : menus) {
-                double precioTotal = menu.getItems().stream().mapToDouble(ItemMenu::getPrecio).sum();
-                menu.setPrecioTotal(Math.round(precioTotal * 100.0) / 100.0);
-            }
+                // Obtener los platos no asignados a ningún menú
+                List<ItemMenu> platosNoAsignados = items.stream()
+                        .filter(plato -> menus.stream().noneMatch(menu -> menu.getItems().contains(plato)))
+                        .collect(Collectors.toList());
 
-            // Obtener los platos no asignados a ningún menú
-            List<ItemMenu> platosNoAsignados = items.stream()
-                    .filter(plato -> menus.stream().noneMatch(menu -> menu.getItems().contains(plato)))
-                    .collect(Collectors.toList());
-
-            if (restauranteOpt.isEmpty() || restauranteOpt.get().getNombre() == null) {
-                model.addAttribute("restaurante", new Restaurante());
-                model.addAttribute("isRestauranteRegistrado", false);
-            } else {
                 Restaurante restaurante = restauranteOpt.get();
                 model.addAttribute("restaurante", restaurante);
                 model.addAttribute("isRestauranteRegistrado", true);
@@ -205,6 +199,9 @@ public class GestorRestaurantes {
                 model.addAttribute("platosNoAsignados", platosNoAsignados);
                 model.addAttribute("cartaMenu", new CartaMenu());
                 model.addAttribute("itemMenu", new ItemMenu());
+            } else {
+                model.addAttribute("restaurante", new Restaurante());
+                model.addAttribute("isRestauranteRegistrado", false);
             }
         }
         return "homeRestaurante";
