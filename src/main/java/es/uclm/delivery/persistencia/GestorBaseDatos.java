@@ -33,15 +33,6 @@ public class GestorBaseDatos {
         }
     }
 
-    private int inser(String sql) {
-        try (Statement statement = connection.createStatement()){
-            return statement.executeUpdate(sql);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return -1;
-        }
-    }
-
     public int update(String sql) {
         try (Statement statement = connection.createStatement()){
             return statement.executeUpdate(sql);
