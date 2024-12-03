@@ -27,6 +27,9 @@ public class RepartidorDAO extends EntidadDAO<Repartidor> {
     }
 
     public Optional<Repartidor> findByUsername(String username) {
+        if (username == null) {
+            throw new IllegalArgumentException("Username cannot be null");
+        }
         return entityManager.createQuery(
             "SELECT r FROM Repartidor r WHERE r.usuario.username = :username",
             Repartidor.class)
