@@ -21,9 +21,9 @@ import java.util.Map;
 import java.util.Optional;
 @RestController
 public class GestorClientes {
-    private static final Logger logger = LoggerFactory.getLogger(GestorClientes.class);
+    private static final Logger logger = LoggerFactory.getLogger(GestorLogin.class);
     @Autowired
-    private IUBusqueda iuBusqueda;
+    private IUBusqueda IUBusqueda;
     @Autowired
     private GestorPedidos gestorPedidos;
     @Autowired
@@ -41,61 +41,74 @@ public class GestorClientes {
     @GetMapping("/buscar_restaurantes")
     public List<Restaurante> buscarRestaurantes(@RequestParam("codigoPostal") String codigoPostal) {
         System.out.println("Código postal recibido: " + codigoPostal);
-        List<Restaurante> restaurantes = iuBusqueda.buscarRestaurantesPorCodigoPostal(codigoPostal);
+        List<Restaurante> restaurantes = IUBusqueda.buscarRestaurantesPorCodigoPostal(codigoPostal);
         System.out.println("Restaurantes encontrados: " + restaurantes.size());
         return restaurantes;
     }
     @PostMapping("/agregar_favorito")
     public void agregarFavorito(@RequestParam("idRestaurante") Long idRestaurante) {
-        iuBusqueda.marcarFavorito(idRestaurante);
+        if (idRestaurante != null) {
+            IUBusqueda.marcarFavorito(idRestaurante);
+        } else {
+            logger.warn("El id del restaurante es nulo");
+        }
     }
+
     @PostMapping("/eliminar_favorito")
     public void eliminarFavorito(@RequestParam("idRestaurante") Long idRestaurante) {
-        iuBusqueda.desmarcarFavorito(idRestaurante);
+        if (idRestaurante != null) {
+            IUBusqueda.desmarcarFavorito(idRestaurante);
+        } else {
+            logger.warn("El id del restaurante es nulo");
+        }
     }
+
     @GetMapping("/listar_favoritos")
     public List<Restaurante> listarFavoritos() {
-        return iuBusqueda.listarFavoritos();
+        return IUBusqueda.listarFavoritos();
     }
+
     @GetMapping("/obtener_restaurante")
     public Restaurante obtenerRestaurante(@RequestParam("restauranteId") Long restauranteId) {
-        return iuBusqueda.obtenerRestaurante(restauranteId);
+        return IUBusqueda.obtenerRestaurante(restauranteId);
     }
+
     @GetMapping("/listar_pedidos_curso")
-public ResponseEntity<Object> obtenerPedidosEnCurso() {
-    Cliente cliente = iuBusqueda.obtenerClienteActual();
-    logger.info("Obteniendo pedidos en curso para el cliente: {}", cliente.getId());
-    List<Pedido> pedidosEnCurso = iuPedido.obtenerPedidosEnCurso(cliente.getId());
-    if (!pedidosEnCurso.isEmpty()) {
-        List<Map<String, Object>> pedidosDetalles = pedidosEnCurso.stream().map(pedido -> {
-            Map<String, Object> detalles = new HashMap<>();
-            detalles.put("id", pedido.getId());
-            detalles.put("restaurante", pedido.getRestaurante().getNombre());
-            detalles.put("estado", pedido.getEstado());
-            Optional<ServicioEntrega> servicioEntregaOpt = iuPedido.obtenerServicioEntregaPorPedido(pedido.getId());
-            if (servicioEntregaOpt.isPresent()) {
-                ServicioEntrega servicioEntrega = servicioEntregaOpt.get();
-                Repartidor repartidor = servicioEntrega.getRepartidor();
-                if (repartidor != null) {
-                    detalles.put("repartidor", repartidor.getNombre() + " " + repartidor.getApellidos());
-                    detalles.put("valoracionRepartidor", repartidor.getEficiencia());
+    public ResponseEntity<Object> obtenerPedidosEnCurso() {
+        Cliente cliente = IUBusqueda.obtenerClienteActual();
+        logger.info("Obteniendo pedidos en curso para el cliente: {}", cliente.getId());
+        List<Pedido> pedidosEnCurso = iuPedido.obtenerPedidosEnCurso(cliente.getId());
+        if (!pedidosEnCurso.isEmpty()) {
+            List<Map<String, Object>> pedidosDetalles = pedidosEnCurso.stream().map(pedido -> {
+                Map<String, Object> detalles = new HashMap<>();
+                detalles.put("id", pedido.getId());
+                detalles.put("restaurante", pedido.getRestaurante().getNombre());
+                detalles.put("estado", pedido.getEstado());
+                Optional<ServicioEntrega> servicioEntregaOpt = iuPedido.obtenerServicioEntregaPorPedido(pedido.getId());
+                if (servicioEntregaOpt.isPresent()) {
+                    ServicioEntrega servicioEntrega = servicioEntregaOpt.get();
+                    Repartidor repartidor = servicioEntrega.getRepartidor();
+                    if (repartidor != null) {
+                        detalles.put("repartidor", repartidor.getNombre() + " " + repartidor.getApellidos());
+                        detalles.put("valoracionRepartidor", repartidor.getEficiencia());
+                    } else {
+                        detalles.put("repartidor", "Buscando repartidor...");
+                        detalles.put("valoracionRepartidor", 0);
+                    }
                 } else {
                     detalles.put("repartidor", "Buscando repartidor...");
                     detalles.put("valoracionRepartidor", 0);
                 }
-            } else {
-                detalles.put("repartidor", "Buscando repartidor...");
-                detalles.put("valoracionRepartidor", 0);
-            }
-            return detalles;
-        }).toList();
-        logger.info("Pedidos en curso encontrados: {}", pedidosDetalles.size());
-        return ResponseEntity.ok(pedidosDetalles);
-    } else {
-        logger.info("No hay pedidos en curso");
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).body("No hay pedidos en curso");
+                return detalles;
+            }).toList();
+            logger.info("Pedidos en curso encontrados: {}", pedidosDetalles.size());
+            return ResponseEntity.ok(pedidosDetalles);
+        } else {
+            logger.info("No hay pedidos en curso");
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("No hay pedidos en curso");
+        }
     }
-}
+
     @PostMapping("/confirmar_recepcion")
     public ResponseEntity<Object> confirmarRecepcion(@RequestBody Map<String, Long> payload) {
         Long idPedido = payload.get("idPedido");
@@ -104,7 +117,7 @@ public ResponseEntity<Object> obtenerPedidosEnCurso() {
         if (pedidoOpt.isPresent()) {
             Pedido pedido = pedidoOpt.get();
             pedido.setEstado(EstadoPedido.ENTREGADO);
-            pedidoDAO.update(pedido);  // Asegúrate de tener un método que actualice el pedido en la base de datos
+            pedidoDAO.update(pedido); // Asegúrate de tener un método que actualice el pedido en la base de datos
             logger.info("Pedido actualizado a ENTREGADO: {}", idPedido);
             return ResponseEntity.ok("Pedido actualizado a ENTREGADO");
         } else {
@@ -112,9 +125,10 @@ public ResponseEntity<Object> obtenerPedidosEnCurso() {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Pedido no encontrado");
         }
     }
+
     @GetMapping("/listar_pedidos_anteriores")
     public ResponseEntity<Object> obtenerPedidosAnteriores() {
-        Cliente cliente = iuBusqueda.obtenerClienteActual();
+        Cliente cliente = IUBusqueda.obtenerClienteActual();
         logger.info("Obteniendo pedidos anteriores para el cliente: {}", cliente.getId());
         List<Pedido> pedidosAnteriores = iuPedido.obtenerPedidosEntregados(cliente.getId());
         if (!pedidosAnteriores.isEmpty()) {
@@ -126,7 +140,8 @@ public ResponseEntity<Object> obtenerPedidosEnCurso() {
                 Optional<ServicioEntrega> servicioEntregaOpt = iuPedido.obtenerServicioEntregaPorPedido(pedido.getId());
                 if (servicioEntregaOpt.isPresent()) {
                     ServicioEntrega servicioEntrega = servicioEntregaOpt.get();
-                    detalles.put("repartidor", servicioEntrega.getRepartidor().getNombre() + " " + servicioEntrega.getRepartidor().getApellidos());
+                    detalles.put("repartidor", servicioEntrega.getRepartidor().getNombre() + " "
+                            + servicioEntrega.getRepartidor().getApellidos());
                 }
                 return detalles;
             }).toList();
@@ -137,6 +152,7 @@ public ResponseEntity<Object> obtenerPedidosEnCurso() {
             return ResponseEntity.ok(List.of()); // Devolver una lista vacía en lugar de NO_CONTENT
         }
     }
+
     @PostMapping("/valorar_pedido")
     public ResponseEntity<Object> valorarPedido(@RequestBody Map<String, Object> payload) {
         Long idPedido = Long.valueOf(payload.get("idPedido").toString());
@@ -144,8 +160,7 @@ public ResponseEntity<Object> obtenerPedidosEnCurso() {
         logger.info("Valorando pedido: {} con valoración: {}", idPedido, valoracion);
         Optional<Pedido> pedidoOpt = iuPedido.obtenerPedidoPorId(idPedido);
         if (pedidoOpt.isPresent()) {
-            pedidoOpt.get().setEstado(EstadoPedido.ENTREGADO);
-            pedidoDAO.update(pedidoOpt.get());
+            Pedido pedido = pedidoOpt.get();
             Optional<ServicioEntrega> servicioEntregaOpt = iuPedido.obtenerServicioEntregaPorPedido(idPedido);
             if (servicioEntregaOpt.isPresent()) {
                 ServicioEntrega servicioEntrega = servicioEntregaOpt.get();
@@ -154,7 +169,8 @@ public ResponseEntity<Object> obtenerPedidosEnCurso() {
                 double nuevaEficiencia = (repartidor.getEficiencia() + valoracion) / 2;
                 repartidor.setEficiencia(nuevaEficiencia);
                 repartidorDAO.update(repartidor);
-                logger.info("Repartidor {} valorado con éxito. Nueva eficiencia: {}", repartidor.getId(), nuevaEficiencia);
+                logger.info("Repartidor {} valorado con éxito. Nueva eficiencia: {}", repartidor.getId(),
+                        nuevaEficiencia);
                 return ResponseEntity.ok("Pedido valorado con éxito");
             } else {
                 logger.warn("Servicio de entrega no encontrado para el pedido: {}", idPedido);
@@ -166,8 +182,12 @@ public ResponseEntity<Object> obtenerPedidosEnCurso() {
         }
     }
 
-   @PostMapping("/guardar_direccion")
-    public ResponseEntity<Object> guardarDireccion(@RequestBody Direccion direccion, Principal principal) {
+    @PostMapping("/guardar_direccion")
+    public ResponseEntity<Object> guardarDireccion(@RequestBody(required = false) Direccion direccion, Principal principal) {
+        if (direccion == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Dirección inválida");
+        }
+
         String username = principal.getName();
         Optional<Cliente> clienteOpt = clienteDAO.findByUsername(username);
 

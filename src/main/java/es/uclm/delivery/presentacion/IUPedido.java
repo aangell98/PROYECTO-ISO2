@@ -20,14 +20,23 @@ public class IUPedido {
     private ServicioEntregaDAO servicioEntregaDAO;
 
     public List<Pedido> obtenerPedidosEnCurso(Long clienteId) {
+        if(clienteId == null) {
+            throw new IllegalArgumentException("El clienteId no puede ser nulo");
+        }
         return pedidoDAO.findPedidosEnCurso(clienteId);
     }
 
 	public Optional<Pedido> obtenerPedidoPorId(Long idPedido) {
+        if(idPedido == null) {
+            throw new IllegalArgumentException("El idPedido no puede ser nulo");
+        }
         return pedidoDAO.buscarporid(idPedido);
     }
 
     public Optional<ServicioEntrega> obtenerServicioEntregaPorPedido(Long pedidoId) {
+        if(pedidoId == null) {
+            throw new IllegalArgumentException("El pedidoId no puede ser nulo");
+        }
         return servicioEntregaDAO.findByPedidoId(pedidoId);
     }
 
@@ -39,6 +48,9 @@ public class IUPedido {
 	}
 
 	public List<Pedido> obtenerPedidosEntregados(Long clienteId) {
+        if(clienteId == null) {
+            throw new IllegalArgumentException("El clienteId no puede ser nulo");
+        }
 		return pedidoDAO.findPedidosEntregados(clienteId);
 	}
 }

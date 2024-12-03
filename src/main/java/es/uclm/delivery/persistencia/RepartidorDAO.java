@@ -1,6 +1,8 @@
 package es.uclm.delivery.persistencia;
 
 import es.uclm.delivery.dominio.entidades.Repartidor;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,7 +17,9 @@ public class RepartidorDAO extends EntidadDAO<Repartidor> {
         super(Repartidor.class);
     }
 
-    
+     @PersistenceContext
+    private EntityManager entityManager;
+
     public List<Long> findAllIds() {
         String sql = "SELECT id FROM repartidor";
         Query query = entityManager.createNativeQuery(sql);
@@ -23,6 +27,9 @@ public class RepartidorDAO extends EntidadDAO<Repartidor> {
     }
 
     public Optional<Repartidor> findByUsername(String username) {
+        if (username == null) {
+            throw new IllegalArgumentException("Username cannot be null");
+        }
         return entityManager.createQuery(
             "SELECT r FROM Repartidor r WHERE r.usuario.username = :username",
             Repartidor.class)
