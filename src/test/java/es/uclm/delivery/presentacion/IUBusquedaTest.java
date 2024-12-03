@@ -6,6 +6,8 @@ import es.uclm.delivery.persistencia.RestauranteDAO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -177,9 +179,16 @@ class IUBusquedaTest {
     // Test para obtenerClienteActual
     @Test
     void testObtenerClienteActual() {
+        // Simular el SecurityContext y la autenticación
+        SecurityContext securityContext = mock(SecurityContext.class);
+        Authentication authentication = mock(Authentication.class);
         UserDetails userDetails = mock(UserDetails.class);
+
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        when(authentication.getPrincipal()).thenReturn(userDetails);
         when(userDetails.getUsername()).thenReturn("testUser");
-        SecurityContextHolder.getContext().setAuthentication(new org.springframework.security.authentication.UsernamePasswordAuthenticationToken(userDetails, null));
+
+        SecurityContextHolder.setContext(securityContext);
 
         when(clienteDAO.findByUsername("testUser")).thenReturn(Optional.of(cliente));
 
@@ -191,9 +200,16 @@ class IUBusquedaTest {
 
     @Test
     void testObtenerClienteActual_ClienteNoExistente() {
+        // Simular el SecurityContext y la autenticación
+        SecurityContext securityContext = mock(SecurityContext.class);
+        Authentication authentication = mock(Authentication.class);
         UserDetails userDetails = mock(UserDetails.class);
+
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        when(authentication.getPrincipal()).thenReturn(userDetails);
         when(userDetails.getUsername()).thenReturn("nonExistentUser");
-        SecurityContextHolder.getContext().setAuthentication(new org.springframework.security.authentication.UsernamePasswordAuthenticationToken(userDetails, null));
+
+        SecurityContextHolder.setContext(securityContext);
 
         when(clienteDAO.findByUsername("nonExistentUser")).thenReturn(Optional.empty());
 
