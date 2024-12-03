@@ -243,27 +243,6 @@ class GestorRestaurantesTest {
     }
 
     @Test
-    void testEliminarNombreDireccionRestaurante() {
-        Principal principal = mock(Principal.class);
-        when(principal.getName()).thenReturn("usuario1");
-        Usuario usuarioMock = new Usuario();
-        usuarioMock.setUsername("usuario1");
-        Restaurante restauranteMock = new Restaurante();
-        restauranteMock.setNombre("Restaurante Prueba");
-        restauranteMock.setDireccion("Calle Falsa 123");
-
-        when(usuarioDAO.encontrarUser("usuario1")).thenReturn(Optional.of(usuarioMock));
-        when(restauranteDAO.findByUsuario(usuarioMock)).thenReturn(Optional.of(restauranteMock));
-
-        String result = gestorRestaurantes.eliminarNombreDireccionRestaurante(principal);
-
-        assertEquals("redirect:/homeRestaurante", result);
-        verify(restauranteDAO).update(restauranteMock);
-        assertNull(restauranteMock.getNombre());
-        assertNull(restauranteMock.getDireccion());
-    }
-
-    @Test
     void testEliminarRestaurante() {
         Long restauranteId = 1L;
         Restaurante restauranteMock = new Restaurante();
@@ -385,4 +364,54 @@ class GestorRestaurantesTest {
         assertEquals("redirect:/homeRestaurante", result);
         verify(cartaMenuDAO, never()).insert(any());
     }
+
+    @Test
+void testEliminarNombreDireccionRestaurante() {
+    Principal principal = mock(Principal.class);
+    when(principal.getName()).thenReturn("usuario1");
+    Usuario usuarioMock = new Usuario();
+    usuarioMock.setUsername("usuario1");
+    Restaurante restauranteMock = new Restaurante();
+    restauranteMock.setNombre("Restaurante Prueba");
+    restauranteMock.setDireccion("Calle Falsa 123");
+
+    when(usuarioDAO.encontrarUser("usuario1")).thenReturn(Optional.of(usuarioMock));
+    when(restauranteDAO.findByUsuario(usuarioMock)).thenReturn(Optional.of(restauranteMock));
+
+    String result = gestorRestaurantes.eliminarNombreDireccionRestaurante(principal);
+
+    assertEquals("redirect:/homeRestaurante", result);
+    assertNull(restauranteMock.getNombre());
+    assertNull(restauranteMock.getDireccion());
+    verify(restauranteDAO).update(restauranteMock);
+}
+
+@Test
+void testEliminarNombreDireccionRestauranteUsuarioNoEncontrado() {
+    Principal principal = mock(Principal.class);
+    when(principal.getName()).thenReturn("usuario1");
+
+    when(usuarioDAO.encontrarUser("usuario1")).thenReturn(Optional.empty());
+
+    String result = gestorRestaurantes.eliminarNombreDireccionRestaurante(principal);
+
+    assertEquals("redirect:/homeRestaurante", result);
+    verify(restauranteDAO, never()).update(any());
+}
+
+@Test
+void testEliminarNombreDireccionRestauranteRestauranteNoEncontrado() {
+    Principal principal = mock(Principal.class);
+    when(principal.getName()).thenReturn("usuario1");
+    Usuario usuarioMock = new Usuario();
+    usuarioMock.setUsername("usuario1");
+
+    when(usuarioDAO.encontrarUser("usuario1")).thenReturn(Optional.of(usuarioMock));
+    when(restauranteDAO.findByUsuario(usuarioMock)).thenReturn(Optional.empty());
+
+    String result = gestorRestaurantes.eliminarNombreDireccionRestaurante(principal);
+
+    assertEquals("redirect:/homeRestaurante", result);
+    verify(restauranteDAO, never()).update(any());
+}
 }
