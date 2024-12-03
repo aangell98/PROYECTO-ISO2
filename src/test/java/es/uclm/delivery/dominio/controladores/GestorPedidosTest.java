@@ -31,7 +31,7 @@ class GestorPedidosTest {
     public GestorPedidosTest() {
         this.gestorPedidos = new GestorPedidos();
         // Inject dependencies
-        gestorPedidos.IUBusqueda = iuBusqueda;
+        gestorPedidos.iuBusqueda = iuBusqueda;
         gestorPedidos.cartaMenuDAO = cartaMenuDAO;
         gestorPedidos.pedidoDAO = pedidoDAO;
         gestorPedidos.clienteDAO = clienteDAO;
