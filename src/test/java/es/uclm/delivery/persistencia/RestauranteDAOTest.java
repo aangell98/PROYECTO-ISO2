@@ -7,6 +7,7 @@ import org.junit.jupiter.api.*;
 import org.mockito.*;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
+import jakarta.persistence.PersistenceException;
 import jakarta.persistence.TypedQuery;
 
 import java.util.*;
@@ -157,4 +158,40 @@ class RestauranteDAOTest {
         assertNotNull(result);
         assertTrue(result.isEmpty());
     }
+
+    @Test
+    void testFindByUsuario_PersistenceException() {
+        Usuario usuario = crearUsuario(USERNAME_EXISTENTE);
+        TypedQuery<Restaurante> mockQuery = crearMockTypedQueryRestaurante();
+        when(mockEntityManager.createQuery(anyString(), eq(Restaurante.class))).thenReturn(mockQuery);
+        when(mockQuery.setParameter(eq("usuario"), eq(usuario))).thenReturn(mockQuery);
+        when(mockQuery.getSingleResult()).thenThrow(new PersistenceException());
+
+        Optional<Restaurante> result = restauranteDAO.findByUsuario(usuario);
+
+        assertFalse(result.isPresent());
+    }
+
+    @Test
+    void testFindByCodigoPostal_PersistenceException() {
+        when(mockEntityManager.createQuery(anyString(), eq(Restaurante.class)))
+                .thenThrow(new PersistenceException());
+
+        List<Restaurante> result = restauranteDAO.findByCodigoPostal("12345");
+
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    void testObtenerRestaurantesAleatorios_PersistenceException() {
+        when(mockEntityManager.createQuery(anyString(), eq(Restaurante.class)))
+                .thenThrow(new PersistenceException());
+
+        List<Restaurante> result = restauranteDAO.obtenerRestaurantesAleatorios(3);
+
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+    }
+
 }
