@@ -8,7 +8,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.support.SessionStatus;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.Authentication;
@@ -26,6 +28,7 @@ class GestorPedidosTest {
     private final DireccionDAO direccionDAO = mock(DireccionDAO.class);
     private final ServicioEntregaDAO servicioEntregaDAO = mock(ServicioEntregaDAO.class);
     private final RepartidorDAO repartidorDAO = mock(RepartidorDAO.class);
+    private final PagoDAO pagoDAO = mock(PagoDAO.class);
     private final GestorPedidos gestorPedidos;
 
     public GestorPedidosTest() {
@@ -38,6 +41,7 @@ class GestorPedidosTest {
         gestorPedidos.direccionDAO = direccionDAO;
         gestorPedidos.servicioEntregaDAO = servicioEntregaDAO;
         gestorPedidos.repartidorDAO = repartidorDAO;
+        gestorPedidos.pagoDAO = pagoDAO;
     }
 
     @Test
@@ -244,5 +248,92 @@ class GestorPedidosTest {
 
         assertEquals(200, respuesta.getStatusCode().value());
         assertNull(respuesta.getBody());
+    }
+
+    @Test
+    void testConfirmarPedidoDireccionIdInvalido() {
+        Carrito carrito = new Carrito();
+        Map<String, Object> requestData = new HashMap<>();
+        requestData.put("direccionId", "abc"); // ID inválido
+        requestData.put("metodoPago", "TARJETA");
+        requestData.put("pagoInfo", Map.of("detalle", "info"));
+
+        ResponseEntity<?> response = gestorPedidos.confirmarPedido(carrito, requestData);
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals("ID de dirección inválido", response.getBody());
+    }
+
+    @Test
+    void testConfirmarPedidoDireccionNoEncontrada() {
+        Carrito carrito = new Carrito();
+        carrito.setRestauranteId(1L);
+        Map<String, Object> requestData = new HashMap<>();
+        requestData.put("direccionId", "1");
+        requestData.put("metodoPago", "TARJETA");
+        requestData.put("pagoInfo", Map.of("detalle", "info"));
+
+        Cliente cliente = new Cliente();
+        cliente.setUsuario(new Usuario());
+        cliente.getUsuario().setUsername("testUser");
+
+        when(iuBusqueda.obtenerClienteActual()).thenReturn(cliente);
+        when(clienteDAO.findByUsername("testUser")).thenReturn(Optional.of(cliente));
+        when(direccionDAO.findById(1L)).thenReturn(Optional.empty());
+
+        ResponseEntity<?> response = gestorPedidos.confirmarPedido(carrito, requestData);
+
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertEquals("Dirección no encontrada", response.getBody());
+    }
+
+    @Test
+    void testConfirmarPedidoClienteNoEncontrado() {
+        Carrito carrito = new Carrito();
+        carrito.setRestauranteId(1L);
+        Map<String, Object> requestData = new HashMap<>();
+        requestData.put("direccionId", "1");
+        requestData.put("metodoPago", "TARJETA");
+        requestData.put("pagoInfo", Map.of("detalle", "info"));
+
+        Cliente cliente = new Cliente();
+        cliente.setUsuario(new Usuario());
+        cliente.getUsuario().setUsername("testUser");
+
+        when(iuBusqueda.obtenerClienteActual()).thenReturn(cliente);
+        when(clienteDAO.findByUsername("testUser")).thenReturn(Optional.empty());
+
+        ResponseEntity<?> response = gestorPedidos.confirmarPedido(carrito, requestData);
+
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertEquals("Cliente no encontrado", response.getBody());
+    }
+
+    @Test
+    void testConfirmarPedidoErrorInterno() {
+        Carrito carrito = new Carrito();
+        carrito.setRestauranteId(1L);
+        Map<String, Object> requestData = new HashMap<>();
+        requestData.put("direccionId", "1");
+        requestData.put("metodoPago", "TARJETA");
+        requestData.put("pagoInfo", Map.of("detalle", "info"));
+
+        Cliente cliente = new Cliente();
+        cliente.setUsuario(new Usuario());
+        cliente.getUsuario().setUsername("testUser");
+
+        Direccion direccion = new Direccion();
+        direccion.setId(1L);
+
+        when(iuBusqueda.obtenerClienteActual()).thenReturn(cliente);
+        when(clienteDAO.findByUsername("testUser")).thenReturn(Optional.of(cliente));
+        when(direccionDAO.findById(1L)).thenReturn(Optional.of(direccion));
+        when(iuBusqueda.obtenerRestaurante(1L)).thenReturn(new Restaurante());
+        doThrow(new RuntimeException("Error interno")).when(pedidoDAO).insert(any(Pedido.class));
+
+        ResponseEntity<?> response = gestorPedidos.confirmarPedido(carrito, requestData);
+
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+        assertEquals("Error al confirmar el pedido", response.getBody());
     }
 }
