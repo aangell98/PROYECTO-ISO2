@@ -110,7 +110,7 @@ class RestauranteDAOTest {
         List<CartaMenu> cartas = Arrays.asList(new CartaMenu(), new CartaMenu());
         TypedQuery<CartaMenu> mockQuery = crearMockTypedQueryCartaMenu();
         when(mockEntityManager.createQuery(anyString(), eq(CartaMenu.class))).thenReturn(mockQuery);
-        when(mockQuery.setParameter(eq("restauranteId"), eq(RESTAURANTE_ID))).thenReturn(mockQuery);
+        when(mockQuery.setParameter("restauranteID", RESTAURANTE_ID)).thenReturn(mockQuery);
         when(mockQuery.getResultList()).thenReturn(cartas);
 
         List<CartaMenu> result = restauranteDAO.findCartasMenuByRestauranteId(RESTAURANTE_ID);
@@ -123,7 +123,7 @@ class RestauranteDAOTest {
     void testFindCartasMenuByRestauranteId_NoExistenCartas() {
         TypedQuery<CartaMenu> mockQuery = crearMockTypedQueryCartaMenu();
         when(mockEntityManager.createQuery(anyString(), eq(CartaMenu.class))).thenReturn(mockQuery);
-        when(mockQuery.setParameter(eq("restauranteId"), eq(RESTAURANTE_ID))).thenReturn(mockQuery);
+        when(mockQuery.setParameter("restauranteID", RESTAURANTE_ID)).thenReturn(mockQuery);
         when(mockQuery.getResultList()).thenReturn(Collections.emptyList());
 
         List<CartaMenu> result = restauranteDAO.findCartasMenuByRestauranteId(RESTAURANTE_ID);
