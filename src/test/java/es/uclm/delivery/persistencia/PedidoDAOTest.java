@@ -83,7 +83,7 @@ class PedidoDAOTest {
         TypedQuery<Pedido> mockQuery = crearMockQuery();
         when(mockEntityManager.createQuery(any(String.class), eq(Pedido.class))).thenReturn(mockQuery);
         when(mockQuery.setParameter(eq("clienteId"), any(Long.class))).thenReturn(mockQuery);
-        when(mockQuery.setParameter(eq("estadoEntregado"), eq(ESTADO_ENTREGADO))).thenReturn(mockQuery);
+        when(mockQuery.setParameter("estadoEntregado", ESTADO_ENTREGADO)).thenReturn(mockQuery);
         when(mockQuery.getResultList()).thenReturn(Collections.emptyList());
 
         List<Pedido> result = pedidoDAO.findPedidosEnCurso(CLIENTE_ID);
@@ -118,7 +118,7 @@ class PedidoDAOTest {
         TypedQuery<Pedido> mockQuery = crearMockQuery();
         when(mockEntityManager.createQuery(any(String.class), eq(Pedido.class))).thenReturn(mockQuery);
         when(mockQuery.setParameter(eq("clienteId"), any(Long.class))).thenReturn(mockQuery);
-        when(mockQuery.setParameter(eq("estadoEntregado"), eq(ESTADO_ENTREGADO))).thenReturn(mockQuery);
+        when(mockQuery.setParameter("estadoEntregado", ESTADO_ENTREGADO)).thenReturn(mockQuery);
         when(mockQuery.getResultList()).thenReturn(pedidos);
 
         List<Pedido> result = pedidoDAO.findPedidosEntregados(CLIENTE_ID);
@@ -132,7 +132,7 @@ class PedidoDAOTest {
         TypedQuery<Pedido> mockQuery = crearMockQuery();
         when(mockEntityManager.createQuery(any(String.class), eq(Pedido.class))).thenReturn(mockQuery);
         when(mockQuery.setParameter(eq("clienteId"), any(Long.class))).thenReturn(mockQuery);
-        when(mockQuery.setParameter(eq("estadoEntregado"), eq(ESTADO_ENTREGADO))).thenReturn(mockQuery);
+        when(mockQuery.setParameter("estadoEntregado", ESTADO_ENTREGADO)).thenReturn(mockQuery);
         when(mockQuery.getResultList()).thenReturn(Collections.emptyList());
 
         List<Pedido> result = pedidoDAO.findPedidosEntregados(CLIENTE_ID);
@@ -146,7 +146,7 @@ class PedidoDAOTest {
         List<Pedido> pedidos = Arrays.asList(crearPedido(), crearPedido());
         TypedQuery<Pedido> mockQuery = crearMockQuery();
         when(mockEntityManager.createQuery(any(String.class), eq(Pedido.class))).thenReturn(mockQuery);
-        when(mockQuery.setParameter(eq("estadoPagado"), eq(ESTADO_PAGADO))).thenReturn(mockQuery);
+        when(mockQuery.setParameter("estadoPagado", ESTADO_PAGADO)).thenReturn(mockQuery);
         when(mockQuery.getResultList()).thenReturn(pedidos);
 
         List<Pedido> result = pedidoDAO.findPedidosPagados();
@@ -159,7 +159,7 @@ class PedidoDAOTest {
     void testFindPedidosPagados_NoExistenPedidos() {
         TypedQuery<Pedido> mockQuery = crearMockQuery();
         when(mockEntityManager.createQuery(any(String.class), eq(Pedido.class))).thenReturn(mockQuery);
-        when(mockQuery.setParameter(eq("estadoPagado"), eq(ESTADO_PAGADO))).thenReturn(mockQuery);
+        when(mockQuery.setParameter("estadoPagado", ESTADO_PAGADO)).thenReturn(mockQuery);
         when(mockQuery.getResultList()).thenReturn(Collections.emptyList());
 
         List<Pedido> result = pedidoDAO.findPedidosPagados();
