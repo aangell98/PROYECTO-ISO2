@@ -2,13 +2,11 @@ package es.uclm.delivery.dominio.controladores;
 
 import es.uclm.delivery.persistencia.*;
 import es.uclm.delivery.presentacion.IUBusqueda;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Random;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -27,6 +25,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.support.SessionStatus;
 import es.uclm.delivery.dominio.entidades.*;
 
 @SessionAttributes("carrito")
@@ -37,6 +36,13 @@ public class GestorPedidos {
     @ModelAttribute("carrito")
     public Carrito crearCarrito() {
         return new Carrito(); // Crea un nuevo carrito si no existe en la sesión
+    }
+
+    @PostMapping("/finalizarPedido")
+    public String finalizarPedido(SessionStatus status) {
+        // Lógica para finalizar el pedido
+        status.setComplete(); // Marca la sesión como completada
+        return "redirect:/pedidoCompletado";
     }
 
     @Autowired
@@ -67,7 +73,7 @@ public class GestorPedidos {
         // Calcular el precio total de cada carta de menú
         restaurante.getCartasMenu().forEach(cartaMenu -> {
             double precioTotal = cartaMenu.getItems().stream()
-                    .mapToDouble(plato -> plato.getPrecio())
+                    .mapToDouble(ItemMenu::getPrecio)
                     .sum();
             precioTotal = Math.round(precioTotal * 100.0) / 100.0; // Aproximar a dos decimales
             cartaMenu.setPrecioTotal(precioTotal); // Añade un campo `precioTotal` en la clase CartaMenu si no existe
@@ -78,7 +84,7 @@ public class GestorPedidos {
     }
 
     @PostMapping("/agregar_al_carrito")
-    public ResponseEntity<?> agregarAlCarrito(@ModelAttribute("carrito") Carrito carrito,
+    public ResponseEntity<Object> agregarAlCarrito(@ModelAttribute("carrito") Carrito carrito,
             @RequestBody Map<String, Long> requestData) {
         Long menuId = requestData.get("id");
         Optional<CartaMenu> menuOpt = cartaMenuDAO.findById(menuId);
@@ -92,14 +98,14 @@ public class GestorPedidos {
     }
 
     @DeleteMapping("/eliminar_del_carrito/{cartaMenuId}")
-    public ResponseEntity<?> eliminarDelCarrito(@ModelAttribute("carrito") Carrito carrito,
+    public ResponseEntity<Object> eliminarDelCarrito(@ModelAttribute("carrito") Carrito carrito,
             @PathVariable Long cartaMenuId) {
         carrito.eliminarItem(cartaMenuId); // Método que elimina el item por ID en el carrito
         return ResponseEntity.ok(carrito); // Devuelve el carrito actualizado al frontend
     }
 
     @DeleteMapping("/limpiar_carrito")
-    public ResponseEntity<?> limpiarCarrito(@ModelAttribute("carrito") Carrito carrito) {
+    public ResponseEntity<Object> limpiarCarrito(@ModelAttribute("carrito") Carrito carrito) {
         carrito.vaciar(); // Método que elimina todos los ítems del carrito
         return ResponseEntity.ok(carrito); // Devuelve el carrito vacío
     }
@@ -110,7 +116,7 @@ public class GestorPedidos {
     }
 
     @PostMapping("/confirmar_pedido")
-    public ResponseEntity<?> confirmarPedido(@ModelAttribute("carrito") Carrito carrito,
+    public ResponseEntity<Object> confirmarPedido(@ModelAttribute("carrito") Carrito carrito,
             @RequestBody Map<String, Object> requestData) {
         Long direccionId;
 
@@ -209,7 +215,7 @@ public class GestorPedidos {
                 detalles.put("direccion", "Dirección no disponible");
             }
             return detalles;
-        }).collect(Collectors.toList());
+        }).toList();
         return ResponseEntity.ok(pedidosDetalles);
     }
 
@@ -240,7 +246,7 @@ public class GestorPedidos {
                     detalles.put("direccion", "Dirección no disponible");
                 }
                 return detalles;
-            }).collect(Collectors.toList());
+            }).toList();
             return ResponseEntity.ok(pedidosDetalles);
         } else {
             return ResponseEntity.status(200).body(null);

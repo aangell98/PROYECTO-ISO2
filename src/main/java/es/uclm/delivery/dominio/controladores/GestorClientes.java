@@ -160,7 +160,6 @@ public class GestorClientes {
         logger.info("Valorando pedido: {} con valoración: {}", idPedido, valoracion);
         Optional<Pedido> pedidoOpt = iuPedido.obtenerPedidoPorId(idPedido);
         if (pedidoOpt.isPresent()) {
-            Pedido pedido = pedidoOpt.get();
             Optional<ServicioEntrega> servicioEntregaOpt = iuPedido.obtenerServicioEntregaPorPedido(idPedido);
             if (servicioEntregaOpt.isPresent()) {
                 ServicioEntrega servicioEntrega = servicioEntregaOpt.get();
