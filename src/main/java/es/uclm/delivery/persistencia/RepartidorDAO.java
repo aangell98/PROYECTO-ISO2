@@ -28,7 +28,7 @@ public class RepartidorDAO extends EntidadDAO<Repartidor> {
         return resultList.stream()
                 .filter(Number.class::isInstance)
                 .map(obj -> ((Number) obj).longValue())
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public Optional<Repartidor> findByUsername(String username) {
