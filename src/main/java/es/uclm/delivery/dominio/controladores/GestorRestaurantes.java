@@ -19,6 +19,8 @@ import java.util.Optional;
 public class GestorRestaurantes {
     private static final String ERROR = "error";
     private static final String REDIRECT_HOME_RESTAURANT = "redirect:/homeRestaurante";
+    private static final String ERROR_MENSAJE = "errorMessage";
+    private static String SUCCESS_MESSAGE = "successMessage";
 
     @Autowired
     private UsuarioDAO usuarioDAO;
@@ -58,16 +60,16 @@ public class GestorRestaurantes {
             if (itemOpt.isPresent()) {
                 ItemMenu item = itemOpt.get();
                 itemMenuDAO.delete(item);
-                model.addAttribute("successMessage", "Plato eliminado correctamente.");
+                model.addAttribute(SUCCESS_MESSAGE, "Plato eliminado correctamente.");
             } else {
-                model.addAttribute("errorMessage", "El plato no existe.");
+                model.addAttribute(ERROR_MENSAJE, "El plato no existe.");
             }
         } catch (RuntimeException e) {
             if (e.getMessage().contains("Clave foránea")) {
-                model.addAttribute("errorMessage",
+                model.addAttribute(ERROR_MENSAJE,
                         "No se puede eliminar el plato porque está asociado a uno o más menús.");
             } else {
-                model.addAttribute("errorMessage", "No se pudo eliminar el plato.");
+                model.addAttribute(ERROR_MENSAJE, "No se pudo eliminar el plato.");
             }
         }
         return REDIRECT_HOME_RESTAURANT;
@@ -158,14 +160,14 @@ public class GestorRestaurantes {
                 original.setDescripcion(itemMenu.getDescripcion());
                 original.setPrecio(itemMenu.getPrecio());
                 itemMenuDAO.update(original);
-                redirectAttributes.addFlashAttribute("successMessage", "Plato actualizado correctamente.");
+                redirectAttributes.addFlashAttribute(SUCCESS_MESSAGE, "Plato actualizado correctamente.");
             } else {
-                redirectAttributes.addFlashAttribute("errorMessage", "El plato no existe.");
+                redirectAttributes.addFlashAttribute(ERROR_MENSAJE, "El plato no existe.");
             }
         } catch (IllegalArgumentException e) {
-            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            redirectAttributes.addFlashAttribute(ERROR_MENSAJE, e.getMessage());
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Error al actualizar el plato.");
+            redirectAttributes.addFlashAttribute(ERROR_MENSAJE, "Error al actualizar el plato.");
         }
         return REDIRECT_HOME_RESTAURANT;
     }
@@ -240,13 +242,13 @@ public class GestorRestaurantes {
                     Restaurante restaurante = restauranteOpt.get();
                     itemMenu.setRestaurante(restaurante); // Relacionar el ItemMenu con el restaurante
                     itemMenuDAO.insert(itemMenu);
-                    redirectAttributes.addFlashAttribute("successMessage", "Plato creado correctamente.");
+                    redirectAttributes.addFlashAttribute(SUCCESS_MESSAGE, "Plato creado correctamente.");
                 }
             }
         } catch (IllegalArgumentException e) {
-            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            redirectAttributes.addFlashAttribute(ERROR_MENSAJE, e.getMessage());
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Error al crear el plato.");
+            redirectAttributes.addFlashAttribute(ERROR_MENSAJE, "Error al crear el plato.");
         }
         return REDIRECT_HOME_RESTAURANT;
     }
