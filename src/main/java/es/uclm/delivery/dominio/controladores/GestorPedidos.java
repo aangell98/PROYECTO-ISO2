@@ -33,6 +33,8 @@ public class GestorPedidos {
     private static final Logger logger = LoggerFactory.getLogger(GestorPedidos.class);
     private static final String RESTAURANTE = "restaurante";
     private static final String CLIENTE_NO_ENCONTRADO = "Cliente no encontrado";
+    private static final String DIRECCION = "direccion";
+    private static final String DIRECCION_NO_DISPONIBLE = "Dirección no disponible";
 
     @ModelAttribute("carrito")
     public Carrito crearCarrito() {
@@ -212,13 +214,13 @@ public class GestorPedidos {
                 detalles.put(RESTAURANTE, nombreRestaurante + " (" + direccionRestaurante + ")");
                 Direccion direccion = servicioEntrega.getDireccion();
                 if (direccion != null) {
-                    detalles.put("direccion",
+                    detalles.put(DIRECCION,
                             direccion.getCalle() + ", " + direccion.getCiudad() + ", " + direccion.getCodigoPostal());
                 } else {
-                    detalles.put("direccion", "Dirección no disponible");
+                    detalles.put(DIRECCION, DIRECCION_NO_DISPONIBLE);
                 }
             } else {
-                detalles.put("direccion", "Dirección no disponible");
+                detalles.put(DIRECCION, DIRECCION_NO_DISPONIBLE);
             }
             return detalles;
         }).toList();
@@ -246,10 +248,10 @@ public class GestorPedidos {
                 detalles.put(RESTAURANTE, nombreRestaurante + " (" + direccionRestaurante + ")");
                 Direccion direccion = servicioEntrega.getDireccion();
                 if (direccion != null) {
-                    detalles.put("direccion",
+                    detalles.put(DIRECCION,
                             direccion.getCalle() + ", " + direccion.getCiudad() + ", " + direccion.getCodigoPostal());
                 } else {
-                    detalles.put("direccion", "Dirección no disponible");
+                    detalles.put(DIRECCION, DIRECCION_NO_DISPONIBLE);
                 }
                 return detalles;
             }).toList();
