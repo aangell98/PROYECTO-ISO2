@@ -6,7 +6,6 @@ import jakarta.persistence.PersistenceContext;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import jakarta.persistence.Query;
 import org.springframework.stereotype.Repository;
