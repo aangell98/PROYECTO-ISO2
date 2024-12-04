@@ -16,6 +16,7 @@ import jakarta.transaction.Transactional;
 public class PedidoDAO extends EntidadDAO<Pedido> {
 
     private static final String CLIENTE_ID_PARAM = "clienteId";
+    private static final String BASE_QUERY = "SELECT p FROM Pedido p WHERE p.cliente.id = :";
 
     @PersistenceContext
     private EntityManager pedidoEntityManager;
@@ -34,7 +35,7 @@ public class PedidoDAO extends EntidadDAO<Pedido> {
 
     public List<Pedido> findPedidosEnCurso(Long clienteId) {
         return pedidoEntityManager.createQuery(
-            "SELECT p FROM Pedido p WHERE p.cliente.id = :" + CLIENTE_ID_PARAM + " AND p.estado NOT IN (:estadoEntregado, :estadoCancelado)",
+            BASE_QUERY + CLIENTE_ID_PARAM + " AND p.estado NOT IN (:estadoEntregado, :estadoCancelado)",
             Pedido.class)
             .setParameter(CLIENTE_ID_PARAM, clienteId)
             .setParameter("estadoEntregado", EstadoPedido.ENTREGADO)
@@ -49,7 +50,7 @@ public class PedidoDAO extends EntidadDAO<Pedido> {
 
     public List<Pedido> findPedidosEntregados(Long clienteId) {
         return pedidoEntityManager.createQuery(
-            "SELECT p FROM Pedido p WHERE p.cliente.id = :" + CLIENTE_ID_PARAM + " AND p.estado = :estadoEntregado",
+            BASE_QUERY + CLIENTE_ID_PARAM + " AND p.estado = :estadoEntregado",
             Pedido.class)
             .setParameter(CLIENTE_ID_PARAM, clienteId)
             .setParameter("estadoEntregado", EstadoPedido.ENTREGADO)
@@ -66,7 +67,7 @@ public class PedidoDAO extends EntidadDAO<Pedido> {
 
     public List<Pedido> findPedidosCancelados(Long clienteId) {
         return pedidoEntityManager.createQuery(
-            "SELECT p FROM Pedido p WHERE p.cliente.id = :" + CLIENTE_ID_PARAM + " AND p.estado = :estadoCancelado",
+            BASE_QUERY + CLIENTE_ID_PARAM + " AND p.estado = :estadoCancelado",
             Pedido.class)
             .setParameter(CLIENTE_ID_PARAM, clienteId)
             .setParameter("estadoCancelado", EstadoPedido.CANCELADO)
