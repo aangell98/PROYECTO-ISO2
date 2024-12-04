@@ -26,6 +26,8 @@ public class GestorClientes {
     private static final String REPARTIDOR = "repartidor";
     private static final String VALORACION_REPARTIDOR = "valoracionRepartidor";
     private static final String RESTAURANTE = "restaurante";
+    private static final String ESTADO = "estado"; // Definir constante para "estado"
+
     @Autowired
     private IUBusqueda iuBusqueda;
     @Autowired
@@ -88,7 +90,7 @@ public class GestorClientes {
                 Map<String, Object> detalles = new HashMap<>();
                 detalles.put("id", pedido.getId());
                 detalles.put(RESTAURANTE, pedido.getRestaurante().getNombre());
-                detalles.put("estado", pedido.getEstado());
+                detalles.put(ESTADO, pedido.getEstado());
                 Optional<ServicioEntrega> servicioEntregaOpt = iuPedido.obtenerServicioEntregaPorPedido(pedido.getId());
                 if (servicioEntregaOpt.isPresent()) {
                     ServicioEntrega servicioEntrega = servicioEntregaOpt.get();
@@ -141,7 +143,7 @@ public class GestorClientes {
                 Map<String, Object> detalles = new HashMap<>();
                 detalles.put("id", pedido.getId());
                 detalles.put(RESTAURANTE, pedido.getRestaurante().getNombre());
-                detalles.put("estado", pedido.getEstado());
+                detalles.put(ESTADO, pedido.getEstado());
                 detalles.put("fecha", pedido.getFecha()); // Añadir la fecha del pedido
                 Optional<ServicioEntrega> servicioEntregaOpt = iuPedido.obtenerServicioEntregaPorPedido(pedido.getId());
                 if (servicioEntregaOpt.isPresent()) {
@@ -231,7 +233,7 @@ public class GestorClientes {
                 Map<String, Object> detalles = new HashMap<>();
                 detalles.put("id", pedido.getId());
                 detalles.put(RESTAURANTE, pedido.getRestaurante().getNombre());
-                detalles.put("estado", pedido.getEstado());
+                detalles.put(ESTADO, pedido.getEstado());
                 detalles.put("fecha", pedido.getFecha()); // Añadir la fecha del pedido
                 return detalles;
             }).toList();
