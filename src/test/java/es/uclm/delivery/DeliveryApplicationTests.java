@@ -8,6 +8,8 @@ class DeliveryApplicationTests {
 
 	@Test
 	void contextLoads() {
+		// Este método está vacío porque su propósito es simplemente verificar
+        // que el contexto de la aplicación se carga correctamente.
 	}
 
 }
