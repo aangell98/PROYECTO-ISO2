@@ -30,19 +30,16 @@ class UsuarioDAOTest {
     @Mock
     private TypedQuery<String> roleTypedQuery;
 
-    private Usuario usuario;
-
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        usuario = crearUsuario(USERNAME_EXISTENTE, "admin");
     }
 
     private Usuario crearUsuario(String username, String role) {
-        Usuario usuario = new Usuario();
-        usuario.setUsername(username);
-        usuario.setRole(role);
-        return usuario;
+        Usuario newUser = new Usuario();
+        newUser.setUsername(username);
+        newUser.setRole(role);
+        return newUser;
     }
 
     @Test
