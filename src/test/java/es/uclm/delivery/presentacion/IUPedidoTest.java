@@ -15,7 +15,7 @@ import es.uclm.delivery.dominio.entidades.*;
 import es.uclm.delivery.persistencia.PedidoDAO;
 import es.uclm.delivery.persistencia.ServicioEntregaDAO;
 
-public class IUPedidoTest {
+class IUPedidoTest {
 
     private static final Long CLIENTE_ID = 1L;
     private static final Long PEDIDO_ID = 1L;

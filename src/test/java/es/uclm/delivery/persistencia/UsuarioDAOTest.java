@@ -35,13 +35,6 @@ class UsuarioDAOTest {
         MockitoAnnotations.openMocks(this);
     }
 
-    private Usuario crearUsuario(String username, String role) {
-        Usuario newUser = new Usuario();
-        newUser.setUsername(username);
-        newUser.setRole(role);
-        return newUser;
-    }
-
     @Test
     void testEncontrarUser_UsernameValidoInexistente() {
         when(entityManager.createQuery(anyString(), eq(Usuario.class))).thenReturn(usuarioTypedQuery);
