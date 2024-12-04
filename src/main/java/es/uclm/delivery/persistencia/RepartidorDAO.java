@@ -26,7 +26,7 @@ public class RepartidorDAO extends EntidadDAO<Repartidor> {
         Query query = repartidorEntityManager.createNativeQuery(sql);
         List<?> resultList = query.getResultList();
         return resultList.stream()
-                .filter(obj -> obj instanceof Number)
+                .filter(Number.class::isInstance)
                 .map(obj -> ((Number) obj).longValue())
                 .collect(Collectors.toList());
     }
