@@ -40,9 +40,9 @@ public class GestorClientes {
 
     @GetMapping("/buscar_restaurantes")
     public List<Restaurante> buscarRestaurantes(@RequestParam("codigoPostal") String codigoPostal) {
-        System.out.println("Código postal recibido: " + codigoPostal);
+        logger.info("Código postal recibido: {}", codigoPostal);
         List<Restaurante> restaurantes = iuBusqueda.buscarRestaurantesPorCodigoPostal(codigoPostal);
-        System.out.println("Restaurantes encontrados: " + restaurantes.size());
+        logger.info("Restaurantes encontrados: {}", restaurantes.size());
         return restaurantes;
     }
     @PostMapping("/agregar_favorito")
