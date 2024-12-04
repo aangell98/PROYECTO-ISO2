@@ -18,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.security.Principal;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -363,7 +364,9 @@ class GestorClientesTest {
         Cliente cliente = new Cliente(); // Simula un cliente
         cliente.setId(1L); // Asegúrate de que el cliente tiene un ID
         Pedido pedido1 = crearPedidoConRestaurante();
+        pedido1.setFecha(new Date()); // Añadir fecha al pedido
         Pedido pedido2 = crearPedidoConRestaurante();
+        pedido2.setFecha(new Date()); // Añadir fecha al pedido
         List<Pedido> pedidosAnteriores = List.of(pedido1, pedido2);
         when(iuBusqueda.obtenerClienteActual()).thenReturn(cliente);
         when(iuPedido.obtenerPedidosEntregados(cliente.getId())).thenReturn(pedidosAnteriores);
@@ -374,6 +377,9 @@ class GestorClientesTest {
         // Assert
         assertEquals(HttpStatus.OK, result.getStatusCode());
         assertTrue(result.getBody() instanceof List);
+        List<Map<String, Object>> body = (List<Map<String, Object>>) result.getBody();
+        assertEquals(2, body.size());
+        assertNotNull(body.get(0).get("fecha")); // Verificar que la fecha no sea nula
         verify(iuPedido, times(1)).obtenerPedidosEntregados(cliente.getId());
     }
 
@@ -405,8 +411,10 @@ class GestorClientesTest {
         cliente.setId(1L);
         Pedido pedido1 = crearPedidoConRestaurante();
         pedido1.setEstado(EstadoPedido.CANCELADO);
+        pedido1.setFecha(new Date()); // Añadir fecha al pedido
         Pedido pedido2 = crearPedidoConRestaurante();
         pedido2.setEstado(EstadoPedido.CANCELADO);
+        pedido2.setFecha(new Date()); // Añadir fecha al pedido
         List<Pedido> pedidosCancelados = List.of(pedido1, pedido2);
         when(iuBusqueda.obtenerClienteActual()).thenReturn(cliente);
         when(iuPedido.obtenerPedidosCancelados(cliente.getId())).thenReturn(pedidosCancelados);
@@ -419,6 +427,7 @@ class GestorClientesTest {
         assertTrue(result.getBody() instanceof List);
         List<Map<String, Object>> body = (List<Map<String, Object>>) result.getBody();
         assertEquals(2, body.size());
+        assertNotNull(body.get(0).get("fecha")); // Verificar que la fecha no sea nula
         verify(iuPedido, times(1)).obtenerPedidosCancelados(cliente.getId());
     }
 

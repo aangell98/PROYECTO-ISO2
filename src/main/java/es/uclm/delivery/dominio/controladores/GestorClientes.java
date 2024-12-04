@@ -141,6 +141,7 @@ public class GestorClientes {
                 detalles.put("id", pedido.getId());
                 detalles.put("restaurante", pedido.getRestaurante().getNombre());
                 detalles.put("estado", pedido.getEstado());
+                detalles.put("fecha", pedido.getFecha()); // Añadir la fecha del pedido
                 Optional<ServicioEntrega> servicioEntregaOpt = iuPedido.obtenerServicioEntregaPorPedido(pedido.getId());
                 if (servicioEntregaOpt.isPresent()) {
                     ServicioEntrega servicioEntrega = servicioEntregaOpt.get();
@@ -186,7 +187,8 @@ public class GestorClientes {
     }
 
     @PostMapping("/guardar_direccion")
-    public ResponseEntity<Object> guardarDireccion(@RequestBody(required = false) Direccion direccion, Principal principal) {
+    public ResponseEntity<Object> guardarDireccion(@RequestBody(required = false) Direccion direccion,
+            Principal principal) {
         if (direccion == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Dirección inválida");
         }
@@ -229,6 +231,7 @@ public class GestorClientes {
                 detalles.put("id", pedido.getId());
                 detalles.put("restaurante", pedido.getRestaurante().getNombre());
                 detalles.put("estado", pedido.getEstado());
+                detalles.put("fecha", pedido.getFecha()); // Añadir la fecha del pedido
                 return detalles;
             }).toList();
             logger.info("Pedidos cancelados encontrados: {}", pedidosDetalles.size());

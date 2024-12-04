@@ -488,3 +488,25 @@ footer{
     font-size: 2em;
     cursor: pointer;
 }
+
+.order-cancelados h2 {
+    text-align: center;
+}
+
+.order-cancelados ul {
+    list-style-type: none;
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    margin-right: 20px;
+}
+
+.order-cancelados li {
+    margin-bottom: 30px;
+    margin-top: 30px;
+    background-color: #fa9302;
+    border-radius: 8px;
+    padding: 10px;
+    height: 161px;
+    padding-top: 40px;
+}

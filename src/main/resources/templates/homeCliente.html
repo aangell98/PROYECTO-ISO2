@@ -74,7 +74,7 @@
     <script>
         $(document).ready(function () {
             let favoritos = [];
-
+    
             $('#searchForm').on('submit', function (event) {
                 event.preventDefault();
                 var codigoPostal = $('#codigoPostal').val();
@@ -108,7 +108,7 @@
                     }
                 });
             });
-
+    
             function cargarPedidosEnCurso() {
                 console.log("Cargando pedidos en curso...");
                 $.ajax({
@@ -143,7 +143,7 @@
                     }
                 });
             }
-
+    
             function cargarPedidosAnteriores() {
                 console.log("Cargando pedidos anteriores...");
                 $.ajax({
@@ -158,6 +158,7 @@
                                     <li id="pedido-${pedido.id}">
                                         <p><strong>Restaurante:</strong> ${pedido.restaurante}</p>
                                         <p><strong>Estado:</strong> ${pedido.estado}</p>
+                                        <p><strong>Fecha:</strong> ${new Date(pedido.fecha).toLocaleDateString()}</p>
                                         <p><strong>Repartidor:</strong> ${pedido.repartidor}</p>
                                     </li>`;
                             });
@@ -172,7 +173,7 @@
                     }
                 });
             }
-
+    
             function cargarPedidosCancelados() {
                 console.log("Cargando pedidos cancelados...");
                 $.ajax({
@@ -187,6 +188,7 @@
                                     <li id="pedido-${pedido.id}">
                                         <p><strong>Restaurante:</strong> ${pedido.restaurante}</p>
                                         <p><strong>Estado:</strong> ${pedido.estado}</p>
+                                        <p><strong>Fecha:</strong> ${new Date(pedido.fecha).toLocaleDateString()}</p>
                                     </li>`;
                             });
                             $('#cancelledOrdersList').html(pedidosHtml);
@@ -200,13 +202,13 @@
                     }
                 });
             }
-
+    
             function generarEstrellas(valoracion) {
                 var estrellasHtml = '';
                 var estrellasCompletas = Math.floor(valoracion);
                 var mediaEstrella = valoracion % 1 >= 0.5 ? 1 : 0;
                 var estrellasVacias = 5 - estrellasCompletas - mediaEstrella;
-
+    
                 for (var i = 0; i < estrellasCompletas; i++) {
                     estrellasHtml += '<i class="fas fa-star"></i>';
                 }
@@ -218,7 +220,7 @@
                 }
                 return estrellasHtml;
             }
-
+    
             window.confirmarRecepcion = function (idPedido) {
                 console.log("Confirmando recepción del pedido:", idPedido);
                 $.ajax({
@@ -237,7 +239,7 @@
                     }
                 });
             };
-
+    
             window.cancelarPedido = function (idPedido) {
                 console.log("Cancelando el pedido:", idPedido);
                 $.ajax({
@@ -256,7 +258,7 @@
                     }
                 });
             };
-
+    
             function mostrarVentanaValoracion(idPedido) {
                 const valoracionHtml = `
                     <div id="valoracionModal" class="modal">
@@ -278,7 +280,7 @@
                 `;
                 $('body').append(valoracionHtml);
                 $('#valoracionModal').show();
-
+    
                 $('.estrellas i').on('click', function() {
                     var valoracion = $(this).data('value');
                     $('#valoracionInput').val(valoracion);
@@ -291,11 +293,11 @@
                     });
                 });
             }
-
+    
             window.cerrarVentanaValoracion = function () {
                 $('#valoracionModal').remove();
             };
-
+    
             window.enviarValoracion = function (idPedido) {
                 const valoracion = $('#valoracionInput').val() || 0;
                 console.log("Enviando valoración:", valoracion, "para el pedido:", idPedido);
@@ -315,11 +317,11 @@
                     }
                 });
             };
-
+    
             cargarPedidosEnCurso();
             cargarPedidosAnteriores();
             cargarPedidosCancelados();
-
+    
             function cargarFavoritos() {
                 console.log("Cargando favoritos...");
                 $.ajax({
@@ -328,7 +330,7 @@
                     success: function (data) {
                         console.log("Favoritos recibidos:", data);
                         favoritos = data.filter(restaurante => restaurante.nombre && restaurante.direccion); // Filtrar solo restaurantes válidos
-
+    
                         if (favoritos.length > 0) {
                             $('#favorites').show(); // Mostrar la sección si hay favoritos válidos
                             var favoritosHtml = '';
@@ -348,7 +350,7 @@
                     }
                 });
             }
-
+    
             window.agregarFavorito = function (idRestaurante) {
                 console.log("Agregando favorito:", idRestaurante);
                 $.ajax({
@@ -365,7 +367,7 @@
                     }
                 });
             };
-
+    
             window.eliminarFavorito = function (idRestaurante) {
                 console.log("Eliminando favorito:", idRestaurante);
                 $.ajax({
@@ -384,21 +386,21 @@
                     }
                 });
             };
-
+    
             window.realizarPedido = function (idRestaurante) {
                 console.log("Realizando pedido para el restaurante:", idRestaurante);
                 window.location.href = '/realizar_pedido?restauranteId=' + idRestaurante;
             };
-
+    
             $('#favorites').hide();
             cargarFavoritos();
         });
-
+    
         function searchRestaurants() {
             const query = document.getElementById('search').value;
             console.log('Buscando restaurantes para:', query);
         }
-
+    
         $(document).ready(function () {
             cargarPedidosEnCurso();
             cargarPedidosAnteriores();
