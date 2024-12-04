@@ -40,17 +40,18 @@ public class GestorRestaurantes {
     @PostMapping("/eliminarCartaMenu")
     public String eliminarMenu(@RequestParam("menuId") Long menuId, RedirectAttributes redirectAttributes) {
         if (menuId == null) {
-            redirectAttributes.addFlashAttribute(ERROR, "Error al eliminar el menú.");
+            redirectAttributes.addFlashAttribute(ERROR, "ID de menú no proporcionado.");
             return REDIRECT_HOME_RESTAURANT;
         }
 
         int resultado = cartaMenuDAO.eliminarCartaMenuPorId(menuId);
         if (resultado == 1) {
             redirectAttributes.addFlashAttribute("mensaje", "Menú eliminado con éxito.");
+            return REDIRECT_HOME_RESTAURANT;
         } else {
             redirectAttributes.addFlashAttribute(ERROR, "Error al eliminar el menú.");
+            return REDIRECT_HOME_RESTAURANT;
         }
-        return REDIRECT_HOME_RESTAURANT;
     }
 
     @PostMapping("/eliminarItemMenu")
@@ -128,17 +129,17 @@ public class GestorRestaurantes {
             CartaMenu original = cartaExistente.get();
             original.setNombre(cartaMenu.getNombre());
             original.setDescripcion(cartaMenu.getDescripcion());
-    
+
             // Inicializar la lista de ítems si es null
             if (original.getItems() == null) {
                 original.setItems(new ArrayList<>());
             }
-    
+
             // Convertir la colección a una lista mutable
             List<ItemMenu> itemsActuales = new ArrayList<>(original.getItems());
             List<ItemMenu> itemsNuevos = itemMenuDAO.findAllById(itemsIds);
             itemsActuales.removeIf(item -> !itemsNuevos.contains(item));
-    
+
             // Asociar los nuevos platos al menú
             original.setItems(itemsNuevos);
             cartaMenuDAO.update(original);
