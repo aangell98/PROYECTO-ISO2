@@ -235,11 +235,11 @@ void testObtenerClienteActual_PrincipalNoUserDetails() {
 
     SecurityContextHolder.setContext(securityContext);
 
-    Cliente cliente = new Cliente();
-    cliente.setUsuario(new Usuario());
-    cliente.getUsuario().setUsername(principalName);
+    Cliente mockCliente = new Cliente();
+    mockCliente.setUsuario(new Usuario());
+    mockCliente.getUsuario().setUsername(principalName);
 
-    when(clienteDAO.findByUsername(principalName)).thenReturn(Optional.of(cliente));
+    when(clienteDAO.findByUsername(principalName)).thenReturn(Optional.of(mockCliente));
 
     Cliente result = iuBusqueda.obtenerClienteActual();
 
