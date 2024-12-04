@@ -49,34 +49,34 @@ class IUEdicionMenuTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        restaurante = crearRestaurante();
-        cartaMenu = crearCartaMenu();
-        itemMenu = crearItemMenu();
+        restaurante = crearMockRestaurante();
+        cartaMenu = crearMockCartaMenu();
+        itemMenu = crearMockItemMenu();
     }
 
-    private Restaurante crearRestaurante() {
-        Restaurante restaurante = new Restaurante();
-        restaurante.setId(RESTAURANTE_ID);
-        restaurante.setNombre(RESTAURANTE_NOMBRE);
-        restaurante.setDireccion(RESTAURANTE_DIRECCION);
-        return restaurante;
+    private Restaurante crearMockRestaurante() {
+        Restaurante mockRestaurante = new Restaurante();
+        mockRestaurante.setId(RESTAURANTE_ID);
+        mockRestaurante.setNombre(RESTAURANTE_NOMBRE);
+        mockRestaurante.setDireccion(RESTAURANTE_DIRECCION);
+        return mockRestaurante;
     }
 
-    private CartaMenu crearCartaMenu() {
-        CartaMenu cartaMenu = new CartaMenu();
-        cartaMenu.setId(CARTA_MENU_ID);
-        cartaMenu.setNombre(CARTA_MENU_NOMBRE);
-        cartaMenu.setDescripcion(CARTA_MENU_DESCRIPCION);
-        return cartaMenu;
+    private CartaMenu crearMockCartaMenu() {
+        CartaMenu mockCartaMenu = new CartaMenu();
+        mockCartaMenu.setId(CARTA_MENU_ID);
+        mockCartaMenu.setNombre(CARTA_MENU_NOMBRE);
+        mockCartaMenu.setDescripcion(CARTA_MENU_DESCRIPCION);
+        return mockCartaMenu;
     }
 
-    private ItemMenu crearItemMenu() {
-        ItemMenu itemMenu = new ItemMenu();
-        itemMenu.setId(ITEM_MENU_ID);
-        itemMenu.setNombre(ITEM_MENU_NOMBRE);
-        itemMenu.setDescripcion(ITEM_MENU_DESCRIPCION);
-        itemMenu.setPrecio(ITEM_MENU_PRECIO);
-        return itemMenu;
+    private ItemMenu crearMockItemMenu() {
+        ItemMenu mockItemMenu = new ItemMenu();
+        mockItemMenu.setId(ITEM_MENU_ID);
+        mockItemMenu.setNombre(ITEM_MENU_NOMBRE);
+        mockItemMenu.setDescripcion(ITEM_MENU_DESCRIPCION);
+        mockItemMenu.setPrecio(ITEM_MENU_PRECIO);
+        return mockItemMenu;
     }
 
     // Prueba para editar un restaurante
