@@ -92,7 +92,7 @@ button[onclick="location.href='/login'"] {
 
 .featured-restaurants {
     margin-top: 20px;
-    width: 100%;
+    width: 99%;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
@@ -456,12 +456,12 @@ footer{
     flex-wrap: wrap; /* Para manejar el caso en dispositivos pequeños */
 }
 
-.order-sections, .order-anteriores {
-    flex: 1; /* Las dos secciones compartirán el mismo ancho */
+.order-sections, .order-anteriores, .order-cancelados {
+    flex: 1; /* compartirán el mismo ancho */
     min-width: 300px; /* Ancho mínimo para que se vean bien en pantallas pequeñas */
 }
 
-.order-sections h2, .order-anteriores h2 {
+.order-sections h2, .order-anteriores h2, .order-cancelados h2 {
     text-align: center;
 }
 
@@ -509,4 +509,13 @@ footer{
     padding: 10px;
     height: 161px;
     padding-top: 40px;
+}
+
+.favorite-restaurants {
+    margin-left: 110px;
+}
+
+.favorite-restaurants h2 {
+    text-align: center;
+    margin-left: -80px;
 }
