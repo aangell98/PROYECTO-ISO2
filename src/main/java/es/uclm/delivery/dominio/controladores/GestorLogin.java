@@ -20,6 +20,7 @@ import java.security.NoSuchAlgorithmException;
 public class GestorLogin {
 
     private static final Logger log = LoggerFactory.getLogger(GestorLogin.class);
+    private static final String USER_EXISTS_WARNING = "Intento de registro fallido. El usuario ya existe: {}";
 
     @Autowired
     private UsuarioDAO usuarioDAO;
@@ -67,7 +68,7 @@ public class GestorLogin {
 
     public boolean registrar(String username, String password, String role) {
         if (usuarioDAO.select(username).isPresent()) {
-            log.warn("Intento de registro fallido. El usuario ya existe: {}", username);
+            log.warn(USER_EXISTS_WARNING, username);
             return false; // El usuario ya existe
         }
         Usuario usuario = new Usuario();
@@ -81,7 +82,7 @@ public class GestorLogin {
 
     public boolean registrarCliente(String username, String password, String role, String nombre, String apellidos, String dni) {
         if (usuarioDAO.select(username).isPresent()) {
-            log.warn("Intento de registro fallido. El usuario ya existe: {}", username);
+            log.warn(USER_EXISTS_WARNING, username);
             return false; // El usuario ya existe
         }
         Usuario usuario = new Usuario();
@@ -101,7 +102,7 @@ public class GestorLogin {
 
     public boolean registrarRepartidor(String username, String password, String role, String nombre, String apellidos, String dni) {
         if (usuarioDAO.select(username).isPresent()) {
-            log.warn("Intento de registro fallido. El usuario ya existe: {}", username);
+            log.warn(USER_EXISTS_WARNING, username);
             return false; // El usuario ya existe
         }
         Usuario usuario = new Usuario();
@@ -121,7 +122,7 @@ public class GestorLogin {
 
     public boolean registrarRestaurante(String username, String password, String role, String nombre, String direccion){
         if (usuarioDAO.select(username).isPresent()) {
-            log.warn("Intento de registro fallido. El usuario ya existe: {}", username);
+            log.warn(USER_EXISTS_WARNING, username);
             return false; // El usuario ya existe
         }
         Usuario usuario = new Usuario();
