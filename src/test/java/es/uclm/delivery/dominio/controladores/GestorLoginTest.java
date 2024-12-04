@@ -1,12 +1,14 @@
 package es.uclm.delivery.dominio.controladores;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 import es.uclm.delivery.dominio.entidades.Cliente;
 import es.uclm.delivery.dominio.entidades.Repartidor;
 import es.uclm.delivery.dominio.entidades.Restaurante;
 import es.uclm.delivery.dominio.entidades.Usuario;
+import es.uclm.delivery.dominio.excepciones.CifradoException;
 import es.uclm.delivery.persistencia.ClienteDAO;
 import es.uclm.delivery.persistencia.RepartidorDAO;
 import es.uclm.delivery.persistencia.RestauranteDAO;
@@ -18,6 +20,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.Optional;
 
 class GestorLoginTest {
@@ -151,5 +154,23 @@ class GestorLoginTest {
         when(usuarioDAO.select(EXISTING_USER)).thenReturn(Optional.of(new Usuario()));
 
         assertFalse(gestorLogin.registrarRestaurante(EXISTING_USER, PASSWORD, RESTAURANTE_ROLE, RESTAURANTE_NAME, RESTAURANTE_ADDRESS));
+    }
+
+     @Test
+    void testCifrarPassword_LanzaCifradoException() {
+        // Arrange
+        GestorLogin gestorLoginWithException = new GestorLogin() {
+            @Override
+            public String cifrarPassword(String password) {
+                throw new CifradoException("Error al cifrar la contraseña", new NoSuchAlgorithmException());
+            }
+        };
+
+        // Act & Assert
+        CifradoException exception = assertThrows(CifradoException.class, () -> {
+            gestorLoginWithException.cifrarPassword("password123");
+        });
+
+        assertEquals("Error al cifrar la contraseña", exception.getMessage());
     }
 }

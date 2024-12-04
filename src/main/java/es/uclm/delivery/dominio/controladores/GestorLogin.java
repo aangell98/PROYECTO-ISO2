@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import es.uclm.delivery.dominio.entidades.Usuario;
+import es.uclm.delivery.dominio.excepciones.CifradoException;
 import es.uclm.delivery.dominio.entidades.Cliente;
 import es.uclm.delivery.dominio.entidades.Repartidor;
 import es.uclm.delivery.dominio.entidades.Restaurante;
@@ -46,7 +47,7 @@ public class GestorLogin {
             }
             return hexString.toString();
         } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
+            throw new CifradoException("Error al cifrar la contraseña", e);
         }
     }
 
