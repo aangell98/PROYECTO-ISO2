@@ -32,7 +32,7 @@ class DireccionDAOTest {
         direccionDAO = new DireccionDAO();
 
         // Configuración del EntityManager mediante reflexión
-        Field entityManagerField = DireccionDAO.class.getDeclaredField("entityManager");
+        Field entityManagerField = DireccionDAO.class.getDeclaredField("direccionEntityManager");
         entityManagerField.setAccessible(true);
         entityManagerField.set(direccionDAO, mockEntityManager);
     }
