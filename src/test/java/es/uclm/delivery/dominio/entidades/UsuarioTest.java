@@ -10,8 +10,7 @@ class UsuarioTest {
     private static final String ROLE_ADMIN_WITH_PREFIX = "ROLE_ADMIN";
 
     private Usuario crearUsuario() {
-        Usuario usuario = new Usuario();
-        return usuario;
+        return new Usuario();
     }
 
     @Test
