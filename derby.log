@@ -1,7 +1,7 @@
 ----------------------------------------------------------------
-Wed Dec 04 13:00:50 CET 2024:
-Booting Derby version The Apache Software Foundation - Apache Derby - 10.17.1.0 - (1913217): instance a816c00e-0193-918b-5870-000003ce32a0 
-on database directory C:\Users\angel\Documents\GitHub\PROYECTO-ISO2\database with class loader jdk.internal.loader.ClassLoaders$AppClassLoader@5a07e868 
+Wed Dec 04 21:17:47 CET 2024:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.17.1.0 - (1913217): instance a816c00e-0193-9352-560b-0000026b40d8 
+on database directory C:\Users\angel\Documents\GitHub\PROYECTO-ISO2\database with class loader jdk.internal.loader.ClassLoaders$AppClassLoader@33909752 
 Loaded from file:/C:/Users/angel/.m2/repository/org/apache/derby/derby/10.17.1.0/derby-10.17.1.0.jar
 java.vendor=Oracle Corporation
 java.runtime.version=23+37-2369
@@ -10,9 +10,4 @@ os.name=Windows 11
 os.arch=amd64
 os.version=10.0
 derby.system.home=null
-------------  Begin Error Message -------------
-
-System may be in a inconsistent state, missing file C:\Users\angel\Documents\GitHub\PROYECTO-ISO2\database\log\log1.dat
-------------  End Error Message -------------
-
 Database Class Loader started - derby.database.classpath=''

@@ -26,6 +26,7 @@ C:\Users\angel\Documents\GitHub\PROYECTO-ISO2\src\main\java\es\uclm\delivery\dom
 C:\Users\angel\Documents\GitHub\PROYECTO-ISO2\src\main\java\es\uclm\delivery\dominio\entidades\ServicioEntrega.java
 C:\Users\angel\Documents\GitHub\PROYECTO-ISO2\src\main\java\es\uclm\delivery\dominio\entidades\TipoItemMenu.java
 C:\Users\angel\Documents\GitHub\PROYECTO-ISO2\src\main\java\es\uclm\delivery\dominio\entidades\Usuario.java
+C:\Users\angel\Documents\GitHub\PROYECTO-ISO2\src\main\java\es\uclm\delivery\dominio\excepciones\CifradoException.java
 C:\Users\angel\Documents\GitHub\PROYECTO-ISO2\src\main\java\es\uclm\delivery\persistencia\CartaMenuDAO.java
 C:\Users\angel\Documents\GitHub\PROYECTO-ISO2\src\main\java\es\uclm\delivery\persistencia\ClienteDAO.java
 C:\Users\angel\Documents\GitHub\PROYECTO-ISO2\src\main\java\es\uclm\delivery\persistencia\DireccionDAO.java

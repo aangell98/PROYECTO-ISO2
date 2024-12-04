@@ -15,6 +15,7 @@ es\uclm\delivery\dominio\entidades\EstadoPedido.class
 es\uclm\delivery\persistencia\ItemMenuDAO.class
 es\uclm\delivery\persistencia\RepartidorDAO.class
 es\uclm\delivery\dominio\entidades\Carrito.class
+es\uclm\delivery\dominio\excepciones\CifradoException.class
 es\uclm\delivery\persistencia\CartaMenuDAO.class
 es\uclm\delivery\dominio\entidades\ClienteFavoritos.class
 es\uclm\App.class
