@@ -31,6 +31,8 @@ import es.uclm.delivery.dominio.entidades.*;
 @Controller
 public class GestorPedidos {
     private static final Logger logger = LoggerFactory.getLogger(GestorPedidos.class);
+    private static final String RESTAURANTE = "restaurante";
+    private static final String CLIENTE_NO_ENCONTRADO = "Cliente no encontrado";
 
     @ModelAttribute("carrito")
     public Carrito crearCarrito() {
@@ -78,7 +80,7 @@ public class GestorPedidos {
             cartaMenu.setPrecioTotal(precioTotal); // Añade un campo `precioTotal` en la clase CartaMenu si no existe
         });
         carrito.setRestauranteId(restauranteId); // Almacenar el ID del restaurante en el carrito
-        model.addAttribute("restaurante", restaurante);
+        model.addAttribute(RESTAURANTE, restaurante);
         return "realizarPedido";
     }
 
@@ -138,8 +140,8 @@ public class GestorPedidos {
         try {
             Cliente clienteActual = iuBusqueda.obtenerClienteActual();
             if (clienteActual == null || clienteActual.getUsuario() == null) {
-                logger.error("Cliente no encontrado");
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cliente no encontrado");
+                logger.error(CLIENTE_NO_ENCONTRADO);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(CLIENTE_NO_ENCONTRADO);
             }
             String username = clienteActual.getUsuario().getUsername();
             Optional<Cliente> clienteOpt = clienteDAO.findByUsername(username);
@@ -182,8 +184,8 @@ public class GestorPedidos {
                     return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Dirección no encontrada");
                 }
             } else {
-                logger.error("Cliente no encontrado");
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cliente no encontrado");
+                logger.error(CLIENTE_NO_ENCONTRADO);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(CLIENTE_NO_ENCONTRADO);
             }
         } catch (Exception e) {
             logger.error("Error al confirmar el pedido: ", e);
@@ -207,7 +209,7 @@ public class GestorPedidos {
                 detalles.put("cliente", nombre + " " + apellidos);
                 String nombreRestaurante = servicioEntrega.getPedido().getRestaurante().getNombre();
                 String direccionRestaurante = servicioEntrega.getPedido().getRestaurante().getDireccion();
-                detalles.put("restaurante", nombreRestaurante + " (" + direccionRestaurante + ")");
+                detalles.put(RESTAURANTE, nombreRestaurante + " (" + direccionRestaurante + ")");
                 Direccion direccion = servicioEntrega.getDireccion();
                 if (direccion != null) {
                     detalles.put("direccion",
@@ -241,7 +243,7 @@ public class GestorPedidos {
                 detalles.put("cliente", nombre + " " + apellidos);
                 String nombreRestaurante = servicioEntrega.getPedido().getRestaurante().getNombre();
                 String direccionRestaurante = servicioEntrega.getPedido().getRestaurante().getDireccion();
-                detalles.put("restaurante", nombreRestaurante + " (" + direccionRestaurante + ")");
+                detalles.put(RESTAURANTE, nombreRestaurante + " (" + direccionRestaurante + ")");
                 Direccion direccion = servicioEntrega.getDireccion();
                 if (direccion != null) {
                     detalles.put("direccion",
