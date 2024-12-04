@@ -23,6 +23,7 @@ import java.util.Optional;
 public class GestorClientes {
     private static final Logger logger = LoggerFactory.getLogger(GestorClientes.class);
     private static final String REPARTIDOR = "repartidor";
+    private static final String VALORACION_REPARTIDOR = "valoracionRepartidor";
     @Autowired
     private IUBusqueda iuBusqueda;
     @Autowired
@@ -91,14 +92,14 @@ public class GestorClientes {
                     Repartidor repartidor = servicioEntrega.getRepartidor();
                     if (repartidor != null) {
                         detalles.put(REPARTIDOR, repartidor.getNombre() + " " + repartidor.getApellidos());
-                        detalles.put("valoracionRepartidor", repartidor.getEficiencia());
+                        detalles.put(VALORACION_REPARTIDOR, repartidor.getEficiencia());
                     } else {
                         detalles.put(REPARTIDOR, "Buscando repartidor...");
-                        detalles.put("valoracionRepartidor", 0);
+                        detalles.put(VALORACION_REPARTIDOR, 0);
                     }
                 } else {
                     detalles.put(REPARTIDOR, "Buscando repartidor...");
-                    detalles.put("valoracionRepartidor", 0);
+                    detalles.put(VALORACION_REPARTIDOR, 0);
                 }
                 return detalles;
             }).toList();
