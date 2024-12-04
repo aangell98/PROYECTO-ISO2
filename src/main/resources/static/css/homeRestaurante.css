@@ -240,6 +240,8 @@ main section button:hover span {
     /* Fondo semi-transparente */
     animation: fadeIn 0.5s;
     /* Animación de aparición */
+    margin-top: -80px;
+    padding-bottom: 80px;
 }
 
 /* Centrar el contenido del modal */
@@ -359,7 +361,7 @@ main section button:hover span {
     /* Reduce el margen */
     text-align: center;
     /* Centra el texto dentro del botón */
-    width: 175px;
+    width: 150px;
     /* Ajusta el ancho del botón */
     height: 35px;
     font-size: 0.8em;
