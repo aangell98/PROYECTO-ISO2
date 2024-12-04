@@ -3,7 +3,8 @@ body {
     font-family: Arial, sans-serif;
 }
 
-header h1, main h2 {
+header h1,
+main h2 {
     text-align: center;
 }
 
@@ -11,37 +12,51 @@ header h1, main h2 {
     position: absolute;
     top: 20px;
     right: 20px;
-    background-color: #000; /* Botones negros */
-    color: #fff; /* Texto blanco */
-    border: none; /* Sin borde */
-    padding: 10px 20px; /* Espaciado interno del botón */
-    border-radius: 8px; /* Bordes redondeados */
-    cursor: pointer; /* Cambia el cursor al pasar sobre el botón */
+    background-color: #000;
+    /* Botones negros */
+    color: #fff;
+    /* Texto blanco */
+    border: none;
+    /* Sin borde */
+    padding: 10px 20px;
+    /* Espaciado interno del botón */
+    border-radius: 8px;
+    /* Bordes redondeados */
+    cursor: pointer;
+    /* Cambia el cursor al pasar sobre el botón */
 }
 
 .btn-logout:hover {
-    background-color: #d32f2f; /* Color de fondo del botón al pasar el ratón */
+    background-color: #d32f2f;
+    /* Color de fondo del botón al pasar el ratón */
 }
 
 main {
     display: flex;
     flex-direction: column;
-    align-items: center; /* Centrar horizontalmente */
+    align-items: center;
+    /* Centrar horizontalmente */
 }
 
 main section {
-    width: 100%; /* Asegura que la sección ocupe todo el ancho */
+    width: 100%;
+    /* Asegura que la sección ocupe todo el ancho */
     display: flex;
-    flex-direction: column; /* Mantiene la disposición vertical */
+    flex-direction: column;
+    /* Mantiene la disposición vertical */
 }
 
 main section ul {
-    list-style-type: none; /* Elimina los puntos de la lista */
-    padding: 0px; /* Elimina el padding */
-    margin: 0px; /* Elimina el margen */
+    list-style-type: none;
+    /* Elimina los puntos de la lista */
+    padding: 0px;
+    /* Elimina el padding */
+    margin: 0px;
+    /* Elimina el margen */
     margin-left: 10px;
     display: flex;
-    flex-direction: column; /* Mantiene la disposición vertical */
+    flex-direction: column;
+    /* Mantiene la disposición vertical */
 }
 
 main section button {
@@ -49,31 +64,42 @@ main section button {
     margin-top: 20px;
     margin-left: 50px;
     padding: 10px;
-    background-color: #000; /* Botones negros */
-    color: #fff; /* Texto blanco */
+    background-color: #000;
+    /* Botones negros */
+    color: #fff;
+    /* Texto blanco */
     border: none;
-    border-radius: 8px; /* Bordes redondeados */
+    border-radius: 8px;
+    /* Bordes redondeados */
     cursor: pointer;
-    height: 50px; /* Alto de la página entre 5 menos 50px */
-    font-size: 1.2em; /* Aumenta el tamaño del texto */
-    --c: rgb(0, 0, 0); /* Color del borde y fondo de animación */
+    height: 50px;
+    /* Alto de la página entre 5 menos 50px */
+    font-size: 1.2em;
+    /* Aumenta el tamaño del texto */
+    --c: rgb(0, 0, 0);
+    /* Color del borde y fondo de animación */
     color: var(--c);
     font-size: 16px;
     border: 0.3em solid var(--c);
     border-radius: 0.5em;
-    width: calc(90%); /* Ocupa todo el ancho menos los márgenes */
+    width: calc(90%);
+    /* Ocupa todo el ancho menos los márgenes */
     text-transform: uppercase;
     font-weight: bold;
     text-align: center;
     display: flex;
-    align-items: center; /* Alinea el contenido verticalmente */
-    justify-content: center; /* Alinea el contenido horizontalmente */
+    align-items: center;
+    /* Alinea el contenido verticalmente */
+    justify-content: center;
+    /* Alinea el contenido horizontalmente */
     position: relative;
     overflow: hidden;
     z-index: 1;
-    background: none; /* Elimina el fondo original */
+    background: none;
+    /* Elimina el fondo original */
     cursor: pointer;
-    transition: color 0.3s ease; /* Transición solo en el color */
+    transition: color 0.3s ease;
+    /* Transición solo en el color */
 }
 
 main section button:hover {
@@ -87,23 +113,65 @@ main section button span {
     background-color: var(--c);
     transform: translateY(150%);
     border-radius: 50%;
-    transition: transform 0.5s ease; /* Solo transiciona la transformación */
-    z-index: -1; /* Asegura que el fondo no esté encima del texto */
+    transition: transform 0.5s ease;
+    /* Solo transiciona la transformación */
+    z-index: -1;
+    /* Asegura que el fondo no esté encima del texto */
 }
 
 /* Aplica delay a cada "span" para el efecto de izquierda a derecha */
-main section button span:nth-child(1) { --n: 1; left: calc((var(--n) - 1) * 12%); transition-delay: 0s; }
-main section button span:nth-child(2) { --n: 2; left: calc((var(--n) - 1) * 12%); transition-delay: 0.05s; }
-main section button span:nth-child(3) { --n: 3; left: calc((var(--n) - 1) * 12%); transition-delay: 0.1s; }
-main section button span:nth-child(4) { --n: 4; left: calc((var(--n) - 1) * 12%); transition-delay: 0.15s; }
-main section button span:nth-child(5) { --n: 5; left: calc((var(--n) - 1) * 12%); transition-delay: 0.2s; }
-main section button span:nth-child(6) { --n: 6; left: calc((var(--n) - 1) * 12%); transition-delay: 0.25s; }
-main section button span:nth-child(7) { --n: 7; left: calc((var(--n) - 1) * 12%); transition-delay: 0.3s; }
-main section button span:nth-child(8) { --n: 8; left: calc((var(--n) - 1) * 12%); transition-delay: 0.35s; }
+main section button span:nth-child(1) {
+    --n: 1;
+    left: calc((var(--n) - 1) * 12%);
+    transition-delay: 0s;
+}
+
+main section button span:nth-child(2) {
+    --n: 2;
+    left: calc((var(--n) - 1) * 12%);
+    transition-delay: 0.05s;
+}
+
+main section button span:nth-child(3) {
+    --n: 3;
+    left: calc((var(--n) - 1) * 12%);
+    transition-delay: 0.1s;
+}
+
+main section button span:nth-child(4) {
+    --n: 4;
+    left: calc((var(--n) - 1) * 12%);
+    transition-delay: 0.15s;
+}
+
+main section button span:nth-child(5) {
+    --n: 5;
+    left: calc((var(--n) - 1) * 12%);
+    transition-delay: 0.2s;
+}
+
+main section button span:nth-child(6) {
+    --n: 6;
+    left: calc((var(--n) - 1) * 12%);
+    transition-delay: 0.25s;
+}
+
+main section button span:nth-child(7) {
+    --n: 7;
+    left: calc((var(--n) - 1) * 12%);
+    transition-delay: 0.3s;
+}
+
+main section button span:nth-child(8) {
+    --n: 8;
+    left: calc((var(--n) - 1) * 12%);
+    transition-delay: 0.35s;
+}
 
 
 main section button:hover span {
-    transform: translateY(0) scale(2); /* Animación en hover */
+    transform: translateY(0) scale(2);
+    /* Animación en hover */
 }
 
 .btn-delete {
@@ -111,151 +179,220 @@ main section button:hover span {
     margin-top: 20px;
     margin-left: 50px;
     padding: 10px;
-    background-color: #000; /* Botones negros */
-    color: #fff; /* Texto blanco */
+    background-color: #d70808;
+    /* Botones negros */
+    color: #fff;
+    /* Texto blanco */
     border: none;
-    border-radius: 8px; /* Bordes redondeados */
+    border-radius: 8px;
+    /* Bordes redondeados */
     cursor: pointer;
-    height: 50px; /* Alto de la página entre 5 menos 50px */
-    font-size: 1.2em; /* Aumenta el tamaño del texto */
-    --c: rgb(0, 0, 0); /* Color del borde y fondo de animación */
+    height: 50px;
+    /* Alto de la página entre 5 menos 50px */
+    font-size: 1.2em;
+    /* Aumenta el tamaño del texto */
+    --c: rgb(0, 0, 0);
+    /* Color del borde y fondo de animación */
     color: var(--c);
     font-size: 16px;
     border: 0.3em solid var(--c);
     border-radius: 0.5em;
-    width: calc(90%); /* Ocupa todo el ancho menos los márgenes */
+    width: calc(90%);
+    /* Ocupa todo el ancho menos los márgenes */
     text-transform: uppercase;
     font-weight: bold;
     text-align: center;
     display: flex;
-    align-items: center; /* Alinea el contenido verticalmente */
-    justify-content: center; /* Alinea el contenido horizontalmente */
+    align-items: center;
+    /* Alinea el contenido verticalmente */
+    justify-content: center;
+    /* Alinea el contenido horizontalmente */
     position: relative;
     overflow: hidden;
     z-index: 1;
-    background: none; /* Elimina el fondo original */
+    background: none;
+    /* Elimina el fondo original */
     cursor: pointer;
-    transition: background-color 0.3s ease; /* Transición solo en el color */
+    transition: background-color 0.3s ease;
+    /* Transición solo en el color */
 }
 
 .btn-delete:hover {
-    background-color: #d32f2f; /* Color de fondo del botón al pasar el ratón */
+    background-color: #d32f2f;
+    /* Color de fondo del botón al pasar el ratón */
 }
 
 /* Ocultar los modales inicialmente */
 .modal {
-    display: none; /* Oculto por defecto */
-    position: fixed; /* Posición fija para centrar en la pantalla */
-    z-index: 1000; /* Asegura que esté por encima de otros elementos */
+    display: none;
+    /* Oculto por defecto */
+    position: fixed;
+    /* Posición fija para centrar en la pantalla */
+    z-index: 1000;
+    /* Asegura que esté por encima de otros elementos */
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
-    overflow: auto; /* Permite el desplazamiento si el contenido es grande */
-    background-color: rgba(0, 0, 0, 0.5); /* Fondo semi-transparente */
-    animation: fadeIn 0.5s; /* Animación de aparición */
+    overflow: auto;
+    /* Permite el desplazamiento si el contenido es grande */
+    background-color: rgba(0, 0, 0, 0.5);
+    /* Fondo semi-transparente */
+    animation: fadeIn 0.5s;
+    /* Animación de aparición */
 }
 
 /* Centrar el contenido del modal */
 .modal-content {
-    background-color: #ffc244; /* Fondo naranja */
-    margin: 15% auto; /* Centrado vertical y horizontal */
+    background-color: #ffc244;
+    /* Fondo naranja */
+    margin: 15% auto;
+    /* Centrado vertical y horizontal */
     padding: 20px;
     border: 1px solid #888;
-    width: 80%; /* Ancho del modal */
-    max-width: 600px; /* Ancho máximo del modal */
-    border-radius: 8px; /* Bordes redondeados */
-    animation: slideIn 0.5s; /* Animación de aparición */
+    width: 80%;
+    /* Ancho del modal */
+    max-width: 600px;
+    /* Ancho máximo del modal */
+    border-radius: 8px;
+    /* Bordes redondeados */
+    animation: slideIn 0.5s;
+    /* Animación de aparición */
 }
 
 .modal-content h2 {
-    text-align: center; /* Centra el título */
-    width: 100%; /* Asegura que el título ocupe todo el ancho */
+    text-align: center;
+    /* Centra el título */
+    width: 100%;
+    /* Asegura que el título ocupe todo el ancho */
 }
 
 .modal-content h3 {
-    text-align: center; /* Centra el título */
-    width: 100%; /* Asegura que el título ocupe todo el ancho */
+    text-align: center;
+    /* Centra el título */
+    width: 100%;
+    /* Asegura que el título ocupe todo el ancho */
 }
 
 .modal-content form label {
-    display: block; /* Asegura que el label esté en una línea aparte */
+    display: block;
+    /* Asegura que el label esté en una línea aparte */
 }
 
-.modal-content form input[type="text"], .modal-content form input[type="number"]{
-    width: 95%; /* Asegura que el input/selección ocupe todo el ancho de su columna */
-    padding: 5px; /* Espaciado interno */
-    border-radius: 4px; /* Bordes redondeados */
-    border: 1px solid #ccc; /* Borde gris */
+.modal-content form input[type="text"],
+.modal-content form input[type="number"] {
+    width: 95%;
+    /* Asegura que el input/selección ocupe todo el ancho de su columna */
+    padding: 5px;
+    /* Espaciado interno */
+    border-radius: 4px;
+    /* Bordes redondeados */
+    border: 1px solid #ccc;
+    /* Borde gris */
     margin-left: 10px;
     margin-top: 5px;
     margin-bottom: 5px;
 }
 
-.modal-content form select{
-    width: 97%; /* Asegura que el input/selección ocupe todo el ancho de su columna */
-    padding: 5px; /* Espaciado interno */
-    border-radius: 4px; /* Bordes redondeados */
-    border: 1px solid #ccc; /* Borde gris */
+.modal-content form select {
+    width: 97%;
+    /* Asegura que el input/selección ocupe todo el ancho de su columna */
+    padding: 5px;
+    /* Espaciado interno */
+    border-radius: 4px;
+    /* Bordes redondeados */
+    border: 1px solid #ccc;
+    /* Borde gris */
     margin-left: 10px;
     margin-top: 5px;
     margin-bottom: 5px;
 }
 
 .modal-content button {
-    background-color: #000; /* Botones negros */
-    color: #fff; /* Texto blanco */
-    border: none; /* Sin borde */
-    padding: 10px 20px; /* Espaciado interno del botón */
-    border-radius: 8px; /* Bordes redondeados */
-    display: block; /* Asegura que el botón esté en una línea aparte */
-    margin: 20px auto; /* Centra el botón horizontalmente y añade margen vertical */
-    text-align: center; /* Centra el texto dentro del botón */
+    background-color: #000;
+    /* Botones negros */
+    color: #fff;
+    /* Texto blanco */
+    border: none;
+    /* Sin borde */
+    padding: 10px 20px;
+    /* Espaciado interno del botón */
+    border-radius: 8px;
+    /* Bordes redondeados */
+    display: block;
+    /* Asegura que el botón esté en una línea aparte */
+    margin: 20px auto;
+    /* Centra el botón horizontalmente y añade margen vertical */
+    text-align: center;
+    /* Centra el texto dentro del botón */
 }
 
 .modal-content ul {
-    list-style-type: none; /* Elimina los puntos de la lista */
+    list-style-type: none;
+    /* Elimina los puntos de la lista */
 }
 
-.modal-content li{
+.modal-content li {
     margin-bottom: 10px;
 }
 
 .modal-content li input[type="checkbox"] {
-    transform: scale(1.5); /* Ajusta el valor según el tamaño deseado */
+    transform: scale(1.5);
+    /* Ajusta el valor según el tamaño deseado */
     align-items: center;
 }
 
 .modal-content form .btn-delete {
-    background-color: #000; /* Botones negros */
-    color: #fff; /* Texto blanco */
-    border: none; /* Sin borde */
-    padding: 5px 10px; /* Reduce el espaciado interno del botón */
-    border-radius: 8px; /* Bordes redondeados */
-    display: block; /* Asegura que el botón esté en una línea aparte */
-    margin: 10px auto; /* Reduce el margen */
-    text-align: center; /* Centra el texto dentro del botón */
-    width: 150px; /* Ajusta el ancho del botón */
+    background-color: #000;
+    /* Botones negros */
+    color: #fff;
+    /* Texto blanco */
+    border: none;
+    /* Sin borde */
+    padding: 5px 10px;
+    /* Reduce el espaciado interno del botón */
+    border-radius: 8px;
+    /* Bordes redondeados */
+    display: block;
+    /* Asegura que el botón esté en una línea aparte */
+    margin: 10px auto;
+    /* Reduce el margen */
+    text-align: center;
+    /* Centra el texto dentro del botón */
+    width: 175px;
+    /* Ajusta el ancho del botón */
     height: 35px;
-    font-size: 0.8em; /* Ajusta el tamaño de la fuente */
+    font-size: 0.8em;
+    /* Ajusta el tamaño de la fuente */
     font-weight: normal;
     text-transform: none;
 }
 
-.modal-content form .btn-delete:hover{
-    background-color: #d32f2f; /* Color de fondo del botón al pasar el ratón */
+.modal-content form .btn-delete:hover {
+    background-color: #d32f2f;
+    /* Color de fondo del botón al pasar el ratón */
 }
 
 /* Animación de aparición */
 @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
 }
 
 /* Animación de deslizamiento */
 @keyframes slideIn {
-    from { transform: translateY(-50px); }
-    to { transform: translateY(0); }
+    from {
+        transform: translateY(-50px);
+    }
+
+    to {
+        transform: translateY(0);
+    }
 }
 
 /* Estilo para el botón de cerrar */
@@ -282,9 +419,41 @@ footer {
     background-color: #ffc244;
     padding: 10px 0;
 }
+
 #restaurante {
-    margin: 0 auto; /* Centra horizontalmente */
-    text-align: center; /* Centra el texto dentro de la sección */
+    margin: 0;
+    text-align: center;
+}
+
+#restaurante div {
+    margin: 0;
+    margin-left: 10px;
+    text-align: center;
+    width: 600px;
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 1px solid #cccccc00;
+    border-radius: 8px;
+    background-color: #fa9302;
+    font-weight: bold;
+}
+
+#restaurante div button {
+    margin: 0;
+    background-color: #000;
+    border: 2px solid black;
+    border-radius: 5px;
+    color: rgb(255, 255, 255);
+    font-size: 12px;
+    text-transform: none;
+    font-weight: normal;
+    padding: 5px 10px;
+    cursor: pointer;
+    height: 30px;
+    width: 180px;
+    align-items: center;
+    text-align: center;
+    margin-left: 200px;
 }
 
 .container {
@@ -299,15 +468,149 @@ footer {
 }
 
 span {
-    font-size: 22px; /* Cambia a tu tamaño deseado */
+    font-size: 22px;
+    /* Cambia a tu tamaño deseado */
 }
 
-ul li{
-    border-bottom: 1px solid #000000; /* Línea debajo de cada plato */
-    padding-bottom: 10px; /* Espacio entre el contenido y la línea */
-    margin-bottom: 10px; /* Espaciado entre elementos */
+ul li {
+    border-bottom: 1px solid #000000;
+    /* Línea debajo de cada plato */
+    padding-bottom: 10px;
+    /* Espacio entre el contenido y la línea */
+    margin-bottom: 10px;
+    /* Espaciado entre elementos */
 }
 
 ul li:last-child {
-    border-bottom: none; /* Quitar la línea del último elemento para un aspecto más limpio */
+    border-bottom: none;
+    /* Quitar la línea del último elemento para un aspecto más limpio */
+}
+
+.menu-item {
+    width: 600px;
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 1px solid #cccccc00;
+    border-radius: 8px;
+    background-color: #fa9302;
+}
+
+.menu-item h3 {
+    margin: 0;
+    margin-left: 10px;
+    padding: 0;
+}
+
+.menu-item ul {
+    list-style-type: none;
+    padding-left: 20px;
+}
+
+.menu-item ul li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.menu-item ul li div {
+    margin-top: 10px;
+}
+
+.menu-item .total {
+    text-align: right;
+    font-weight: bold;
+}
+
+.aviso {
+    text-align: center;
+    margin: 20px 0;
+    font-style: italic;
+}
+
+#platosNoAsignados{
+    margin-left: 40px;
+}
+#platosNoAsignados .aviso {
+    width: 590px;
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 1px solid #cccccc00;
+    border-radius: 8px;
+    background-color: #fa9302;
+}
+
+#platosNoAsignados ul li {
+    margin-bottom: 20px;
+    padding: 20px;
+    border-radius: 8px;
+    background-color: #fa9302;
+    border-bottom: none;
+    display: flex; /* Alinea los elementos en una fila */
+    align-items: center; /* Centra verticalmente */
+    gap: 10px; /* Espacio entre el texto y los botones */
+}
+
+#platosNoAsignados ul li .text {
+    flex-grow: 1; /* Permite que el texto ocupe el espacio restante */
+}
+
+#platosNoAsignados ul li button {
+    margin: 0;
+    background-color: #000;
+    border: 2px solid black;
+    border-radius: 5px;
+    color: rgb(255, 255, 255);
+    font-size: 12px;
+    text-transform: none;
+    font-weight: normal;
+    padding: 5px 10px;
+    cursor: pointer;
+    height: 30px;
+    width: 80px;
+
+}
+
+#platosNoAsignados ul li #eliminarPlato {
+    margin-bottom: 10px;
+}
+
+#platosNoAsignados ul li button:hover {
+    background-color: #212121;
+}
+
+#platosNoAsignados ul li #eliminarPlato:hover {
+    background-color: #d32f2f;
+}
+
+span {
+    font-size: 16px; 
+}
+
+#menus ul li button {
+    margin: 0;
+    background-color: #000;
+    border: 2px solid black;
+    border-radius: 5px;
+    color: rgb(255, 255, 255);
+    font-size: 12px;
+    text-transform: none;
+    font-weight: normal;
+    padding: 5px 10px;
+    cursor: pointer;
+    height: 30px;
+    width: 80px;
+
+}
+
+#menus ul li #eliminarPlatomenu {
+    margin-bottom: 10px;
+}
+
+#menus ul li button:hover {
+    background-color: #212121;
+}
+
+#menus ul li #eliminarPlatomenu:hover {
+    background-color: #d32f2f;
 }

@@ -36,45 +36,7 @@
                 event.target.submit(); // Enviar el formulario si se confirma
             }
         }
-
-        function mostrarAlerta(mensaje) {
-            alert(mensaje);
-        }
     </script>
-    <style>
-        .menu-item {
-            margin-bottom: 20px;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-        .menu-item h3 {
-            margin: 0;
-            padding: 0;
-        }
-        .menu-item ul {
-            list-style-type: none;
-            padding-left: 20px;
-        }
-        .menu-item ul li {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-        .menu-item ul li div {
-            margin-bottom: 5px;
-        }
-        .menu-item .total {
-            text-align: right;
-            font-weight: bold;
-        }
-        .aviso {
-            text-align: center;
-            margin: 20px 0;
-            font-style: italic;
-        }
-    </style>
 </head>
 
 <body>
@@ -88,21 +50,31 @@
             </nav>
         </header>
         <main>
+            <section id="mensajes">
+                <th:block th:if="${successMessage}">
+                    <div class="success-message" th:text="${successMessage}"></div>
+                </th:block>
+                <th:block th:if="${errorMessage}">
+                    <div class="error-message" th:text="${errorMessage}"></div>
+                </th:block>
+            </section>
             <section id="restaurante">
                 <h2>Restaurante</h2>
-                <th:block th:if="${isRestauranteRegistrado}">
-                    <p th:text="'Restaurante: ' + ${restaurante.nombre}"></p>
-                    <p th:text="'Dirección: ' + ${restaurante.direccion}"></p>
-                    <button onclick="openModal('modalEditarRestaurante')">Editar Restaurante
-                        <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
-                    </button>
-                </th:block>
-                <th:block th:unless="${isRestauranteRegistrado}">
-                    <p>Actualmente no hay ningún restaurante registrado. Por favor, crea uno para comenzar.</p>
-                    <button onclick="openModal('modalCrearRestaurante')">Crear Restaurante
-                        <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
-                    </button>
-                </th:block>
+                <div>
+                    <th:block th:if="${isRestauranteRegistrado}" id="infoRestaurante">
+                        <p th:text="'Restaurante: ' + ${restaurante.nombre}"></p>
+                        <p th:text="'Dirección: ' + ${restaurante.direccion}"></p>
+                        <button onclick="openModal('modalEditarRestaurante')">Editar Restaurante
+                            <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+                        </button>
+                    </th:block>
+                    <th:block th:unless="${isRestauranteRegistrado}">
+                        <p>Actualmente no hay ningún restaurante registrado. Por favor, crea uno para comenzar.</p>
+                        <button onclick="openModal('modalCrearRestaurante')">Crear Restaurante
+                            <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+                        </button>
+                    </th:block>
+                </div>
             </section>
             <section id="accionesGenerales">
                 <h2>Acciones generales</h2>
@@ -136,12 +108,12 @@
                                 <div>
                                     <form method="post" action="/eliminarCartaMenu" style="display: inline;" onsubmit="confirmarEliminacion(event)">
                                         <input type="hidden" name="menuId" th:value="${menu.id}">
-                                        <button type="submit" class="btn-delete">Eliminar</button>
+                                        <button id="eliminarPlatomenu" type="submit" class="btn-delete">Eliminar</button>
                                     </form>
                                     <button onclick="openModal('modalEditarMenu')">Editar</button>
                                 </div>
                             </div>
-                            <ul>
+                            <ul id="inicioListaMenu">
                                 <!-- Bucle para mostrar los platos de cada menú -->
                                 <th:block th:each="plato : ${menu.items}">
                                     <li>
@@ -168,15 +140,15 @@
                     <!-- Bucle para mostrar los platos no asignados a ningún menú -->
                     <th:block th:each="plato : ${platosNoAsignados}">
                         <li>
-                            <div>
+                            <div class="text">
                                 <strong>Nombre:</strong> <span th:text="${plato.nombre}"></span><br>
                                 <strong>Descripción:</strong> <span th:text="${plato.descripcion}"></span><br>
-                                <strong>Precio:</strong> <span th:text="${plato.precio} + ' €'"></span>
+                                <strong>Precio:</strong> <span id="PrecioPlato" th:text="${plato.precio} + ' €'"></span>
                             </div>
                             <div>
                                 <form method="post" action="/eliminarItemMenu" style="display: inline;" onsubmit="confirmarEliminacion(event)">
                                     <input type="hidden" name="platoId" th:value="${plato.id}">
-                                    <button type="submit" class="btn-delete">Eliminar</button>
+                                    <button id="eliminarPlato" type="submit" class="btn-delete">Eliminar</button>
                                 </form>
                                 <button onclick="openModal('modalEditarPlato')">Editar</button>
                             </div>
@@ -195,7 +167,7 @@
         <div class="modal-content">
             <span class="close" onclick="closeModal('modalMenu')">&times;</span>
             <h2>Añadir Menú</h2>
-            <form method="post" action="/crearCartaMenu" onsubmit="mostrarAlerta('Menú creado exitosamente')">
+            <form method="post" action="/crearCartaMenu">
                 <label for="nombreMenu">Nombre del Menú:</label>
                 <input type="text" id="nombreMenu" name="nombre" required>
 
@@ -221,7 +193,7 @@
         <div class="modal-content">
             <span class="close" onclick="closeModal('modalPlato')">&times;</span>
             <h2>Añadir Plato</h2>
-            <form id="formPlato" method="post" action="/crearItemMenu" onsubmit="validarPrecio(event, 'precioPlato', 'precioError'); mostrarAlerta('Plato creado exitosamente')">
+            <form id="formPlato" method="post" action="/crearItemMenu" onsubmit="validarPrecio(event, 'precioPlato', 'precioError')">
                 <label for="nombrePlato">Nombre:</label>
                 <input type="text" id="nombrePlato" name="nombre" required>
                 <label for="descripcionPlato">Descripción:</label>
@@ -239,7 +211,7 @@
         <div class="modal-content">
             <span class="close" onclick="closeModal('modalEditarMenu')">&times;</span>
             <h2>Editar Menú</h2>
-            <form method="post" action="/editarCartaMenu" onsubmit="mostrarAlerta('Menú actualizado exitosamente')">
+            <form method="post" action="/editarCartaMenu">
                 <label for="menuSelect">Seleccionar Menú:</label>
                 <select id="menuSelect" name="id" required>
                     <option value="" disabled selected>Selecciona un menú</option>
@@ -271,7 +243,7 @@
         <div class="modal-content">
             <span class="close" onclick="closeModal('modalEditarPlato')">&times;</span>
             <h2>Editar Plato</h2>
-            <form id="formEditarPlato" method="post" action="/editarItemMenu" onsubmit="validarPrecio(event, 'precioPlatoEdit', 'precioErrorEdit'); mostrarAlerta('Plato actualizado exitosamente')">
+            <form id="formEditarPlato" method="post" action="/editarItemMenu" onsubmit="validarPrecio(event, 'precioPlatoEdit', 'precioErrorEdit')">
                 <label for="platoSelect">Seleccionar Plato:</label>
                 <select id="platoSelect" name="id" required>
                     <option value="" disabled selected>Selecciona un plato</option>
