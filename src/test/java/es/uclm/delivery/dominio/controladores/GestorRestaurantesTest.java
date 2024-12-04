@@ -102,7 +102,7 @@ class GestorRestaurantesTest {
 
         assertEquals("redirect:/homeRestaurante", result);
         verify(cartaMenuDAO, never()).eliminarCartaMenuPorId(any());
-        verify(redirectAttributes).addFlashAttribute("error", "Error al eliminar el menú.");
+        verify(redirectAttributes).addFlashAttribute("error", "ID de menú no proporcionado.");
     }
 
     // -----------------------------------------
