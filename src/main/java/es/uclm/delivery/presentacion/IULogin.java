@@ -28,6 +28,12 @@ import es.uclm.delivery.dominio.controladores.GestorLogin;
 public class IULogin {
     private static final Logger log = LoggerFactory.getLogger(IULogin.class);
 
+    private static final String USUARIO_ATTR = "usuario";
+    private static final String LOGIN_VIEW = "login";
+    private static final String ERROR_ATTR = "error";
+    private static final String REDIRECT_LOGIN = "redirect:/login";
+    private static final String USUARIO_EXISTE_MSG = "El usuario ya existe";
+
     @Autowired
     public GestorLogin gestorLogin;
 
@@ -42,8 +48,8 @@ public class IULogin {
 
     @GetMapping("/login")
     public String showLoginForm(Model model) {
-        model.addAttribute("usuario", new Usuario());
-        return "login";
+        model.addAttribute(USUARIO_ATTR, new Usuario());
+        return LOGIN_VIEW;
     }
 
     @PostMapping("/login")
@@ -75,18 +81,18 @@ public class IULogin {
             } else if (role.equals("ROLE_RESTAURANTE")) {
                 return "redirect:/homeRestaurante";
             } else {
-                model.addAttribute("error", "Rol desconocido");
-                return "login";
+                model.addAttribute(ERROR_ATTR, "Rol desconocido");
+                return LOGIN_VIEW;
             }
         } else {
-            model.addAttribute("error", "Usuario o contraseña incorrectos");
-            return "login";
+            model.addAttribute(ERROR_ATTR, "Usuario o contraseña incorrectos");
+            return LOGIN_VIEW;
         }
     }
 
     @GetMapping("/registroCliente")
     public String showRegistroClienteForm(Model model) {
-        model.addAttribute("usuario", new Usuario());
+        model.addAttribute(USUARIO_ATTR, new Usuario());
         return "registroCliente";
     }
 
@@ -95,16 +101,16 @@ public class IULogin {
         if (gestorLogin.registrarCliente(usuario.getUsername(), usuario.getPassword(), "CLIENTE", 
                                          cliente.getNombre(), cliente.getApellidos(), cliente.getDni())) {
             log.info("Cliente registrado: {}", usuario.getUsername());
-            return "redirect:/login";
+            return REDIRECT_LOGIN;
         } else {
-            model.addAttribute("error", "El usuario ya existe");
+            model.addAttribute(ERROR_ATTR, USUARIO_EXISTE_MSG);
             return "registroCliente";
         }
     }
 
     @GetMapping("/registroRepartidor")
     public String showRegistroRepartidorForm(Model model) {
-        model.addAttribute("usuario", new Usuario());
+        model.addAttribute(USUARIO_ATTR, new Usuario());
         return "registroRepartidor";
     }
 
@@ -113,16 +119,16 @@ public class IULogin {
         if (gestorLogin.registrarRepartidor(usuario.getUsername(), usuario.getPassword(), "REPARTIDOR", 
                                             repartidor.getNombre(), repartidor.getApellidos(), repartidor.getDni())) {
             log.info("Repartidor registrado: {}", usuario.getUsername());
-            return "redirect:/login";
+            return REDIRECT_LOGIN;
         } else {
-            model.addAttribute("error", "El usuario ya existe");
+            model.addAttribute(ERROR_ATTR, USUARIO_EXISTE_MSG);
             return "registroRepartidor";
         }
     }
 
     @GetMapping("/registroRestaurante")
     public String showRegistroRestauranteForm(Model model) {
-        model.addAttribute("usuario", new Usuario());
+        model.addAttribute(USUARIO_ATTR, new Usuario());
         return "registroRestaurante";
     }
 
@@ -131,9 +137,9 @@ public class IULogin {
         if (gestorLogin.registrarRestaurante(usuario.getUsername(), usuario.getPassword(), "RESTAURANTE", 
                                              restaurante.getNombre(), restaurante.getDireccion())) {
             log.info("Restaurante registrado: {}", usuario.getUsername());
-            return "redirect:/login";
+            return REDIRECT_LOGIN;
         } else {
-            model.addAttribute("error", "El usuario ya existe");
+            model.addAttribute(ERROR_ATTR, USUARIO_EXISTE_MSG);
             return "registroRestaurante";
         }
     }
