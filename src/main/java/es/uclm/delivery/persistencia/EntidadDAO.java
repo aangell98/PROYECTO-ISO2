@@ -13,6 +13,8 @@ public abstract class EntidadDAO<E> {
     @PersistenceContext
     protected EntityManager entityManager;
 
+    private static final String ENTITY_CANNOT_BE_NULL = "Entity cannot be null";
+
     private Class<E> entityClass;
 
     protected EntidadDAO(Class<E> entityClass) {
@@ -21,7 +23,7 @@ public abstract class EntidadDAO<E> {
 
     public int insert(E entity) {
         if (entity == null) {
-            throw new IllegalArgumentException("Entity cannot be null");
+            throw new IllegalArgumentException(ENTITY_CANNOT_BE_NULL);
         }
         try {
             entityManager.persist(entity);
@@ -35,7 +37,7 @@ public abstract class EntidadDAO<E> {
 
     public int update(E entity) {
         if (entity == null) {
-            throw new IllegalArgumentException("Entity cannot be null");
+            throw new IllegalArgumentException(ENTITY_CANNOT_BE_NULL);
         }
         try {
             entityManager.merge(entity);
@@ -48,7 +50,7 @@ public abstract class EntidadDAO<E> {
 
     public int delete(E entity) {
         if (entity == null) {
-            throw new IllegalArgumentException("Entity cannot be null");
+            throw new IllegalArgumentException(ENTITY_CANNOT_BE_NULL);
         }
         try {
             entityManager.remove(entityManager.contains(entity) ? entity : entityManager.merge(entity));
