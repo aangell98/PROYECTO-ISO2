@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 @Disabled
-public class GestorBaseDatosTest {
+class GestorBaseDatosTest {
 
     private GestorBaseDatos gestorBaseDatos;
     private Connection mockConnection;
@@ -30,7 +30,7 @@ public class GestorBaseDatosTest {
     }
 
     @Test
-    void testConectar_Exito() throws SQLException {
+    void testConectar_Exito() {
         // Simulamos que la conexión es exitosa, lo que significa que devuelve true
         boolean result = gestorBaseDatos.conectar();
         
