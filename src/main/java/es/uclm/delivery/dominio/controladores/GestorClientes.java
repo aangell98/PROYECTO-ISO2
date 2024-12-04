@@ -22,6 +22,7 @@ import java.util.Optional;
 @RestController
 public class GestorClientes {
     private static final Logger logger = LoggerFactory.getLogger(GestorClientes.class);
+    private static final String REPARTIDOR = "repartidor";
     @Autowired
     private IUBusqueda iuBusqueda;
     @Autowired
@@ -89,14 +90,14 @@ public class GestorClientes {
                     ServicioEntrega servicioEntrega = servicioEntregaOpt.get();
                     Repartidor repartidor = servicioEntrega.getRepartidor();
                     if (repartidor != null) {
-                        detalles.put("repartidor", repartidor.getNombre() + " " + repartidor.getApellidos());
+                        detalles.put(REPARTIDOR, repartidor.getNombre() + " " + repartidor.getApellidos());
                         detalles.put("valoracionRepartidor", repartidor.getEficiencia());
                     } else {
-                        detalles.put("repartidor", "Buscando repartidor...");
+                        detalles.put(REPARTIDOR, "Buscando repartidor...");
                         detalles.put("valoracionRepartidor", 0);
                     }
                 } else {
-                    detalles.put("repartidor", "Buscando repartidor...");
+                    detalles.put(REPARTIDOR, "Buscando repartidor...");
                     detalles.put("valoracionRepartidor", 0);
                 }
                 return detalles;
@@ -140,7 +141,7 @@ public class GestorClientes {
                 Optional<ServicioEntrega> servicioEntregaOpt = iuPedido.obtenerServicioEntregaPorPedido(pedido.getId());
                 if (servicioEntregaOpt.isPresent()) {
                     ServicioEntrega servicioEntrega = servicioEntregaOpt.get();
-                    detalles.put("repartidor", servicioEntrega.getRepartidor().getNombre() + " "
+                    detalles.put(REPARTIDOR, servicioEntrega.getRepartidor().getNombre() + " "
                             + servicioEntrega.getRepartidor().getApellidos());
                 }
                 return detalles;
