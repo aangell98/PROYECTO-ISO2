@@ -35,7 +35,7 @@ class PedidoDAOTest {
         pedidoDAO = new PedidoDAO();
 
         // Inyectar mockEntityManager usando reflexión
-        java.lang.reflect.Field entityManagerField = PedidoDAO.class.getDeclaredField("entityManager");
+        java.lang.reflect.Field entityManagerField = PedidoDAO.class.getDeclaredField("pedidoEntityManager");
         entityManagerField.setAccessible(true);
         entityManagerField.set(pedidoDAO, mockEntityManager);
     }

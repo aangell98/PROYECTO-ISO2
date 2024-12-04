@@ -15,8 +15,10 @@ import jakarta.transaction.Transactional;
 @Repository
 public class PedidoDAO extends EntidadDAO<Pedido> {
 
+    private static final String CLIENTE_ID_PARAM = "clienteId";
+
     @PersistenceContext
-    private EntityManager entityManager;
+    private EntityManager pedidoEntityManager;
 
     public PedidoDAO() {
         super(Pedido.class);
@@ -27,36 +29,35 @@ public class PedidoDAO extends EntidadDAO<Pedido> {
         if (pedido == null) {
             throw new IllegalArgumentException("Pedido cannot be null");
         }
-        entityManager.persist(pedido);
+        pedidoEntityManager.persist(pedido);
     }
 
     public List<Pedido> findPedidosEnCurso(Long clienteId) {
-        return entityManager.createQuery(
-            "SELECT p FROM Pedido p WHERE p.cliente.id = :clienteId AND p.estado NOT IN (:estadoEntregado, :estadoCancelado)",
+        return pedidoEntityManager.createQuery(
+            "SELECT p FROM Pedido p WHERE p.cliente.id = :" + CLIENTE_ID_PARAM + " AND p.estado NOT IN (:estadoEntregado, :estadoCancelado)",
             Pedido.class)
-            .setParameter("clienteId", clienteId)
+            .setParameter(CLIENTE_ID_PARAM, clienteId)
             .setParameter("estadoEntregado", EstadoPedido.ENTREGADO)
             .setParameter("estadoCancelado", EstadoPedido.CANCELADO)
             .getResultList();
     }
 
     public Optional<Pedido> buscarporid(Long id) {
-        Pedido pedido = entityManager.find(Pedido.class, id);
+        Pedido pedido = pedidoEntityManager.find(Pedido.class, id);
         return Optional.ofNullable(pedido);
-
     }
 
     public List<Pedido> findPedidosEntregados(Long clienteId) {
-        return entityManager.createQuery(
-            "SELECT p FROM Pedido p WHERE p.cliente.id = :clienteId AND p.estado = :estadoEntregado",
+        return pedidoEntityManager.createQuery(
+            "SELECT p FROM Pedido p WHERE p.cliente.id = :" + CLIENTE_ID_PARAM + " AND p.estado = :estadoEntregado",
             Pedido.class)
-            .setParameter("clienteId", clienteId)
+            .setParameter(CLIENTE_ID_PARAM, clienteId)
             .setParameter("estadoEntregado", EstadoPedido.ENTREGADO)
             .getResultList();
     }
 
     public List<Pedido> findPedidosPagados() {
-        return entityManager.createQuery(
+        return pedidoEntityManager.createQuery(
             "SELECT p FROM Pedido p WHERE p.estado = :estadoPagado",
             Pedido.class)
             .setParameter("estadoPagado", EstadoPedido.PAGADO)
@@ -64,10 +65,10 @@ public class PedidoDAO extends EntidadDAO<Pedido> {
     }
 
     public List<Pedido> findPedidosCancelados(Long clienteId) {
-        return entityManager.createQuery(
-            "SELECT p FROM Pedido p WHERE p.cliente.id = :clienteId AND p.estado = :estadoCancelado",
+        return pedidoEntityManager.createQuery(
+            "SELECT p FROM Pedido p WHERE p.cliente.id = :" + CLIENTE_ID_PARAM + " AND p.estado = :estadoCancelado",
             Pedido.class)
-            .setParameter("clienteId", clienteId)
+            .setParameter(CLIENTE_ID_PARAM, clienteId)
             .setParameter("estadoCancelado", EstadoPedido.CANCELADO)
             .getResultList();
     }
