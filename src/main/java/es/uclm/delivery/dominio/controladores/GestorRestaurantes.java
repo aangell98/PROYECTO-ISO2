@@ -20,7 +20,7 @@ public class GestorRestaurantes {
     private static final String ERROR = "error";
     private static final String REDIRECT_HOME_RESTAURANT = "redirect:/homeRestaurante";
     private static final String ERROR_MENSAJE = "errorMessage";
-    private static String SUCCESS_MESSAGE = "successMessage";
+    private static final String SUCCESS_MESSAGE = "successMessage";
 
     @Autowired
     private UsuarioDAO usuarioDAO;
