@@ -58,6 +58,14 @@
                 </ul>
             </section>
         </div>
+        <div class="order-cancelados">
+            <h2>Pedidos Cancelados</h2>
+            <section id="cancelledOrders">
+                <ul id="cancelledOrdersList">
+                    <!-- Se llenará dinámicamente con pedidos cancelados -->
+                </ul>
+            </section>
+        </div>
         </div>        
     </main>
     <footer>
@@ -119,6 +127,8 @@
                                 if (pedido.repartidor !== "Buscando repartidor...") {
                                     pedidosHtml += `<p><strong>Valoración del Repartidor:</strong> <span class="valoracion">${generarEstrellas(pedido.valoracionRepartidor)}</span></p>
                                     <button onclick="confirmarRecepcion(${pedido.id})">¿Has recibido el pedido?</button>`;
+                                } else {
+                                    pedidosHtml += `<button onclick="cancelarPedido(${pedido.id})">Cancelar Pedido</button>`;
                                 }
                                 pedidosHtml += `</li>`;
                             });
@@ -163,6 +173,34 @@
                 });
             }
 
+            function cargarPedidosCancelados() {
+                console.log("Cargando pedidos cancelados...");
+                $.ajax({
+                    url: '/listar_pedidos_cancelados',
+                    type: 'GET',
+                    success: function (data) {
+                        console.log("Pedidos cancelados recibidos:", data);
+                        if (data && data.length > 0) {
+                            var pedidosHtml = '';
+                            data.forEach(function (pedido) {
+                                pedidosHtml += `
+                                    <li id="pedido-${pedido.id}">
+                                        <p><strong>Restaurante:</strong> ${pedido.restaurante}</p>
+                                        <p><strong>Estado:</strong> ${pedido.estado}</p>
+                                    </li>`;
+                            });
+                            $('#cancelledOrdersList').html(pedidosHtml);
+                        } else {
+                            $('#cancelledOrdersList').html('<p>No tienes pedidos cancelados.</p>');
+                        }
+                    },
+                    error: function () {
+                        console.log("Error al cargar los pedidos cancelados");
+                        $('#cancelledOrdersList').html('<p>Error al cargar los pedidos cancelados.</p>');
+                    }
+                });
+            }
+
             function generarEstrellas(valoracion) {
                 var estrellasHtml = '';
                 var estrellasCompletas = Math.floor(valoracion);
@@ -196,6 +234,25 @@
                     error: function () {
                         console.log("Error al actualizar el estado del pedido:", idPedido);
                         alert("Error al actualizar el estado del pedido.");
+                    }
+                });
+            };
+
+            window.cancelarPedido = function (idPedido) {
+                console.log("Cancelando el pedido:", idPedido);
+                $.ajax({
+                    url: '/cancelar_pedido',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ idPedido: idPedido }),
+                    success: function () {
+                        console.log("Pedido cancelado:", idPedido);
+                        cargarPedidosEnCurso();  // Recargar los pedidos en curso después de actualizar el estado
+                        cargarPedidosCancelados(); // Recargar los pedidos cancelados después de actualizar el estado
+                    },
+                    error: function () {
+                        console.log("Error al cancelar el pedido:", idPedido);
+                        alert("Error al cancelar el pedido.");
                     }
                 });
             };
@@ -261,6 +318,7 @@
 
             cargarPedidosEnCurso();
             cargarPedidosAnteriores();
+            cargarPedidosCancelados();
 
             function cargarFavoritos() {
                 console.log("Cargando favoritos...");
@@ -344,6 +402,7 @@
         $(document).ready(function () {
             cargarPedidosEnCurso();
             cargarPedidosAnteriores();
+            cargarPedidosCancelados();
         });
     </script>
 </body>

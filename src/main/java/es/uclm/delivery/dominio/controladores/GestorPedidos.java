@@ -260,4 +260,27 @@ public class GestorPedidos {
             return ResponseEntity.status(200).body(null);
         }
     }
+
+    @PostMapping("/cancelar_pedido")
+    public ResponseEntity<Object> cancelarPedido(@RequestBody Map<String, Long> requestData) {
+        Long pedidoId = requestData.get("idPedido");
+        Optional<Pedido> pedidoOpt = pedidoDAO.findById(pedidoId);
+
+        if (pedidoOpt.isPresent()) {
+            Pedido pedido = pedidoOpt.get();
+            if (pedido.getEstado() == EstadoPedido.PAGADO) {
+                pedido.setEstado(EstadoPedido.CANCELADO);
+                pedidoDAO.update(pedido);
+                logger.info("Pedido cancelado con éxito: " + pedidoId);
+                return ResponseEntity.ok("Pedido cancelado con éxito");
+            } else {
+                logger.error("No se puede cancelar el pedido en el estado actual: " + pedido.getEstado());
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("No se puede cancelar el pedido en el estado actual");
+            }
+        } else {
+            logger.error("Pedido no encontrado: " + pedidoId);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Pedido no encontrado");
+        }
+    }
 }

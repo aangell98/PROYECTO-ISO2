@@ -69,7 +69,8 @@ class PedidoDAOTest {
         TypedQuery<Pedido> mockQuery = crearMockQuery();
         when(mockEntityManager.createQuery(any(String.class), eq(Pedido.class))).thenReturn(mockQuery);
         when(mockQuery.setParameter(eq("clienteId"), any(Long.class))).thenReturn(mockQuery);
-        when(mockQuery.setParameter("estadoEntregado", ESTADO_ENTREGADO)).thenReturn(mockQuery);
+        when(mockQuery.setParameter("estadoEntregado", EstadoPedido.ENTREGADO)).thenReturn(mockQuery);
+        when(mockQuery.setParameter("estadoCancelado", EstadoPedido.CANCELADO)).thenReturn(mockQuery);
         when(mockQuery.getResultList()).thenReturn(pedidos);
 
         List<Pedido> result = pedidoDAO.findPedidosEnCurso(CLIENTE_ID);
@@ -83,7 +84,8 @@ class PedidoDAOTest {
         TypedQuery<Pedido> mockQuery = crearMockQuery();
         when(mockEntityManager.createQuery(any(String.class), eq(Pedido.class))).thenReturn(mockQuery);
         when(mockQuery.setParameter(eq("clienteId"), any(Long.class))).thenReturn(mockQuery);
-        when(mockQuery.setParameter("estadoEntregado", ESTADO_ENTREGADO)).thenReturn(mockQuery);
+        when(mockQuery.setParameter("estadoEntregado", EstadoPedido.ENTREGADO)).thenReturn(mockQuery);
+        when(mockQuery.setParameter("estadoCancelado", EstadoPedido.CANCELADO)).thenReturn(mockQuery);
         when(mockQuery.getResultList()).thenReturn(Collections.emptyList());
 
         List<Pedido> result = pedidoDAO.findPedidosEnCurso(CLIENTE_ID);
@@ -163,6 +165,35 @@ class PedidoDAOTest {
         when(mockQuery.getResultList()).thenReturn(Collections.emptyList());
 
         List<Pedido> result = pedidoDAO.findPedidosPagados();
+
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    void testFindPedidosCancelados_ClienteConPedidos() {
+        List<Pedido> pedidos = Arrays.asList(crearPedido(), crearPedido());
+        TypedQuery<Pedido> mockQuery = crearMockQuery();
+        when(mockEntityManager.createQuery(any(String.class), eq(Pedido.class))).thenReturn(mockQuery);
+        when(mockQuery.setParameter(eq("clienteId"), any(Long.class))).thenReturn(mockQuery);
+        when(mockQuery.setParameter("estadoCancelado", EstadoPedido.CANCELADO)).thenReturn(mockQuery);
+        when(mockQuery.getResultList()).thenReturn(pedidos);
+
+        List<Pedido> result = pedidoDAO.findPedidosCancelados(CLIENTE_ID);
+
+        assertNotNull(result);
+        assertEquals(2, result.size());
+    }
+
+    @Test
+    void testFindPedidosCancelados_ClienteSinPedidos() {
+        TypedQuery<Pedido> mockQuery = crearMockQuery();
+        when(mockEntityManager.createQuery(any(String.class), eq(Pedido.class))).thenReturn(mockQuery);
+        when(mockQuery.setParameter(eq("clienteId"), any(Long.class))).thenReturn(mockQuery);
+        when(mockQuery.setParameter("estadoCancelado", EstadoPedido.CANCELADO)).thenReturn(mockQuery);
+        when(mockQuery.getResultList()).thenReturn(Collections.emptyList());
+
+        List<Pedido> result = pedidoDAO.findPedidosCancelados(CLIENTE_ID);
 
         assertNotNull(result);
         assertTrue(result.isEmpty());

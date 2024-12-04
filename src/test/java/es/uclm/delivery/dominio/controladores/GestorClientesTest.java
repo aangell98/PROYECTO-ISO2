@@ -398,4 +398,47 @@ class GestorClientesTest {
         verify(repartidorDAO, times(1)).update(repartidor);
     }
 
+    @Test
+    void testListarPedidosCancelados_Exito() {
+        // Arrange
+        Cliente cliente = new Cliente();
+        cliente.setId(1L);
+        Pedido pedido1 = crearPedidoConRestaurante();
+        pedido1.setEstado(EstadoPedido.CANCELADO);
+        Pedido pedido2 = crearPedidoConRestaurante();
+        pedido2.setEstado(EstadoPedido.CANCELADO);
+        List<Pedido> pedidosCancelados = List.of(pedido1, pedido2);
+        when(iuBusqueda.obtenerClienteActual()).thenReturn(cliente);
+        when(iuPedido.obtenerPedidosCancelados(cliente.getId())).thenReturn(pedidosCancelados);
+
+        // Act
+        ResponseEntity<Object> result = gestorClientes.listarPedidosCancelados();
+
+        // Assert
+        assertEquals(HttpStatus.OK, result.getStatusCode());
+        assertTrue(result.getBody() instanceof List);
+        List<Map<String, Object>> body = (List<Map<String, Object>>) result.getBody();
+        assertEquals(2, body.size());
+        verify(iuPedido, times(1)).obtenerPedidosCancelados(cliente.getId());
+    }
+
+    @Test
+    void testListarPedidosCancelados_SinPedidos() {
+        // Arrange
+        Cliente cliente = new Cliente();
+        cliente.setId(1L);
+        when(iuBusqueda.obtenerClienteActual()).thenReturn(cliente);
+        when(iuPedido.obtenerPedidosCancelados(cliente.getId())).thenReturn(List.of());
+
+        // Act
+        ResponseEntity<Object> result = gestorClientes.listarPedidosCancelados();
+
+        // Assert
+        assertEquals(HttpStatus.OK, result.getStatusCode());
+        assertTrue(result.getBody() instanceof List);
+        List<Map<String, Object>> body = (List<Map<String, Object>>) result.getBody();
+        assertTrue(body.isEmpty());
+        verify(iuPedido, times(1)).obtenerPedidosCancelados(cliente.getId());
+    }
+
 }

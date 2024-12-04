@@ -32,10 +32,11 @@ public class PedidoDAO extends EntidadDAO<Pedido> {
 
     public List<Pedido> findPedidosEnCurso(Long clienteId) {
         return entityManager.createQuery(
-            "SELECT p FROM Pedido p WHERE p.cliente.id = :clienteId AND p.estado != :estadoEntregado",
+            "SELECT p FROM Pedido p WHERE p.cliente.id = :clienteId AND p.estado NOT IN (:estadoEntregado, :estadoCancelado)",
             Pedido.class)
             .setParameter("clienteId", clienteId)
             .setParameter("estadoEntregado", EstadoPedido.ENTREGADO)
+            .setParameter("estadoCancelado", EstadoPedido.CANCELADO)
             .getResultList();
     }
 
@@ -62,4 +63,12 @@ public class PedidoDAO extends EntidadDAO<Pedido> {
             .getResultList();
     }
 
+    public List<Pedido> findPedidosCancelados(Long clienteId) {
+        return entityManager.createQuery(
+            "SELECT p FROM Pedido p WHERE p.cliente.id = :clienteId AND p.estado = :estadoCancelado",
+            Pedido.class)
+            .setParameter("clienteId", clienteId)
+            .setParameter("estadoCancelado", EstadoPedido.CANCELADO)
+            .getResultList();
+    }
 }

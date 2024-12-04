@@ -426,4 +426,57 @@ void testConfirmarPedido_Exito() {
     verify(servicioEntregaDAO, times(1)).insert(any(ServicioEntrega.class));
 }
 
+@Test
+void testCancelarPedido_Exito() {
+    // Arrange
+    Long pedidoId = 1L;
+    Pedido pedido = new Pedido();
+    pedido.setId(pedidoId);
+    pedido.setEstado(EstadoPedido.PAGADO);
+
+    when(pedidoDAO.findById(pedidoId)).thenReturn(Optional.of(pedido));
+
+    // Act
+    ResponseEntity<Object> response = gestorPedidos.cancelarPedido(Map.of("idPedido", pedidoId));
+
+    // Assert
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertEquals("Pedido cancelado con éxito", response.getBody());
+    verify(pedidoDAO, times(1)).update(pedido);
+    assertEquals(EstadoPedido.CANCELADO, pedido.getEstado());
+}
+
+@Test
+void testCancelarPedido_PedidoNoEncontrado() {
+    // Arrange
+    Long pedidoId = 1L;
+    when(pedidoDAO.findById(pedidoId)).thenReturn(Optional.empty());
+
+    // Act
+    ResponseEntity<Object> response = gestorPedidos.cancelarPedido(Map.of("idPedido", pedidoId));
+
+    // Assert
+    assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    assertEquals("Pedido no encontrado", response.getBody());
+}
+
+@Test
+void testCancelarPedido_EstadoInvalido() {
+    // Arrange
+    Long pedidoId = 1L;
+    Pedido pedido = new Pedido();
+    pedido.setId(pedidoId);
+    pedido.setEstado(EstadoPedido.ENTREGADO);
+
+    when(pedidoDAO.findById(pedidoId)).thenReturn(Optional.of(pedido));
+
+    // Act
+    ResponseEntity<Object> response = gestorPedidos.cancelarPedido(Map.of("idPedido", pedidoId));
+
+    // Assert
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    assertEquals("No se puede cancelar el pedido en el estado actual", response.getBody());
+}
+
+
 }

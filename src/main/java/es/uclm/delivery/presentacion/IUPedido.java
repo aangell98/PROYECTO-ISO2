@@ -53,4 +53,12 @@ public class IUPedido {
         }
 		return pedidoDAO.findPedidosEntregados(clienteId);
 	}
+
+    public List<Pedido> obtenerPedidosCancelados(Long clienteId) {
+        if (clienteId == null) {
+            throw new IllegalArgumentException("El clienteId no puede ser nulo");
+        }
+        return pedidoDAO.findPedidosCancelados(clienteId);
+    }
+    
 }

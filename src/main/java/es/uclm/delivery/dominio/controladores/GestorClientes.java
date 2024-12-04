@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
 @RestController
 public class GestorClientes {
     private static final Logger logger = LoggerFactory.getLogger(GestorClientes.class);
@@ -47,6 +48,7 @@ public class GestorClientes {
         logger.info("Restaurantes encontrados: {}", restaurantes.size());
         return restaurantes;
     }
+
     @PostMapping("/agregar_favorito")
     public void agregarFavorito(@RequestParam("idRestaurante") Long idRestaurante) {
         if (idRestaurante != null) {
@@ -213,6 +215,27 @@ public class GestorClientes {
             return ResponseEntity.ok(direcciones);
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+    }
+
+    @GetMapping("/listar_pedidos_cancelados")
+    public ResponseEntity<Object> listarPedidosCancelados() {
+        Cliente cliente = iuBusqueda.obtenerClienteActual();
+        logger.info("Obteniendo pedidos cancelados para el cliente: {}", cliente.getId());
+        List<Pedido> pedidosCancelados = iuPedido.obtenerPedidosCancelados(cliente.getId());
+        if (!pedidosCancelados.isEmpty()) {
+            List<Map<String, Object>> pedidosDetalles = pedidosCancelados.stream().map(pedido -> {
+                Map<String, Object> detalles = new HashMap<>();
+                detalles.put("id", pedido.getId());
+                detalles.put("restaurante", pedido.getRestaurante().getNombre());
+                detalles.put("estado", pedido.getEstado());
+                return detalles;
+            }).toList();
+            logger.info("Pedidos cancelados encontrados: {}", pedidosDetalles.size());
+            return ResponseEntity.ok(pedidosDetalles);
+        } else {
+            logger.info("No hay pedidos cancelados");
+            return ResponseEntity.ok(List.of()); // Devolver una lista vacía en lugar de NO_CONTENT
         }
     }
 
