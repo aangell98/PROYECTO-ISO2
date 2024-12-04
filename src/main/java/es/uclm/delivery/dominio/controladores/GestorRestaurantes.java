@@ -17,6 +17,8 @@ import java.util.Optional;
 
 @Controller
 public class GestorRestaurantes {
+    private static final String ERROR = "error";
+    private static final String REDIRECT_HOME_RESTAURANT = "redirect:/homeRestaurante";
 
     @Autowired
     private UsuarioDAO usuarioDAO;
@@ -36,17 +38,17 @@ public class GestorRestaurantes {
     @PostMapping("/eliminarCartaMenu")
     public String eliminarMenu(@RequestParam("menuId") Long menuId, RedirectAttributes redirectAttributes) {
         if (menuId == null) {
-            redirectAttributes.addFlashAttribute("error", "Error al eliminar el menú.");
-            return "redirect:/homeRestaurante";
+            redirectAttributes.addFlashAttribute(ERROR, "Error al eliminar el menú.");
+            return REDIRECT_HOME_RESTAURANT;
         }
 
         int resultado = cartaMenuDAO.eliminarCartaMenuPorId(menuId);
         if (resultado == 1) {
             redirectAttributes.addFlashAttribute("mensaje", "Menú eliminado con éxito.");
         } else {
-            redirectAttributes.addFlashAttribute("error", "Error al eliminar el menú.");
+            redirectAttributes.addFlashAttribute(ERROR, "Error al eliminar el menú.");
         }
-        return "redirect:/homeRestaurante";
+        return REDIRECT_HOME_RESTAURANT;
     }
 
     @PostMapping("/eliminarItemMenu")
@@ -68,7 +70,7 @@ public class GestorRestaurantes {
                 model.addAttribute("errorMessage", "No se pudo eliminar el plato.");
             }
         }
-        return "redirect:/homeRestaurante";
+        return REDIRECT_HOME_RESTAURANT;
     }
 
     @PostMapping("/editarRestaurante")
@@ -81,9 +83,9 @@ public class GestorRestaurantes {
             restauranteDAO.update(original);
             model.addAttribute("message", "Restaurante actualizado exitosamente.");
         } else {
-            model.addAttribute("error", "Error: Restaurante no encontrado.");
+            model.addAttribute(ERROR, "Error: Restaurante no encontrado.");
         }
-        return "redirect:/homeRestaurante";
+        return REDIRECT_HOME_RESTAURANT;
     }
 
     @PostMapping("/eliminarNombreDireccionRestaurante")
@@ -100,7 +102,7 @@ public class GestorRestaurantes {
                 restauranteDAO.update(restaurante);
             }
         }
-        return "redirect:/homeRestaurante";
+        return REDIRECT_HOME_RESTAURANT;
     }
 
     @PostMapping("/eliminarRestaurante")
@@ -112,9 +114,9 @@ public class GestorRestaurantes {
             restauranteDAO.delete(restaurante);
             model.addAttribute("message", "Restaurante eliminado exitosamente.");
         } else {
-            model.addAttribute("error", "Error: Restaurante no encontrado.");
+            model.addAttribute(ERROR, "Error: Restaurante no encontrado.");
         }
-        return "redirect:/homeRestaurante";
+        return REDIRECT_HOME_RESTAURANT;
     }
 
     @PostMapping("/editarCartaMenu")
@@ -139,7 +141,7 @@ public class GestorRestaurantes {
             original.setItems(itemsNuevos);
             cartaMenuDAO.update(original);
         }
-        return "redirect:/homeRestaurante";
+        return REDIRECT_HOME_RESTAURANT;
     }
 
     @PostMapping("/editarItemMenu")
@@ -165,7 +167,7 @@ public class GestorRestaurantes {
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Error al actualizar el plato.");
         }
-        return "redirect:/homeRestaurante";
+        return REDIRECT_HOME_RESTAURANT;
     }
 
     @GetMapping("/homeRestaurante")
@@ -219,7 +221,7 @@ public class GestorRestaurantes {
                 restauranteDAO.update(existingRestaurante);
             }
         }
-        return "redirect:/homeRestaurante";
+        return REDIRECT_HOME_RESTAURANT;
     }
 
     @PostMapping("/crearItemMenu")
@@ -246,7 +248,7 @@ public class GestorRestaurantes {
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Error al crear el plato.");
         }
-        return "redirect:/homeRestaurante";
+        return REDIRECT_HOME_RESTAURANT;
     }
 
     @PostMapping("/crearCartaMenu")
@@ -263,6 +265,6 @@ public class GestorRestaurantes {
                 cartaMenuDAO.insert(cartaMenu);
             }
         }
-        return "redirect:/homeRestaurante";
+        return REDIRECT_HOME_RESTAURANT;
     }
 }
