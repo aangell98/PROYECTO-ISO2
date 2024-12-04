@@ -25,6 +25,7 @@ public class GestorClientes {
     private static final Logger logger = LoggerFactory.getLogger(GestorClientes.class);
     private static final String REPARTIDOR = "repartidor";
     private static final String VALORACION_REPARTIDOR = "valoracionRepartidor";
+    private static final String RESTAURANTE = "restaurante";
     @Autowired
     private IUBusqueda iuBusqueda;
     @Autowired
@@ -86,7 +87,7 @@ public class GestorClientes {
             List<Map<String, Object>> pedidosDetalles = pedidosEnCurso.stream().map(pedido -> {
                 Map<String, Object> detalles = new HashMap<>();
                 detalles.put("id", pedido.getId());
-                detalles.put("restaurante", pedido.getRestaurante().getNombre());
+                detalles.put(RESTAURANTE, pedido.getRestaurante().getNombre());
                 detalles.put("estado", pedido.getEstado());
                 Optional<ServicioEntrega> servicioEntregaOpt = iuPedido.obtenerServicioEntregaPorPedido(pedido.getId());
                 if (servicioEntregaOpt.isPresent()) {
@@ -139,7 +140,7 @@ public class GestorClientes {
             List<Map<String, Object>> pedidosDetalles = pedidosAnteriores.stream().map(pedido -> {
                 Map<String, Object> detalles = new HashMap<>();
                 detalles.put("id", pedido.getId());
-                detalles.put("restaurante", pedido.getRestaurante().getNombre());
+                detalles.put(RESTAURANTE, pedido.getRestaurante().getNombre());
                 detalles.put("estado", pedido.getEstado());
                 detalles.put("fecha", pedido.getFecha()); // Añadir la fecha del pedido
                 Optional<ServicioEntrega> servicioEntregaOpt = iuPedido.obtenerServicioEntregaPorPedido(pedido.getId());
@@ -229,7 +230,7 @@ public class GestorClientes {
             List<Map<String, Object>> pedidosDetalles = pedidosCancelados.stream().map(pedido -> {
                 Map<String, Object> detalles = new HashMap<>();
                 detalles.put("id", pedido.getId());
-                detalles.put("restaurante", pedido.getRestaurante().getNombre());
+                detalles.put(RESTAURANTE, pedido.getRestaurante().getNombre());
                 detalles.put("estado", pedido.getEstado());
                 detalles.put("fecha", pedido.getFecha()); // Añadir la fecha del pedido
                 return detalles;
