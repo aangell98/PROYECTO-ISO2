@@ -57,101 +57,103 @@
             <section id="restaurante">
                 <h2>Restaurante</h2>
                 <div>
-                    <th:block th:if="${isRestauranteRegistrado}" id="infoRestaurante">
+                    <th:block th:if="${restaurante.nombre != null and restaurante.direccion != null}" id="infoRestaurante">
                         <p th:text="'Restaurante: ' + ${restaurante.nombre}"></p>
                         <p th:text="'Dirección: ' + ${restaurante.direccion}"></p>
                         <button onclick="openModal('modalEditarRestaurante')">Editar Restaurante
                             <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
                         </button>
                     </th:block>
-                    <th:block th:unless="${isRestauranteRegistrado}">
-                        <p>Actualmente no hay ningún restaurante registrado. Por favor, crea uno para comenzar.</p>
-                        <button onclick="openModal('modalCrearRestaurante')">Crear Restaurante
+                    <th:block th:unless="${restaurante.nombre != null and restaurante.direccion != null}">
+                        <p>No estás dado de alta</p>
+                        <button onclick="openModal('modalEditarRestaurante')">Dar de alta
                             <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
                         </button>
                     </th:block>
                 </div>
             </section>
-            <section id="accionesGenerales">
-                <h2>Acciones generales</h2>
-                <th:block th:if="${isRestauranteRegistrado}">
-                    <!-- Botón para crear un menú -->
-                    <button onclick="openModal('modalMenu')">Crear Menú
-                        <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
-                    </button>
-                    <!-- Botón para crear un plato -->
-                    <button onclick="openModal('modalPlato')">Crear Plato
-                        <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
-                    </button>
-                    <!-- Botón para editar menús -->
-                    <button onclick="openModal('modalEditarMenu')">Editar Menús
-                        <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
-                    </button>
-                    <!-- Botón para editar platos -->
-                    <button onclick="openModal('modalEditarPlato')">Editar Platos
-                        <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
-                    </button>
-                </th:block>
-            </section>
-            <section id="menus">
-                <h2>Menús</h2>
-                <ul>
-                    <!-- Bucle para mostrar cada menú con sus platos -->
-                    <th:block th:each="menu : ${menus}">
-                        <li class="menu-item">
-                            <div style="display: flex; justify-content: space-between; align-items: center;">
-                                <h3 th:text="${menu.nombre}"></h3>
-                                <div>
-                                    <form method="post" action="/eliminarCartaMenu" style="display: inline;" onsubmit="confirmarEliminacion(event)">
-                                        <input type="hidden" name="menuId" th:value="${menu.id}">
-                                        <button id="eliminarPlatomenu" type="submit" class="btn-delete">Eliminar</button>
-                                    </form>
-                                    <button onclick="openModal('modalEditarMenu')">Editar</button>
+            <th:block th:if="${restaurante.nombre != null and restaurante.direccion != null}">
+                <section id="accionesGenerales">
+                    <h2>Acciones generales</h2>
+                    <th:block th:if="${isRestauranteRegistrado}">
+                        <!-- Botón para crear un menú -->
+                        <button onclick="openModal('modalMenu')">Crear Menú
+                            <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+                        </button>
+                        <!-- Botón para crear un plato -->
+                        <button onclick="openModal('modalPlato')">Crear Plato
+                            <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+                        </button>
+                        <!-- Botón para editar menús -->
+                        <button onclick="openModal('modalEditarMenu')">Editar Menús
+                            <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+                        </button>
+                        <!-- Botón para editar platos -->
+                        <button onclick="openModal('modalEditarPlato')">Editar Platos
+                            <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+                        </button>
+                    </th:block>
+                </section>
+                <section id="menus">
+                    <h2>Menús</h2>
+                    <ul>
+                        <!-- Bucle para mostrar cada menú con sus platos -->
+                        <th:block th:each="menu : ${menus}">
+                            <li class="menu-item">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <h3 th:text="${menu.nombre}"></h3>
+                                    <div>
+                                        <form method="post" action="/eliminarCartaMenu" style="display: inline;" onsubmit="confirmarEliminacion(event)">
+                                            <input type="hidden" name="menuId" th:value="${menu.id}">
+                                            <button id="eliminarPlatomenu" type="submit" class="btn-delete">Eliminar</button>
+                                        </form>
+                                        <button onclick="openModal('modalEditarMenu')">Editar</button>
+                                    </div>
                                 </div>
-                            </div>
-                            <ul id="inicioListaMenu">
-                                <!-- Bucle para mostrar los platos de cada menú -->
-                                <th:block th:each="plato : ${menu.items}">
-                                    <li>
-                                        <div>
-                                            <strong>Nombre:</strong> <span th:text="${plato.nombre}"></span><br>
-                                            <strong>Descripción:</strong> <span th:text="${plato.descripcion}"></span><br>
-                                            <strong>Precio:</strong> <span th:text="${plato.precio} + ' €'"></span>
-                                        </div>
-                                    </li>
-                                </th:block>
-                            </ul>
-                            <div class="total">
-                                <strong>Precio Total del Menú: </strong>
-                                <span th:text="${menu.precioTotal} + ' €'"></span>
-                            </div>
-                        </li>
-                    </th:block>
-                </ul>
-            </section>
-            <section id="platosNoAsignados">
-                <h2>Platos No Asignados</h2>
-                <p class="aviso">Unicamente pueden ser borrados los platos que no están asignados a un menú. Si estás buscando un plato en concreto, es posible que se encuentre ya asociado a un menú. Elimínelo del menú antes de eliminarlo del sistema.</p>
-                <ul>
-                    <!-- Bucle para mostrar los platos no asignados a ningún menú -->
-                    <th:block th:each="plato : ${platosNoAsignados}">
-                        <li>
-                            <div class="text">
-                                <strong>Nombre:</strong> <span th:text="${plato.nombre}"></span><br>
-                                <strong>Descripción:</strong> <span th:text="${plato.descripcion}"></span><br>
-                                <strong>Precio:</strong> <span id="PrecioPlato" th:text="${plato.precio} + ' €'"></span>
-                            </div>
-                            <div>
-                                <form method="post" action="/eliminarItemMenu" style="display: inline;" onsubmit="confirmarEliminacion(event)">
-                                    <input type="hidden" name="platoId" th:value="${plato.id}">
-                                    <button id="eliminarPlato" type="submit" class="btn-delete">Eliminar</button>
-                                </form>
-                                <button onclick="openModal('modalEditarPlato')">Editar</button>
-                            </div>
-                        </li>
-                    </th:block>
-                </ul>
-            </section>
+                                <ul id="inicioListaMenu">
+                                    <!-- Bucle para mostrar los platos de cada menú -->
+                                    <th:block th:each="plato : ${menu.items}">
+                                        <li>
+                                            <div>
+                                                <strong>Nombre:</strong> <span th:text="${plato.nombre}"></span><br>
+                                                <strong>Descripción:</strong> <span th:text="${plato.descripcion}"></span><br>
+                                                <strong>Precio:</strong> <span th:text="${plato.precio} + ' €'"></span>
+                                            </div>
+                                        </li>
+                                    </th:block>
+                                </ul>
+                                <div class="total">
+                                    <strong>Precio Total del Menú: </strong>
+                                    <span th:text="${menu.precioTotal} + ' €'"></span>
+                                </div>
+                            </li>
+                        </th:block>
+                    </ul>
+                </section>
+                <section id="platosNoAsignados">
+                    <h2>Platos No Asignados</h2>
+                    <p class="aviso">Unicamente pueden ser borrados los platos que no están asignados a un menú. Si estás buscando un plato en concreto, es posible que se encuentre ya asociado a un menú. Elimínelo del menú antes de eliminarlo del sistema.</p>
+                    <ul>
+                        <!-- Bucle para mostrar los platos no asignados a ningún menú -->
+                        <th:block th:each="plato : ${platosNoAsignados}">
+                            <li>
+                                <div class="text">
+                                    <strong>Nombre:</strong> <span th:text="${plato.nombre}"></span><br>
+                                    <strong>Descripción:</strong> <span th:text="${plato.descripcion}"></span><br>
+                                    <strong>Precio:</strong> <span id="PrecioPlato" th:text="${plato.precio} + ' €'"></span>
+                                </div>
+                                <div>
+                                    <form method="post" action="/eliminarItemMenu" style="display: inline;" onsubmit="confirmarEliminacion(event)">
+                                        <input type="hidden" name="platoId" th:value="${plato.id}">
+                                        <button id="eliminarPlato" type="submit" class="btn-delete">Eliminar</button>
+                                    </form>
+                                    <button onclick="openModal('modalEditarPlato')">Editar</button>
+                                </div>
+                            </li>
+                        </th:block>
+                    </ul>
+                </section>
+            </th:block>
         </main>
         <footer>
             <p>&copy; 2024 Restaurante. Todos los derechos reservados.</p>
@@ -273,7 +275,7 @@
             </form>
             <form method="post" action="/eliminarNombreDireccionRestaurante" onsubmit="confirmarEliminacion(event)">
                 <input type="hidden" name="restauranteId" th:value="${restaurante.id}">
-                <button type="submit" class="btn-delete">Eliminar Restaurante</button>
+                <button type="submit" class="btn-delete">Dar De Baja</button>
             </form>
         </div>
     </div>

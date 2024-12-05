@@ -420,6 +420,7 @@ footer {
     width: 100%;
     background-color: #ffc244;
     padding: 10px 0;
+    margin-left: 20px;
 }
 
 #restaurante {
@@ -427,9 +428,13 @@ footer {
     text-align: center;
 }
 
+#restaurante h2 {
+    margin-left: 50px;
+}
+
 #restaurante div {
     margin: 0;
-    margin-left: 10px;
+    margin-left: 15px;
     text-align: center;
     width: 600px;
     margin-bottom: 20px;
@@ -530,11 +535,9 @@ ul li:last-child {
     font-style: italic;
 }
 
-#platosNoAsignados{
-    margin-left: 40px;
-}
 #platosNoAsignados .aviso {
-    width: 590px;
+    margin-left: 15px;
+    width: 600px;
     margin-bottom: 20px;
     padding: 10px;
     border: 1px solid #cccccc00;
@@ -543,6 +546,7 @@ ul li:last-child {
 }
 
 #platosNoAsignados ul li {
+    margin-left: 35px;
     margin-bottom: 20px;
     padding: 20px;
     border-radius: 8px;
@@ -615,4 +619,12 @@ span {
 
 #menus ul li #eliminarPlatomenu:hover {
     background-color: #d32f2f;
+}
+
+#menus ul{
+    margin-left: 15px;
+}
+
+.container h1{
+    margin-left: 40px;
 }
