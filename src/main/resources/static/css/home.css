@@ -512,10 +512,17 @@ footer{
 }
 
 .favorite-restaurants {
-    margin-left: 110px;
+    align-items: center;
 }
 
 .favorite-restaurants h2 {
     text-align: center;
-    margin-left: -80px;
+}
+
+.favorite-restaurants ul{
+    margin-left: 65px;
+}
+
+.order-anteriores ul li, .order-cancelados ul li {
+    padding-bottom: 45px;
 }
