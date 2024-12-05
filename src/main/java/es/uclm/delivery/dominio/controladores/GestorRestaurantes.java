@@ -11,11 +11,16 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Controller
 public class GestorRestaurantes {
+    private static final String ERROR = "error";
+    private static final String REDIRECT_HOME_RESTAURANT = "redirect:/homeRestaurante";
+    private static final String ERROR_MENSAJE = "errorMessage";
+    private static final String SUCCESS_MESSAGE = "successMessage";
 
     @Autowired
     private UsuarioDAO usuarioDAO;
@@ -34,38 +39,41 @@ public class GestorRestaurantes {
 
     @PostMapping("/eliminarCartaMenu")
     public String eliminarMenu(@RequestParam("menuId") Long menuId, RedirectAttributes redirectAttributes) {
+        if (menuId == null) {
+            redirectAttributes.addFlashAttribute(ERROR, "ID de menú no proporcionado.");
+            return REDIRECT_HOME_RESTAURANT;
+        }
+
         int resultado = cartaMenuDAO.eliminarCartaMenuPorId(menuId);
         if (resultado == 1) {
             redirectAttributes.addFlashAttribute("mensaje", "Menú eliminado con éxito.");
+            return REDIRECT_HOME_RESTAURANT;
         } else {
-            redirectAttributes.addFlashAttribute("error", "Error al eliminar el menú.");
+            redirectAttributes.addFlashAttribute(ERROR, "Error al eliminar el menú.");
+            return REDIRECT_HOME_RESTAURANT;
         }
-        return "redirect:/homeRestaurante";
     }
 
     @PostMapping("/eliminarItemMenu")
-    public String eliminarItemMenu(@RequestParam Long platoId, Model model) {
-        ItemMenu itemMenu = itemMenuDAO.findById(platoId).orElse(null);
-        if (itemMenu != null) {
-            try {
-                int result = itemMenuDAO.delete(itemMenu);
-                if (result == 1) {
-                    // Éxito, redirigir o mostrar mensaje
-                    model.addAttribute("successMessage", "Plato eliminado correctamente.");
-                } else {
-                    // Error en la eliminación
-                    model.addAttribute("errorMessage", "No se pudo eliminar el plato.");
-                }
-            } catch (Exception e) {
-                // Manejo de la excepción
-                model.addAttribute("errorMessage",
-                        "No se puede eliminar el plato porque está asociado a uno o más menús.");
-                e.printStackTrace(); // O puedes registrar el error
+    public String eliminarItemMenu(@RequestParam("platoId") Long platoId, Model model) {
+        try {
+            Optional<ItemMenu> itemOpt = itemMenuDAO.findById(platoId);
+            if (itemOpt.isPresent()) {
+                ItemMenu item = itemOpt.get();
+                itemMenuDAO.delete(item);
+                model.addAttribute(SUCCESS_MESSAGE, "Plato eliminado correctamente.");
+            } else {
+                model.addAttribute(ERROR_MENSAJE, "El plato no existe.");
             }
-        } else {
-            model.addAttribute("errorMessage", "El plato no existe.");
+        } catch (RuntimeException e) {
+            if (e.getMessage().contains("Clave foránea")) {
+                model.addAttribute(ERROR_MENSAJE,
+                        "No se puede eliminar el plato porque está asociado a uno o más menús.");
+            } else {
+                model.addAttribute(ERROR_MENSAJE, "No se pudo eliminar el plato.");
+            }
         }
-        return "redirect:/homeRestaurante"; // O la vista que desees
+        return REDIRECT_HOME_RESTAURANT;
     }
 
     @PostMapping("/editarRestaurante")
@@ -78,9 +86,9 @@ public class GestorRestaurantes {
             restauranteDAO.update(original);
             model.addAttribute("message", "Restaurante actualizado exitosamente.");
         } else {
-            model.addAttribute("error", "Error: Restaurante no encontrado.");
+            model.addAttribute(ERROR, "Error: Restaurante no encontrado.");
         }
-        return "redirect:/homeRestaurante";
+        return REDIRECT_HOME_RESTAURANT;
     }
 
     @PostMapping("/eliminarNombreDireccionRestaurante")
@@ -97,7 +105,7 @@ public class GestorRestaurantes {
                 restauranteDAO.update(restaurante);
             }
         }
-        return "redirect:/homeRestaurante";
+        return REDIRECT_HOME_RESTAURANT;
     }
 
     @PostMapping("/eliminarRestaurante")
@@ -109,9 +117,9 @@ public class GestorRestaurantes {
             restauranteDAO.delete(restaurante);
             model.addAttribute("message", "Restaurante eliminado exitosamente.");
         } else {
-            model.addAttribute("error", "Error: Restaurante no encontrado.");
+            model.addAttribute(ERROR, "Error: Restaurante no encontrado.");
         }
-        return "redirect:/homeRestaurante";
+        return REDIRECT_HOME_RESTAURANT;
     }
 
     @PostMapping("/editarCartaMenu")
@@ -121,23 +129,48 @@ public class GestorRestaurantes {
             CartaMenu original = cartaExistente.get();
             original.setNombre(cartaMenu.getNombre());
             original.setDescripcion(cartaMenu.getDescripcion());
-            original.setItems(itemMenuDAO.findAllById(itemsIds));
+
+            // Inicializar la lista de ítems si es null
+            if (original.getItems() == null) {
+                original.setItems(new ArrayList<>());
+            }
+
+            // Convertir la colección a una lista mutable
+            List<ItemMenu> itemsActuales = new ArrayList<>(original.getItems());
+            List<ItemMenu> itemsNuevos = itemMenuDAO.findAllById(itemsIds);
+            itemsActuales.removeIf(item -> !itemsNuevos.contains(item));
+
+            // Asociar los nuevos platos al menú
+            original.setItems(itemsNuevos);
             cartaMenuDAO.update(original);
         }
-        return "redirect:/homeRestaurante";
+        return REDIRECT_HOME_RESTAURANT;
     }
 
     @PostMapping("/editarItemMenu")
-    public String editarItemMenu(@ModelAttribute ItemMenu itemMenu) {
-        Optional<ItemMenu> itemExistente = itemMenuDAO.findById(itemMenu.getId());
-        if (itemExistente.isPresent()) {
-            ItemMenu original = itemExistente.get();
-            original.setNombre(itemMenu.getNombre());
-            original.setDescripcion(itemMenu.getDescripcion());
-            original.setPrecio(itemMenu.getPrecio());
-            itemMenuDAO.update(original);
+    public String editarItemMenu(@ModelAttribute ItemMenu itemMenu, RedirectAttributes redirectAttributes) {
+        try {
+            if (itemMenu.getPrecio() < 0) {
+                throw new IllegalArgumentException("El precio no puede ser negativo");
+            }
+
+            Optional<ItemMenu> itemExistente = itemMenuDAO.findById(itemMenu.getId());
+            if (itemExistente.isPresent()) {
+                ItemMenu original = itemExistente.get();
+                original.setNombre(itemMenu.getNombre());
+                original.setDescripcion(itemMenu.getDescripcion());
+                original.setPrecio(itemMenu.getPrecio());
+                itemMenuDAO.update(original);
+                redirectAttributes.addFlashAttribute(SUCCESS_MESSAGE, "Plato actualizado correctamente.");
+            } else {
+                redirectAttributes.addFlashAttribute(ERROR_MENSAJE, "El plato no existe.");
+            }
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute(ERROR_MENSAJE, e.getMessage());
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute(ERROR_MENSAJE, "Error al actualizar el plato.");
         }
-        return "redirect:/homeRestaurante";
+        return REDIRECT_HOME_RESTAURANT;
     }
 
     @GetMapping("/homeRestaurante")
@@ -147,25 +180,31 @@ public class GestorRestaurantes {
             Usuario usuario = usuarioOpt.get();
             Optional<Restaurante> restauranteOpt = restauranteDAO.findByUsuario(usuario);
 
-            List<CartaMenu> menus = restauranteOpt
-                    .map(restaurante -> cartaMenuDAO.findAllByRestaurante(restaurante.getId()))
-                    .orElse(List.of());
+            if (restauranteOpt.isPresent()) {
+                List<CartaMenu> menus = cartaMenuDAO.findAllByRestaurante(restauranteOpt.get().getId());
+                List<ItemMenu> items = itemMenuDAO.obtenerItemsPorRestaurante(restauranteOpt.get().getId());
+                // Calcular el precio total de cada menú
+                for (CartaMenu menu : menus) {
+                    double precioTotal = menu.getItems().stream().mapToDouble(ItemMenu::getPrecio).sum();
+                    menu.setPrecioTotal(Math.round(precioTotal * 100.0) / 100.0);
+                }
 
-            List<ItemMenu> items = itemMenuDAO.obtenerItemsPorRestaurante(restauranteOpt.get().getId());
-            // Agregar log para verificar los valores de menus
-            menus.forEach(menu -> System.out.println("Menu encontrado: " + (menu != null ? menu.getId() : "null")));
+                // Obtener los platos no asignados a ningún menú
+                List<ItemMenu> platosNoAsignados = items.stream()
+                        .filter(plato -> menus.stream().noneMatch(menu -> menu.getItems().contains(plato)))
+                        .toList();
 
-            if (restauranteOpt.isEmpty() || restauranteOpt.get().getNombre() == null) {
-                model.addAttribute("restaurante", new Restaurante());
-                model.addAttribute("isRestauranteRegistrado", false);
-            } else {
                 Restaurante restaurante = restauranteOpt.get();
                 model.addAttribute("restaurante", restaurante);
                 model.addAttribute("isRestauranteRegistrado", true);
                 model.addAttribute("items", items);
                 model.addAttribute("menus", menus);
+                model.addAttribute("platosNoAsignados", platosNoAsignados);
                 model.addAttribute("cartaMenu", new CartaMenu());
                 model.addAttribute("itemMenu", new ItemMenu());
+            } else {
+                model.addAttribute("restaurante", new Restaurante());
+                model.addAttribute("isRestauranteRegistrado", false);
             }
         }
         return "homeRestaurante";
@@ -185,23 +224,35 @@ public class GestorRestaurantes {
                 restauranteDAO.update(existingRestaurante);
             }
         }
-        return "redirect:/homeRestaurante";
+        return REDIRECT_HOME_RESTAURANT;
     }
 
     @PostMapping("/crearItemMenu")
-public String crearItemMenu(@ModelAttribute ItemMenu itemMenu, Principal principal) {
-    Optional<Usuario> usuarioOpt = usuarioDAO.encontrarUser(principal.getName());
-    if (usuarioOpt.isPresent()) {
-        Usuario usuario = usuarioOpt.get();
-        Optional<Restaurante> restauranteOpt = restauranteDAO.findByUsuario(usuario);
-        if (restauranteOpt.isPresent()) {
-            Restaurante restaurante = restauranteOpt.get();
-            itemMenu.setRestaurante(restaurante); // Relacionar el ItemMenu con el restaurante
-            itemMenuDAO.insert(itemMenu);
+    public String crearItemMenu(@ModelAttribute ItemMenu itemMenu, Principal principal,
+            RedirectAttributes redirectAttributes) {
+        try {
+            if (itemMenu.getPrecio() < 0) {
+                throw new IllegalArgumentException("El precio no puede ser negativo");
+            }
+
+            Optional<Usuario> usuarioOpt = usuarioDAO.encontrarUser(principal.getName());
+            if (usuarioOpt.isPresent()) {
+                Usuario usuario = usuarioOpt.get();
+                Optional<Restaurante> restauranteOpt = restauranteDAO.findByUsuario(usuario);
+                if (restauranteOpt.isPresent()) {
+                    Restaurante restaurante = restauranteOpt.get();
+                    itemMenu.setRestaurante(restaurante); // Relacionar el ItemMenu con el restaurante
+                    itemMenuDAO.insert(itemMenu);
+                    redirectAttributes.addFlashAttribute(SUCCESS_MESSAGE, "Plato creado correctamente.");
+                }
+            }
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute(ERROR_MENSAJE, e.getMessage());
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute(ERROR_MENSAJE, "Error al crear el plato.");
         }
+        return REDIRECT_HOME_RESTAURANT;
     }
-    return "redirect:/homeRestaurante";
-}
 
     @PostMapping("/crearCartaMenu")
     public String crearCartaMenu(@ModelAttribute CartaMenu cartaMenu, @RequestParam List<Long> itemsIds,
@@ -217,6 +268,6 @@ public String crearItemMenu(@ModelAttribute ItemMenu itemMenu, Principal princip
                 cartaMenuDAO.insert(cartaMenu);
             }
         }
-        return "redirect:/homeRestaurante";
+        return REDIRECT_HOME_RESTAURANT;
     }
 }

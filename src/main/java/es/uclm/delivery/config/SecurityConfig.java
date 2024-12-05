@@ -17,10 +17,9 @@ import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.savedrequest.RequestCache;
 import org.springframework.security.web.savedrequest.SavedRequest;
 
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
+
 
 import java.io.IOException;
 
@@ -38,10 +37,10 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .authorizeHttpRequests((requests) -> requests
+            .authorizeHttpRequests(requests -> requests
                 .requestMatchers("/home", "/buscar_restaurantes", "/restaurantes_destacados", "/registroCliente", "/registroRepartidor", "/registroRestaurante", "/css/**", "/js/**", "/images/**").permitAll()
-                .requestMatchers("/homeCliente/**", "/realizarPedido/**", "/realizar_pedido").hasRole("CLIENTE")
-                .requestMatchers("/homeRepartidor/**").hasRole("REPARTIDOR")
+                .requestMatchers("/homeCliente/**", "/realizarPedido/**", "/realizar_pedido", "/confirmar_pedido").hasRole("CLIENTE")
+                .requestMatchers("/homeRepartidor/**", "/repartidor", "/autoasignar/{pedidoId}").hasRole("REPARTIDOR")
                 .requestMatchers("/homeRestaurante/**", "/eliminarNombreDireccionRestaurante/**").hasRole("RESTAURANTE")
                 .anyRequest().authenticated())
             .formLogin(form -> form
@@ -98,7 +97,7 @@ public class SecurityConfig {
     @Bean
     public LogoutSuccessHandler customLogoutSuccessHandler() {
         return new LogoutSuccessHandler() {
-            private final Logger log = LoggerFactory.getLogger(LogoutSuccessHandler.class);
+            private final Logger log = LoggerFactory.getLogger(this.getClass());
 
             @Override
             public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response,

@@ -15,15 +15,19 @@ public class DireccionDAO extends EntidadDAO<Direccion> {
     }
 
     @PersistenceContext
-    private EntityManager entityManager;
-
+    private EntityManager direccionEntityManager;
+    
     @Transactional
     public void save(Direccion direccion) {
-        entityManager.persist(direccion);
+        if (direccion == null) {
+            throw new IllegalArgumentException("La dirección no puede ser nula");
+        }
+        direccionEntityManager.persist(direccion);
     }
 
+
     public Direccion findByPedidoId(Long pedidoId) {
-        return entityManager
+        return direccionEntityManager
                 .createQuery("SELECT d FROM Direccion d WHERE d.pedidoId = :pedidoId", Direccion.class)
                 .setParameter("pedidoId", pedidoId)
                 .getSingleResult();

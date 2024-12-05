@@ -28,7 +28,13 @@
 		<url/>
 	</scm>
 	<properties>
-		<java.version>17</java.version>
+		<java.version>19</java.version>
+		<sonar.projectKey>aangell98_PROYECTO-ISO2</sonar.projectKey>
+		<sonar.organization>proyectodelivery-iso2-uclm</sonar.organization>
+		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
+		<sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
+		<sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
+		<sonar.jacoco.reportPaths>${project.basedir}/target/site/jacoco/jacoco.xml</sonar.jacoco.reportPaths>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -91,7 +97,15 @@
 			<scope>provided</scope>
 
 		</dependency>
+		<dependency>
 
+			<groupId>javax.persistence</groupId>
+
+			<artifactId>javax.persistence-api</artifactId>
+
+			<version>2.2</version>
+
+		</dependency>
 		<dependency>
 
 			<groupId>javax.servlet.jsp</groupId>
@@ -104,6 +118,20 @@
 
 		</dependency>
 
+		<!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-engine -->
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-engine</artifactId>
+			<version>5.10.2</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+    		<groupId>javax.persistence</groupId>
+    		<artifactId>javax.persistence-api</artifactId>
+    		<version>2.2</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
@@ -112,7 +140,72 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+			<plugin>
+				<groupId>org.sonarsource.scanner.maven</groupId>
+				<artifactId>sonar-maven-plugin</artifactId>
+            	<version>4.0.0.4121</version>
+        	</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-site-plugin</artifactId>
+				<version>3.12.1</version>
+			</plugin>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.8.11</version>
+				<executions>
+					<execution>
+						<id>jacoco-initialize</id>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>jacoco-site</id>
+						<phase>package</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+</executions>
+</plugin>
 		</plugins>
 	</build>
+
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-project-info-reports-plugin</artifactId>
+				<version>3.4.5</version>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-report-plugin</artifactId>
+				<version>3.2.2</version>
+				<configuration>
+					<skipEmptyReport>false</skipEmptyReport>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jxr-plugin</artifactId>
+				<version>3.3.1</version>
+			</plugin>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.8.11</version>
+			<reportSets>
+				<reportSet>
+					<reports>
+						<report>report</report>
+					</reports>
+				</reportSet>
+			</reportSets>
+			</plugin>
+		</plugins>
+	</reporting>
 
 </project>

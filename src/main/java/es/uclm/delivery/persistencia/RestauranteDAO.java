@@ -5,6 +5,10 @@ import es.uclm.delivery.dominio.entidades.Restaurante;
 import es.uclm.delivery.dominio.entidades.Usuario;
 import org.springframework.stereotype.Repository;
 
+import jakarta.persistence.NoResultException;
+import jakarta.persistence.NonUniqueResultException;
+import jakarta.persistence.PersistenceException;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -21,7 +25,11 @@ public class RestauranteDAO extends EntidadDAO<Restaurante> {
                     "SELECT r FROM Restaurante r WHERE r.usuario = :usuario", Restaurante.class)
                     .setParameter("usuario", usuario)
                     .getSingleResult());
-        } catch (Exception e) {
+        } catch (NoResultException | NonUniqueResultException e) {
+            // Si no hay resultado o hay más de uno, retornamos Optional.empty()
+            return Optional.empty();
+        } catch (PersistenceException e) {
+            e.printStackTrace();
             return Optional.empty();
         }
     }
@@ -32,7 +40,7 @@ public class RestauranteDAO extends EntidadDAO<Restaurante> {
                     "SELECT r FROM Restaurante r WHERE r.direccion LIKE :codigoPostal", Restaurante.class)
                     .setParameter("codigoPostal", "%" + codigoPostal + "%")
                     .getResultList();
-        } catch (Exception e) {
+        } catch (PersistenceException e) {
             e.printStackTrace();
             return List.of();
         }
@@ -51,7 +59,7 @@ public class RestauranteDAO extends EntidadDAO<Restaurante> {
                     "SELECT r FROM Restaurante r ORDER BY RAND()", Restaurante.class)
                     .setMaxResults(cantidad)
                     .getResultList();
-        } catch (Exception e) {
+        } catch (PersistenceException e) {
             e.printStackTrace();
             return List.of();
         }

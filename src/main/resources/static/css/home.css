@@ -1,6 +1,6 @@
 body {
     font-family: Arial, sans-serif;
-    background-color: #fab802; /* Color amarillo mostaza */
+    background-color: #ffc244;
     margin: 0;
     padding: 0;
     display: flex;
@@ -92,7 +92,7 @@ button[onclick="location.href='/login'"] {
 
 .featured-restaurants {
     margin-top: 20px;
-    width: 100%;
+    width: 99%;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
@@ -191,7 +191,18 @@ button[onclick="location.href='/login'"] {
 
 #listaFavoritos li, #resultadosBusqueda ul li {
     font-size: 1.2em; /* Increase font size for restaurant names */
-    margin-bottom: 10px;
+    border-bottom: 1px solid #000000; /* Línea debajo de cada plato */
+    padding-bottom: 10px; /* Espacio entre el contenido y la línea */
+    margin-bottom: 20px; /* Espaciado entre elementos */
+}
+
+#resultadosBusqueda ul li:last-child{
+    border-bottom: none; /* Quitar la línea del último elemento para un aspecto más limpio */
+    margin-bottom: -20px;
+}
+
+#listaFavoritos li{
+    border-bottom: none; /* Quitar la línea del último elemento para un aspecto más limpio */
 }
 
 #listaFavoritos button, #resultadosBusqueda ul button {
@@ -202,6 +213,11 @@ button[onclick="location.href='/login'"] {
     padding: 5px 10px;
     margin-left: 5px;
     cursor: pointer;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+#listaFavoritos li{
+    padding-bottom: 25px;
 }
 
 #listaFavoritos button:hover, #resultadosBusqueda ul button:hover {
@@ -216,8 +232,9 @@ button[onclick="location.href='/login'"] {
     display: none;
     flex-direction: column;
     align-items: center; /* Center the search results */
-    width: calc(100% -50px);
+    width: 700px;
     margin-top: 20px;
+    margin-left: 35px;
     background-color: #fa9302; /* Fondo naranja */
     border-radius: 8px; /* Esquinas redondeadas */
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra */
@@ -279,6 +296,8 @@ footer{
     background-color: #fa9302;
     border-radius: 8px;
     padding: 10px;
+    height: 161px;
+    padding-top: 40px;
 
 }
 
@@ -428,4 +447,82 @@ footer{
 .modal-content input{
     display: block; /* Asegura que el input sea un elemento de bloque */
     margin: 0 auto; /* Centra el input horizontalmente */
+}
+
+.order-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px; /* Espacio entre las secciones */
+    flex-wrap: wrap; /* Para manejar el caso en dispositivos pequeños */
+}
+
+.order-sections, .order-anteriores, .order-cancelados {
+    flex: 1; /* compartirán el mismo ancho */
+    min-width: 300px; /* Ancho mínimo para que se vean bien en pantallas pequeñas */
+}
+
+.order-sections h2, .order-anteriores h2, .order-cancelados h2 {
+    text-align: center;
+}
+
+@media (max-width: 768px) {
+    .order-container {
+        flex-direction: column; /* Cambia a disposición vertical en pantallas pequeñas */
+    }
+}
+
+#listaFavoritos li {
+    background-color: #fa9302; /* Fondo naranja */
+    border-radius: 8px;
+    height: 50px;
+    width: 740px;
+    margin-left: 60px;
+    padding-top: 22px;
+}
+.estrellas {
+    display: flex;
+    justify-content: center;
+    margin: 10px 0;
+}
+.estrellas i {
+    font-size: 2em;
+    cursor: pointer;
+}
+
+.order-cancelados h2 {
+    text-align: center;
+}
+
+.order-cancelados ul {
+    list-style-type: none;
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    margin-right: 20px;
+}
+
+.order-cancelados li {
+    margin-bottom: 30px;
+    margin-top: 30px;
+    background-color: #fa9302;
+    border-radius: 8px;
+    padding: 10px;
+    height: 161px;
+    padding-top: 40px;
+}
+
+.favorite-restaurants {
+    align-items: center;
+}
+
+.favorite-restaurants h2 {
+    text-align: center;
+}
+
+.favorite-restaurants ul{
+    margin-left: 65px;
+}
+
+.order-anteriores ul li, .order-cancelados ul li {
+    padding-bottom: 45px;
 }
