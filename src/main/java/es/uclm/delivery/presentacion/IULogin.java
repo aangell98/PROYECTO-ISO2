@@ -59,7 +59,6 @@ public class IULogin {
             String role = usuarioDAO.getRole(usuario.getUsername());
             log.info("Rol del usuario: {}", role);
 
-            // Asegúrate de que el rol tiene el prefijo "ROLE_"
             if (!role.startsWith("ROLE_")) {
                 role = "ROLE_" + role;
             }
