@@ -108,24 +108,24 @@ Este proyecto es una aplicación de entrega de alimentos que permite a los usuar
 
 1. Clona el repositorio:
 ```sh
-    git clone https://github.com/aangell98/PROYECTO-ISO2
+git clone https://github.com/aangell98/PROYECTO-ISO2
 ```
 
 2. Navega al directorio del proyecto:
 ```sh
-    cd delivery-application
+cd delivery-application
 ```
 
 3. Construye el proyecto con Maven:
 ```sh
-    mvn clean install
+mvn clean install
 ```
 
 ## Ejecución
 
 Para ejecutar la aplicación, usa el siguiente comando:
 ```sh
-    mvn spring-boot:run
+mvn spring-boot:run
 ```
 
 ## Pruebas
