@@ -6,109 +6,109 @@ Este proyecto es una aplicación de entrega de alimentos que permite a los usuar
 
 ## Estructura del Proyecto
 
-├───.github
-│   └───workflows
-├───.mvn
-│   └───wrapper
-├───.vscode
-├───database
-│   ├───log
-│   ├───seg0
-│   └───tmp
-├───src
-│   ├───main
-│   │   ├───java
-│   │   │   └───es
-│   │   │       └───uclm
-│   │   │           └───delivery
-│   │   │               ├───config
-│   │   │               ├───dominio
-│   │   │               │   ├───controladores
-│   │   │               │   ├───entidades
-│   │   │               │   └───excepciones
-│   │   │               ├───persistencia
-│   │   │               └───presentacion
-│   │   └───resources
-│   │       ├───static
-│   │       │   ├───css
-│   │       │   └───images
-│   │       └───templates
-│   └───test
-│       └───java
-│           └───es
-│               └───uclm
-│                   └───delivery
-│                       ├───dominio
-│                       │   ├───controladores
-│                       │   └───entidades
-│                       ├───persistencia
-│                       └───presentacion
-└───target
-    ├───classes
-    │   ├───es
-    │   │   └───uclm
-    │   │       └───delivery
-    │   │           ├───config
-    │   │           ├───dominio
-    │   │           │   ├───controladores
-    │   │           │   ├───entidades
-    │   │           │   └───excepciones
-    │   │           ├───persistencia
-    │   │           └───presentacion
-    │   ├───static
-    │   │   ├───css
-    │   │   └───images
-    │   └───templates
-    ├───delivery-0.0.1-SNAPSHOT
-    │   ├───META-INF
-    │   └───WEB-INF
-    │       ├───classes
-    │       │   ├───es
-    │       │   │   └───uclm
-    │       │   │       └───delivery
-    │       │   │           ├───config
-    │       │   │           ├───dominio
-    │       │   │           │   ├───controladores
-    │       │   │           │   ├───entidades
-    │       │   │           │   └───excepciones
-    │       │   │           ├───persistencia
-    │       │   │           └───presentacion
-    │       │   ├───static
-    │       │   │   ├───css
-    │       │   │   └───images
-    │       │   └───templates
-    │       └───lib
-    ├───generated-sources
-    │   └───annotations
-    ├───generated-test-sources
-    │   └───test-annotations
-    ├───maven-archiver
-    ├───maven-status
-    │   └───maven-compiler-plugin
-    │       ├───compile
-    │       │   └───default-compile
-    │       └───testCompile
-    │           └───default-testCompile
-    ├───site
-    │   ├───css
-    │   └───images
-    │       └───logos
-    ├───surefire-reports
-    └───test-classes
-        └───es
-            └───uclm
-                └───delivery
-                    ├───dominio
-                    │   ├───controladores
-                    │   └───entidades
-                    ├───persistencia
-                    └───presentacion
+    .github
+        workflows
+    .mvn
+        wrapper
+    .vscode
+    database
+        log
+        seg0
+        tmp
+    src
+        main
+            java
+                es
+                    uclm
+                        delivery
+                            config
+                            dominio
+                                controladores
+                                entidades
+                                excepciones
+                            persistencia
+                            presentacion
+            resources
+                static
+                    css
+                    images
+                templates
+        test
+            java
+                es
+                    uclm
+                        delivery
+                            dominio
+                                controladores
+                                entidades
+                            persistencia
+                            presentacion
+    target
+        classes
+            es
+                uclm
+                    delivery
+                        config
+                        dominio
+                            controladores
+                            entidades
+                            excepciones
+                        persistencia
+                        presentacion
+            static
+                css
+                images
+            templates
+        delivery-0.0.1-SNAPSHOT
+            META-INF
+            WEB-INF
+                classes
+                    es
+                        uclm
+                            delivery
+                                config
+                                dominio
+                                    controladores
+                                    entidades
+                                    excepciones
+                                persistencia
+                                presentacion
+                    static
+                        css
+                        images
+                    templates
+                lib
+        generated-sources
+            annotations
+        generated-test-sources
+            test-annotations
+        maven-archiver
+        maven-status
+            maven-compiler-plugin
+                compile
+                    default-compile
+                testCompile
+                    default-testCompile
+        site
+            css
+            images
+                logos
+        surefire-reports
+        test-classes
+            es
+                uclm
+                    delivery
+                        dominio
+                            controladores
+                            entidades
+                        persistencia
+                        presentacion
 
 ## Instalación
 
 1. Clona el repositorio:
 ```sh
-    git clone <URL_DEL_REPOSITORIO>
+    git clone <https://github.com/aangell98/PROYECTO-ISO2>
 ```
 
 2. Navega al directorio del proyecto:
@@ -132,7 +132,7 @@ Para ejecutar la aplicación, usa el siguiente comando:
 
 Para ejecutar las pruebas, usa el siguiente comando:
 ```sh
-mvnw test
+    mvn test
 ```
 ## Funcionalidades
 
