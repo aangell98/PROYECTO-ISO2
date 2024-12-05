@@ -108,7 +108,7 @@ Este proyecto es una aplicación de entrega de alimentos que permite a los usuar
 
 1. Clona el repositorio:
 ```sh
-    git clone <URL_DEL_REPOSITORIO>
+    git clone https://github.com/aangell98/PROYECTO-ISO2
 ```
 
 2. Navega al directorio del proyecto:
