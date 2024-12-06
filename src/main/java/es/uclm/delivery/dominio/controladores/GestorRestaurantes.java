@@ -34,9 +34,6 @@ public class GestorRestaurantes {
     @Autowired
     private ItemMenuDAO itemMenuDAO;
 
-    @Autowired
-    private IUEdicionMenu iuEdicionMenu;
-
     @PostMapping("/eliminarCartaMenu")
     public String eliminarMenu(@RequestParam("menuId") Long menuId, RedirectAttributes redirectAttributes) {
         if (menuId == null) {

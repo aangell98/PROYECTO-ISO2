@@ -125,7 +125,7 @@
                                         <p><strong>Estado:</strong> ${pedido.estado}</p>
                                         <p><strong>Repartidor:</strong> ${pedido.repartidor}</p>`;
                                 if (pedido.repartidor !== "Buscando repartidor...") {
-                                    pedidosHtml += `<p><strong>Valoración del Repartidor:<br></strong> <span class="valoracion">${generarEstrellas(pedido.valoracionRepartidor)}</span></p>
+                                    pedidosHtml += `<p><strong>Valoración del Repartidor:<br></strong> <span class="valoracion">${generarEstrellas(pedido.valoracionRepartidor)} <span class="valoracion-literal">${pedido.valoracionRepartidor}/5</span></span></p>
                                     <button onclick="confirmarRecepcion(${pedido.id})">¿Has recibido el pedido?</button>`;
                                 } else {
                                     pedidosHtml += `<button onclick="cancelarPedido(${pedido.id})">Cancelar Pedido</button>`;

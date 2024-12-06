@@ -310,7 +310,7 @@ class GestorClientesTest {
     void testObtenerPedidosEnCurso() {
         // Arrange
         Cliente cliente = new Cliente(); // Simula un cliente
-        cliente.setId(1L); // Asegúrate de que el cliente tiene un ID
+        cliente.setId(1L);
         Pedido pedido1 = crearPedidoConRestaurante();
         Pedido pedido2 = crearPedidoConRestaurante();
         List<Pedido> pedidosEnCurso = List.of(pedido1, pedido2);
@@ -362,7 +362,7 @@ class GestorClientesTest {
     void testObtenerPedidosAnteriores() {
         // Arrange
         Cliente cliente = new Cliente(); // Simula un cliente
-        cliente.setId(1L); // Asegúrate de que el cliente tiene un ID
+        cliente.setId(1L);
         Pedido pedido1 = crearPedidoConRestaurante();
         pedido1.setFecha(new Date()); // Añadir fecha al pedido
         Pedido pedido2 = crearPedidoConRestaurante();

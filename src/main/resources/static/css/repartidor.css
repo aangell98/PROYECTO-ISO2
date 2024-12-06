@@ -114,3 +114,10 @@ li button{
 li button:hover {
     background-color: #232323;
 }
+
+.valoracion-literal {
+    color: rgba(0, 0, 0, 0.5); /* Color negro con 50% de opacidad */
+    font-size: 0.9em; /* Tamaño de fuente ligeramente más pequeño */
+    font-style: italic; /* Texto en cursiva */
+    margin-left: 5px; /* Espacio a la izquierda */
+}

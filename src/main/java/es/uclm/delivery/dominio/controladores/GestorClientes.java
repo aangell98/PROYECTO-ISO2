@@ -31,8 +31,6 @@ public class GestorClientes {
     @Autowired
     private IUBusqueda iuBusqueda;
     @Autowired
-    private GestorPedidos gestorPedidos;
-    @Autowired
     private IUPedido iuPedido;
     @Autowired
     private PedidoDAO pedidoDAO;
@@ -124,7 +122,7 @@ public class GestorClientes {
         if (pedidoOpt.isPresent()) {
             Pedido pedido = pedidoOpt.get();
             pedido.setEstado(EstadoPedido.ENTREGADO);
-            pedidoDAO.update(pedido); // Asegúrate de tener un método que actualice el pedido en la base de datos
+            pedidoDAO.update(pedido);
             logger.info("Pedido actualizado a ENTREGADO: {}", idPedido);
             return ResponseEntity.ok("Pedido actualizado a ENTREGADO");
         } else {

@@ -12,16 +12,16 @@ public class ManejoErrores implements ErrorController {
 
     @RequestMapping("/error")
     public String handleError(HttpServletResponse response) {
-        // Redirigir a login si el error es 403 (Forbidden)
+
         if (response.getStatus() == 403) {
             return "redirect:/login";
         }
-        // Puedes manejar otros errores como 404 o 500 aquí si lo deseas
-        return "error"; // Página de error genérica
+
+        return "error";
     }
 
     @GetMapping("/403")
     public String accessDenied() {
-        return "redirect:/login";  // O podrías mostrar una página de acceso denegado personalizada si lo prefieres
+        return "redirect:/login";
     }
 }

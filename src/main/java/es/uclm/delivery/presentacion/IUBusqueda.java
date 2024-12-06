@@ -59,7 +59,7 @@ public class IUBusqueda {
         Restaurante restaurante = restauranteDAO.findById(restauranteId).orElseThrow(() -> new RuntimeException("Restaurante no encontrado"));
         List<CartaMenu> cartasMenu = restauranteDAO.findCartasMenuByRestauranteId(restauranteId);
         if (restaurante.getCartasMenu() == null) {
-            restaurante.setCartasMenu(new ArrayList<>()); // Inicializar la colección cartasMenu
+            restaurante.setCartasMenu(new ArrayList<>());
         }
         restaurante.getCartasMenu().clear();
         restaurante.getCartasMenu().addAll(cartasMenu);

@@ -24,7 +24,7 @@
                 <p><strong id="datos">Nombre:</strong> <span id="nombreRepartidor"></span></p>
                 <p><strong id="datos">Apellidos:</strong> <span id="apellidosRepartidor"></span></p>
                 <p><strong id="datos">DNI:</strong> <span id="dniRepartidor"></span></p>
-                <p><strong id="datos">Valoración Media:</strong> <span id="valoracionMediaRepartidor"></span></p>
+                <p><strong id="datos">Valoración Media:</strong> <span id="valoracionMediaRepartidor"></span> <span class="valoracion-literal"></span></p>
             </section>
             <hr>
             <section>
@@ -62,7 +62,7 @@
                         $('#nombreRepartidor').text(data.nombre);
                         $('#apellidosRepartidor').text(data.apellidos);
                         $('#dniRepartidor').text(data.dni);
-                        $('#valoracionMediaRepartidor').html(generarEstrellas(data.valoracionMedia));
+                        $('#valoracionMediaRepartidor').html(generarEstrellas(data.valoracionMedia) + ' <span class="valoracion-literal">' + data.valoracionMedia + '/5</span>');
                     },
                     error: function() {
                         alert("Error al cargar el perfil del repartidor");
