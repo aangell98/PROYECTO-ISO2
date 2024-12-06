@@ -172,4 +172,4 @@ Las contribuciones son bienvenidas. Por favor, abre un issue o envía un pull re
 
 Este proyecto es un trabajo universitario y no debe ser copiado, modificado, distribuido o utilizado de ninguna manera sin el permiso expreso de los autores. El uso no autorizado de este código puede resultar en acciones legales.
 
-Para obtener permiso para usar este código, por favor, contactar a los autores.
+Para obtener permiso para usar este código por favor contactar a los autores.
