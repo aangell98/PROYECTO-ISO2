@@ -1,6 +1,6 @@
 body {
     font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
+    background-color: #fff;
     margin: 0;
     padding: 0;
     display: flex;
@@ -10,7 +10,7 @@ body {
 }
 
 .container {
-    background-color: #fa9302;
+    background-color: #ffc244;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -131,9 +131,6 @@ button:hover {
     background-color: #c82333;
 }
 
-body {
-    background-color: #fab802; /* Fondo amarillo */
-}
 
 button, .btn-logout {
     background-color: black; /* Fondo de los botones en negro */

@@ -6,30 +6,163 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home Repartidor</title>
-    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/repartidor.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
     <div class="container">
         <header>
             <h1>Bienvenido, Repartidor</h1>
         </header>
-        <nav>
-            <ul>
-                <li><a href="/pedidos">Ver Pedidos</a></li>
-                <li><a href="/perfil">Perfil</a></li>
-                <li>
-                    <form method="post" action="/perform_logout" style="display: inline;">
-                        <button type="submit" class="btn-logout">Cerrar Sesión</button>
-                    </form>
-                </li>
-            </ul>
-        </nav>
+            <form method="post" action="/perform_logout" style="display: inline;">
+                <button type="submit" class="btn-logout">Cerrar Sesión</button>
+            </form>
         <main>
-            <!-- Contenido principal aquí -->
-        </main>
+            <section id="perfilRepartidor">
+                <h2>Mi Datos</h2>
+                <p><strong id="datos">Nombre:</strong> <span id="nombreRepartidor"></span></p>
+                <p><strong id="datos">Apellidos:</strong> <span id="apellidosRepartidor"></span></p>
+                <p><strong id="datos">DNI:</strong> <span id="dniRepartidor"></span></p>
+                <p><strong id="datos">Valoración Media:</strong> <span id="valoracionMediaRepartidor"></span> <span class="valoracion-literal"></span></p>
+            </section>
+            <hr>
+            <section>
+                <h2>Pedidos Disponibles</h2>
+                <ul id="pedidosPendientes">
+                    <!-- Aquí se mostrarán los pedidos pendientes -->
+                </ul>
+            </section>
+            <hr>
+            <section>
+                <h2>Pedidos en Curso</h2>
+                <ul id="pedidosAsignados">
+                    <!-- Aquí se mostrarán los pedidos asignados -->
+                </ul>
+            </section>
+            <hr>
+            <section>
+                <h2>Pedidos Entregados</h2>
+                <ul id="pedidosEntregados">
+                    <!-- Aquí se mostrarán los pedidos entregados -->
+                </ul>
+            </section>
+        </main>        
         <footer>
-            <p>&copy; 2024 Delivery. Todos los derechos reservados. Work In Progress</p>
+            <p>&copy; 2024 Delivery. Todos los derechos reservados.</p>
         </footer>
     </div>
+    <script>
+        $(document).ready(function() {
+            function cargarPerfilRepartidor() {
+                $.ajax({
+                    url: '/repartidor/perfil_repartidor',
+                    type: 'GET',
+                    success: function(data) {
+                        $('#nombreRepartidor').text(data.nombre);
+                        $('#apellidosRepartidor').text(data.apellidos);
+                        $('#dniRepartidor').text(data.dni);
+                        $('#valoracionMediaRepartidor').html(generarEstrellas(data.valoracionMedia) + ' <span class="valoracion-literal">' + data.valoracionMedia + '/5</span>');
+                    },
+                    error: function() {
+                        alert("Error al cargar el perfil del repartidor");
+                    }
+                });
+            }
+
+            function generarEstrellas(valoracion) {
+                var estrellasHtml = '';
+                var estrellasCompletas = Math.floor(valoracion);
+                var mediaEstrella = valoracion % 1 >= 0.5 ? 1 : 0;
+                var estrellasVacias = 5 - estrellasCompletas - mediaEstrella;
+
+                for (var i = 0; i < estrellasCompletas; i++) {
+                    estrellasHtml += '<i class="fas fa-star"></i>';
+                }
+                if (mediaEstrella) {
+                    estrellasHtml += '<i class="fas fa-star-half-alt"></i>';
+                }
+                for (var i = 0; i < estrellasVacias; i++) {
+                    estrellasHtml += '<i class="far fa-star"></i>';
+                }
+                return estrellasHtml;
+            }
+
+            function cargarPedidosPendientes() {
+                $.ajax({
+                    url: '/pedidos_pagados',
+                    type: 'GET',
+                    success: function(data) {
+                        console.log("Pedidos Pagados:", data); // Verificar datos en consola
+                        var pedidosHtml = '';
+                        data.forEach(function(pedido) {
+                            pedidosHtml += `
+                                <li>
+                                    <p><strong>Cliente:</strong> ${pedido.cliente || 'No especificado'}</p>
+                                    <p><strong>Dirección de Entrega:</strong> ${pedido.direccion || 'No especificada'}</p>
+                                    <p><strong>Restaurante:</strong> ${pedido.restaurante || 'No especificado'}</p>
+                                    <p><strong>Estado:</strong> ${pedido.estado}</p>
+                                    <button onclick="autoasignarPedido(${pedido.id})">Autoasignar</button>
+                                </li>`;
+                        });
+                        $('#pedidosPendientes').html(pedidosHtml);
+                    },
+                    error: function() {
+                        alert("Error al cargar los pedidos pendientes");
+                    }
+                });
+            }
+
+            function cargarPedidosAsignados() {
+                $.ajax({
+                    url: '/pedidos_asignados',
+                    type: 'GET',
+                    success: function(data) {
+                        console.log("Pedidos Asignados:", data); // Verificar datos en consola
+                        var pedidosAsignadosHtml = '';
+                        var pedidosEntregadosHtml = '';
+                        data.forEach(function(pedido) {
+                            var pedidoHtml = `
+                                <li>
+                                    <p><strong>Cliente:</strong> ${pedido.cliente || 'No especificado'}</p>
+                                    <p><strong>Dirección de Entrega:</strong> ${pedido.direccion || 'No especificada'}</p>
+                                    <p><strong>Restaurante:</strong> ${pedido.restaurante || 'No especificado'}</p>
+                                    <p><strong>Estado:</strong> ${pedido.estado}</p>
+                                </li>`;
+                            if (pedido.estado === 'RECOGIDO') {
+                                pedidosAsignadosHtml += pedidoHtml;
+                            } else if (pedido.estado === 'ENTREGADO') {
+                                pedidosEntregadosHtml += pedidoHtml;
+                            }
+                        });
+                        $('#pedidosAsignados').html(pedidosAsignadosHtml);
+                        $('#pedidosEntregados').html(pedidosEntregadosHtml);
+                    },
+                    error: function() {
+                        alert("Error al cargar los pedidos asignados");
+                    }
+                });
+            }
+
+            window.autoasignarPedido = function(pedidoId) {
+                $.ajax({
+                    url: '/repartidor/autoasignar/' + pedidoId,
+                    type: 'POST',
+                    success: function() {
+                        alert("Pedido autoasignado con éxito");
+                        cargarPedidosPendientes(); // Recargar la lista de pedidos pendientes
+                        cargarPedidosAsignados(); // Recargar la lista de pedidos asignados
+                    },
+                    error: function() {
+                        alert("Error al autoasignar el pedido");
+                    }
+                });
+            }
+
+            cargarPerfilRepartidor();
+            cargarPedidosPendientes();
+            cargarPedidosAsignados();
+        });
+    </script>
 </body>
 </html>

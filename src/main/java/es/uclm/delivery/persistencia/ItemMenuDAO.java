@@ -16,6 +16,7 @@ public class ItemMenuDAO extends EntidadDAO<ItemMenu> {
         super(ItemMenu.class);
     }
 
+    @Override
     public Optional<ItemMenu> findById(Long id) {
         return Optional.ofNullable(entityManager.find(ItemMenu.class, id));
     }

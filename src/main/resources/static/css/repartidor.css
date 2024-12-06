@@ -1,0 +1,123 @@
+body {
+    background-color: #ffffff;
+    font-family: Arial, sans-serif;
+}
+
+header h1, main h2 {
+    text-align: center;
+}
+
+.btn-logout {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background-color: #000; /* Botones negros */
+    color: #fff; /* Texto blanco */
+    border: none; /* Sin borde */
+    padding: 10px 20px; /* Espaciado interno del botón */
+    border-radius: 8px; /* Bordes redondeados */
+    cursor: pointer; /* Cambia el cursor al pasar sobre el botón */
+}
+
+.btn-logout:hover {
+    background-color: #d32f2f; /* Color de fondo del botón al pasar el ratón */
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centrar horizontalmente */
+}
+
+main section {
+    width: 100%; /* Asegura que la sección ocupe todo el ancho */
+    display: flex;
+    flex-direction: column; /* Mantiene la disposición vertical */
+}
+
+main section ul {
+    list-style-type: none; /* Elimina los puntos de la lista */
+    padding: 0px; /* Elimina el padding */
+    margin: 0px; /* Elimina el margen */
+    margin-left: 10px;
+    display: flex;
+    flex-direction: column; /* Mantiene la disposición vertical */
+}
+
+
+/* Estilo para el botón de cerrar */
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+
+footer {
+    margin-top: 10px;
+    text-align: center;
+    bottom: 0;
+    width: 100%;
+    background-color: #ffc244;
+    padding: 10px 0;
+}
+
+
+.container {
+    background-color: #ffc244;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 600px;
+    margin-left: 280px;
+
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+li {
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 8px;
+    background-color: #fa9302;
+    margin-right: 10px;
+}
+li p {
+    margin: 5px 0;
+}
+
+#datos{
+    margin-left: 20px;
+}
+
+li button{
+    background-color: #000; /* Botones negros */
+    color: #fff; /* Texto blanco */
+    border: none; /* Sin borde */
+    padding: 10px 20px; /* Espaciado interno del botón */
+    border-radius: 8px; /* Bordes redondeados */
+    display: block; /* Asegura que el botón esté en una línea aparte */
+    margin: 5px auto; /* Centra el botón horizontalmente y añade margen vertical */
+    text-align: center; /* Centra el texto dentro del botón */
+}
+
+li button:hover {
+    background-color: #232323;
+}
+
+.valoracion-literal {
+    color: rgba(0, 0, 0, 0.5); /* Color negro con 50% de opacidad */
+    font-size: 0.9em; /* Tamaño de fuente ligeramente más pequeño */
+    font-style: italic; /* Texto en cursiva */
+    margin-left: 5px; /* Espacio a la izquierda */
+}
