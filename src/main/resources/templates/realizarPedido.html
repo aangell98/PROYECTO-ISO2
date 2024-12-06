@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon">
+    <title>Realizar Pedido</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/pedido.css}">
+    <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
+</head>
+<body>
+    <button onclick="goBack()" class="btn-volver">Volver</button>
+    <button class="cta" onclick="abrirModal()">
+        <dotlottie-player id="carritoAnimacion" src="https://lottie.host/def13bc9-0fa5-4aae-84ac-1f5cf1d88035/Mr3qveI0Nd.json" background="transparent" speed="1" style="width: 55px; height: 49px;" direction="1" playMode="normal" loop></dotlottie-player>
+    </button>
+    
+    <div class="container">
+        <main>
+            <h1>Realizar Pedido</h1>
+            <section id="restauranteInfo">
+                <h2>Información del Restaurante</h2>
+                <p>Nombre: <span th:text="${restaurante.nombre}"></span></p>
+                <p>Dirección: <span th:text="${restaurante.direccion}"></span></p>
+            </section>
+            
+            <section id="menus">
+                <h2>Menús Disponibles</h2>
+                <ul>
+                    <li th:each="cartaMenu : ${restaurante.cartasMenu}">
+                        <h3 th:text="${cartaMenu.nombre}"></h3>
+                        <p th:text="${cartaMenu.descripcion}"></p>
+                        <p><strong>Precio Total:</strong> <span th:text="${cartaMenu.precioTotal} + ' €'"></span></p>
+
+                        <h4><strong>Platos del menú:</strong></h4>
+                        <ul>
+                            <li th:each="item : ${cartaMenu.items}">
+                                <p><strong>Nombre:</strong> <span th:text="${item.nombre}"></span></p>
+                                <p><strong>Descripción:</strong> <span th:text="${item.descripcion}"></span></p>
+                                <p><strong>Precio:</strong> <span th:text="${item.precio} + ' €'"></span></p>
+                            </li>
+                        </ul>
+
+                        <button th:onclick="'agregarAlCarrito(' + ${cartaMenu.id} + ')'">Añadir al Carrito</button>
+                        <br>
+                    </li>
+                </ul>
+            </section>
+        </main>
+
+        <footer>
+            <p>&copy; 2024 Delivery. Todos los derechos reservados.</p>
+        </footer>
+    </div>
+
+    <!-- Modal del Carrito -->
+    <div id="modalCarrito" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="cerrarModal()">&times;</span>
+            <h3>Carrito</h3>
+            <ul id="carritoItems"></ul> <!-- Aquí se mostrarán los ítems añadidos al carrito -->
+            <p id="precioTotalParagraph">Total: <span id="precioTotal">0</span> €</p>
+            <button onclick="limpiarCarrito()">Vaciar Carrito</button>
+            <button onclick="procederAlPago()">Proceder al pago</button>
+        </div>
+    </div>
+
+    <script>
+        // Función para abrir el modal del carrito
+        function abrirModal() {
+            document.getElementById('modalCarrito').style.display = 'flex';
+        }
+
+        // Función para cerrar el modal del carrito
+        function cerrarModal() {
+            document.getElementById('modalCarrito').style.display = 'none';
+        }
+
+        // Función para agregar un menú al carrito
+        function agregarAlCarrito(cartaMenuId) {
+            fetch('/agregar_al_carrito', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ id: cartaMenuId })
+            })
+            .then(response => response.json())
+            .then(carrito => {
+                actualizarVistaCarrito(carrito);
+            })
+            .catch(error => console.error("Error al agregar al carrito:", error));
+        }
+
+        // Función para eliminar un menú específico del carrito
+        function eliminarDelCarrito(cartaMenuId) {
+            fetch(`/eliminar_del_carrito/${cartaMenuId}`, {
+                method: 'DELETE'
+            })
+            .then(response => response.json())
+            .then(carrito => {
+                actualizarVistaCarrito(carrito);
+            })
+            .catch(error => console.error("Error al eliminar del carrito:", error));
+        }
+
+        // Función para limpiar todo el carrito
+        function limpiarCarrito() {
+            fetch('/limpiar_carrito', {
+                method: 'DELETE'
+            })
+            .then(response => response.json())
+            .then(carrito => {
+                actualizarVistaCarrito(carrito);
+            })
+            .catch(error => console.error("Error al limpiar el carrito:", error));
+        }
+
+        // Función para actualizar la vista del carrito
+        function actualizarVistaCarrito(carrito) {
+            let carritoItems = document.getElementById('carritoItems');
+            carritoItems.innerHTML = '';
+            carrito.items.forEach(item => {
+                carritoItems.innerHTML += `
+                <li>
+                    <span>${item.nombre} - ${item.precio} €</span>
+                    <button onclick="eliminarDelCarrito(${item.id})">Eliminar</button>
+                </li>`;
+            });
+            document.getElementById('precioTotal').innerText = carrito.precioTotal;
+        }
+
+        // Función para proceder al pago
+        function procederAlPago() {
+            window.location.href = '/pago';
+        }
+
+        // Función para regresar a la página anterior
+        function goBack() {
+            window.history.back();
+        }
+
+         // Manejo del evento mouseover para reproducir la animación
+         const carritoAnimacion = document.getElementById('carritoAnimacion');
+        carritoAnimacion.addEventListener('mouseover', () => {
+            carritoAnimacion.play();
+        });
+
+        carritoAnimacion.addEventListener('mouseout', () => {
+            carritoAnimacion.stop();
+        });
+    </script>
+</body>
+</html>

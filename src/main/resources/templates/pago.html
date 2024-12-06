@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon">
+    <title>Pagar Pedido</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/pago.css}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <button onclick="goBack()" class="btn-volver">Volver</button>
+    <div class="container">
+        <main>
+            <h1>Confirmar Pedido</h1>
+            <form id="formPago">
+                <section>
+                    <h3>Seleccionar Dirección</h3>
+                    <select id="direccionSelect">
+                        <!-- Aquí se llenarán las direcciones del cliente -->
+                    </select>
+                    <button type="button" onclick="mostrarFormularioNuevaDireccion()">Añadir Nueva Dirección</button>
+                </section>
+                <div id="nuevaDireccionForm" style="display: none;">
+                    <h3>Nueva Dirección</h3>
+                    <form id="nuevaDireccion">
+                        <label for="calle">Calle:</label>
+                        <input type="text" id="calle" name="calle" required>
+                        <label for="ciudad">Ciudad:</label>
+                        <input type="text" id="ciudad" name="ciudad" required>
+                        <label for="codigoPostal">Código Postal:</label>
+                        <input type="text" id="codigoPostal" name="codigoPostal" required>
+                        <button type="button" onclick="guardarNuevaDireccion()">Guardar Dirección</button>
+                    </form>
+                </div>
+                <section>
+                    <h3>Método de Pago</h3>
+                    <label id="ancho-reducido">
+                        <input type="radio" name="metodoPago" value="PAYPAL" required> PayPal
+                    </label>
+                    <label id="ancho-reducido">
+                        <input type="radio" name="metodoPago" value="CREDIT_CARD" required> Tarjeta
+                    </label>
+                </section>
+                <section id="paypalInfo" style="display: none;">
+                    <h3>Información de PayPal</h3>
+                    <label for="paypalEmail">Correo Electrónico:</label>
+                    <input type="email" id="paypalEmail" name="paypalEmail">
+                    <label for="paypalPassword">Contraseña:</label>
+                    <input type="password" id="paypalPassword" name="paypalPassword">
+                </section>
+                <section id="creditCardInfo" style="display: none;">
+                    <h3>Información de Tarjeta</h3>
+                    <label for="cardName">Nombre y Apellidos:</label>
+                    <input type="text" id="cardName" name="cardName">
+                    <label for="cardNumber">Número de Tarjeta:</label>
+                    <input type="text" id="cardNumber" name="cardNumber">
+                    <label for="cardCSV">CSV:</label>
+                    <input type="text" id="cardCSV" name="cardCSV">
+                </section>
+                <button type="button" onclick="confirmarPedido()">Realizar Pedido</button>
+            </form>
+        </main>
+    </div>
+    <script>
+        document.querySelectorAll('input[name="metodoPago"]').forEach((input) => {
+            input.addEventListener('change', function () {
+                if (this.value === 'PAYPAL') {
+                    document.getElementById('paypalInfo').style.display = 'block';
+                    document.getElementById('creditCardInfo').style.display = 'none';
+                } else if (this.value === 'CREDIT_CARD') {
+                    document.getElementById('paypalInfo').style.display = 'none';
+                    document.getElementById('creditCardInfo').style.display = 'block';
+                }
+            });
+        });
+        // Función para regresar a la página anterior
+        function goBack() {
+            window.history.back();
+        }
+        function cargarDireccionesCliente() {
+            console.log("Cargando direcciones del cliente...");
+            $.ajax({
+                url: '/listar_direcciones',
+                type: 'GET',
+                success: function(data) {
+                    console.log("Direcciones del cliente recibidas:", data);
+                    var direccionSelect = $('#direccionSelect');
+                    direccionSelect.empty();
+                    data.forEach(function(direccion, index) {
+                        var direccionTexto = direccion.calle + ', ' + direccion.ciudad + ', ' + direccion.codigoPostal;
+                        var option = $('<option>').val(direccion.id).text(direccionTexto);
+                        if (index === 0) {
+                            option.prop('selected', true); // Seleccionar la primera dirección por defecto
+                        }
+                        direccionSelect.append(option);
+                    });
+                },
+                error: function() {
+                    console.error("Error al cargar las direcciones del cliente");
+                    alert("Error al cargar las direcciones del cliente");
+                }
+            });
+        }
+        function mostrarFormularioNuevaDireccion() {
+            $('#nuevaDireccionForm').show();
+        }
+        function guardarNuevaDireccion() {
+            var nuevaDireccion = {
+                calle: $('#calle').val(),
+                ciudad: $('#ciudad').val(),
+                codigoPostal: $('#codigoPostal').val()
+            };
+            console.log("Guardando nueva dirección:", nuevaDireccion);
+            $.ajax({
+                url: '/guardar_direccion',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(nuevaDireccion),
+                success: function(data) {
+                    console.log("Nueva dirección guardada con éxito:", data);
+
+                    // Añade directamente la nueva dirección al desplegable
+                    var direccionTexto = `${data.calle}, ${data.ciudad}, ${data.codigoPostal}`;
+                    var option = $('<option>').val(data.id).text(direccionTexto);
+                    $('#direccionSelect').append(option);
+
+                    alert("Nueva dirección guardada con éxito");
+                    $('#nuevaDireccionForm').hide();
+
+                    // Limpia los campos del formulario
+                    $('#calle').val('');
+                    $('#ciudad').val('');
+                    $('#codigoPostal').val('');
+                },
+                error: function() {
+                    console.error("Error al guardar la nueva dirección");
+                    alert("Error al guardar la nueva dirección");
+                }
+            });
+        }
+        function confirmarPedido() {
+            const direccionId = $('#direccionSelect').val();
+            const metodoPago = document.querySelector('input[name="metodoPago"]:checked').value;
+            let pagoInfo = {};
+            if (metodoPago === 'PAYPAL') {
+                pagoInfo = {
+                    email: document.getElementById('paypalEmail').value,
+                    password: document.getElementById('paypalPassword').value
+                };
+            } else if (metodoPago === 'CREDIT_CARD') {
+                pagoInfo = {
+                    name: document.getElementById('cardName').value,
+                    number: document.getElementById('cardNumber').value,
+                    csv: document.getElementById('cardCSV').value
+                };
+            }
+            if (direccionId && metodoPago && Object.values(pagoInfo).every(value => value)) {
+                fetch('/confirmar_pedido', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ direccionId, metodoPago, pagoInfo })
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            alert("Pedido realizado con éxito!");
+                            window.location.href = "/homeCliente";
+                        } else {
+                            alert("Error al realizar el pedido. Intente nuevamente.");
+                        }
+                    })
+                    .catch(error => console.error("Error en la confirmación del pedido:", error));
+            } else {
+                alert("Por favor, complete todos los campos requeridos.");
+            }
+        }
+        $(document).ready(function() {
+            cargarDireccionesCliente();
+        });
+    </script>
+</body>
+</html>
