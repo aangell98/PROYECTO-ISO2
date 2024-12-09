@@ -2,7 +2,6 @@ package es.uclm.delivery.dominio.controladores;
 
 import es.uclm.delivery.dominio.entidades.*;
 import es.uclm.delivery.persistencia.*;
-import es.uclm.delivery.presentacion.IUEdicionMenu;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
