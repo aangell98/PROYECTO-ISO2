@@ -17,17 +17,25 @@
             document.getElementById(id).style.display = 'none';
         }
 
-        function validarPrecio(precioId, errorId) {
-            const precioInput = document.getElementById(precioId);
+        function validarPrecio(inputId, errorId) {
+            const precioInput = document.getElementById(inputId);
             const precioError = document.getElementById(errorId);
             const precio = parseFloat(precioInput.value);
 
             if (precio < 0) {
-                precioError.style.display = "block";
+                precioError.style.display = 'block';
                 return false;
             } else {
-                precioError.style.display = "none";
+                precioError.style.display = 'none';
                 return true;
+            }
+        }
+
+        function confirmarEliminacion(event) {
+            event.preventDefault();
+            const confirmacion = confirm("Esta acción no es reversible, ¿estás seguro?");
+            if (confirmacion) {
+                event.target.submit();
             }
         }
 
@@ -280,7 +288,7 @@
         <div class="modal-content">
             <span class="close" onclick="closeModal('modalEditarRestaurante')">&times;</span>
             <h2>Editar Restaurante</h2>
-            <form method="post" action="/crearRestaurante">
+            <form method="post" action="/crearRestaurante" onsubmit="mostrarAlerta('Restaurante actualizado con éxito')">
                 <label for="nombreRestaurante">Nuevo Nombre:</label>
                 <input type="text" id="nombreRestaurante" name="nombre" required>
                 <label for="direccionRestaurante">Nueva Dirección:</label>
