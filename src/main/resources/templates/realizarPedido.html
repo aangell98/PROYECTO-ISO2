@@ -30,14 +30,13 @@
                     <li th:each="cartaMenu : ${restaurante.cartasMenu}">
                         <h3 th:text="${cartaMenu.nombre}"></h3>
                         <p th:text="${cartaMenu.descripcion}"></p>
-                        <p><strong>Precio Total:</strong> <span th:text="${cartaMenu.precioTotal} + ' €'"></span></p>
-
+                        <p><strong>Precio Total:</strong> <span th:text="${#numbers.formatDecimal(cartaMenu.precioTotal, 1, 2, 'COMMA')} + ' €'"></span></p>
                         <h4><strong>Platos del menú:</strong></h4>
                         <ul>
                             <li th:each="item : ${cartaMenu.items}">
                                 <p><strong>Nombre:</strong> <span th:text="${item.nombre}"></span></p>
                                 <p><strong>Descripción:</strong> <span th:text="${item.descripcion}"></span></p>
-                                <p><strong>Precio:</strong> <span th:text="${item.precio} + ' €'"></span></p>
+                                <p><strong>Precio:</strong> <span th:text="${#numbers.formatDecimal(item.precio, 1, 2, 'COMMA')} + ' €'"></span></p>
                             </li>
                         </ul>
 
@@ -123,11 +122,11 @@
             carrito.items.forEach(item => {
                 carritoItems.innerHTML += `
                 <li>
-                    <span>${item.nombre} - ${item.precio} €</span>
+                    <span>${item.nombre} - ${formatearPrecio(item.precio)} €</span>
                     <button onclick="eliminarDelCarrito(${item.id})">Eliminar</button>
                 </li>`;
             });
-            document.getElementById('precioTotal').innerText = carrito.precioTotal;
+            document.getElementById('precioTotal').innerText = formatearPrecio(carrito.precioTotal);
         }
 
         // Función para proceder al pago
@@ -140,8 +139,13 @@
             window.history.back();
         }
 
-         // Manejo del evento mouseover para reproducir la animación
-         const carritoAnimacion = document.getElementById('carritoAnimacion');
+        // Función para formatear el precio con coma en lugar de punto
+        function formatearPrecio(precio) {
+            return precio.toFixed(2).replace('.', ',');
+        }
+
+        // Manejo del evento mouseover para reproducir la animación
+        const carritoAnimacion = document.getElementById('carritoAnimacion');
         carritoAnimacion.addEventListener('mouseover', () => {
             carritoAnimacion.play();
         });
