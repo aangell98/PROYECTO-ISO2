@@ -41,19 +41,19 @@
                 event.preventDefault();
                 return false;
             }
-            mostrarAlerta('Plato creado con éxito');	
+            mostrarAlerta('Plato creado con éxito');
             return true;
         }
 
         function validarYMostrarAlertaEdicion(event) {
-        const precioValido = validarPrecio('precioPlatoEdit', 'precioErrorEdit');
-        if (!precioValido) {
-            event.preventDefault();
-            return false;
+            const precioValido = validarPrecio('precioPlatoEdit', 'precioErrorEdit');
+            if (!precioValido) {
+                event.preventDefault();
+                return false;
+            }
+            mostrarAlerta('Plato actualizado con éxito');
+            return true;
         }
-        mostrarAlerta('Plato actualizado con éxito');
-        return true;
-    }
     </script>
 </head>
 
@@ -131,14 +131,14 @@
                                             <div>
                                                 <strong>Nombre:</strong> <span th:text="${plato.nombre}"></span><br>
                                                 <strong>Descripción:</strong> <span th:text="${plato.descripcion}"></span><br>
-                                                <strong>Precio:</strong> <span th:text="${plato.precio} + ' €'"></span>
+                                                <strong>Precio:</strong> <span th:text="${#numbers.formatDecimal(plato.precio, 1, 2, 'COMMA')} + ' €'"></span>
                                             </div>
                                         </li>
                                     </th:block>
                                 </ul>
                                 <div class="total">
                                     <strong>Precio Total del Menú: </strong>
-                                    <span th:text="${menu.precioTotal} + ' €'"></span>
+                                    <span th:text="${#numbers.formatDecimal(menu.precioTotal, 1, 2, 'COMMA')} + ' €'"></span>
                                 </div>
                             </li>
                         </th:block>
@@ -154,7 +154,7 @@
                                 <div class="text">
                                     <strong>Nombre:</strong> <span th:text="${plato.nombre}"></span><br>
                                     <strong>Descripción:</strong> <span th:text="${plato.descripcion}"></span><br>
-                                    <strong>Precio:</strong> <span id="PrecioPlato" th:text="${plato.precio} + ' €'"></span>
+                                    <strong>Precio:</strong> <span id="PrecioPlato" th:text="${#numbers.formatDecimal(plato.precio, 1, 2, 'COMMA')}"></span> €
                                 </div>
                                 <div>
                                     <form method="post" action="/eliminarItemMenu" style="display: inline;" onsubmit="confirmarEliminacion(event)">
