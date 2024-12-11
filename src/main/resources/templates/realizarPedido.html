@@ -131,6 +131,11 @@
 
         // Función para proceder al pago
         function procederAlPago() {
+            const carritoItems = document.getElementById('carritoItems');
+            if (carritoItems.children.length === 0) {
+                alert("¡El carrito está vacío!");
+                return;
+            }
             window.location.href = '/pago';
         }
 
