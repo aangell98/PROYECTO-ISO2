@@ -545,6 +545,10 @@ ul li:last-child {
     background-color: #fa9302;
 }
 
+#platosNoAsignados h2 {
+    margin-left: 40px;
+}
+
 #platosNoAsignados ul li {
     margin-left: 35px;
     margin-bottom: 20px;
@@ -625,6 +629,14 @@ span {
     margin-left: 15px;
 }
 
+#menus h2{
+    margin-left: 40px;
+}
+
 .container h1{
+    margin-left: 40px;
+}
+
+#accionesGenerales h2{
     margin-left: 40px;
 }
